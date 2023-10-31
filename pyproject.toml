@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "biocypher-metta"
+version = "0.0.1"
+description = "Library creating a BioCypher-driven knowledge graph for Opencog Hyperon"
+authors = [
+    "Abdulrahman S. Omar <xabush@singularitynet.io>",
+]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+biocypher = "^0.5.4"
+numpy = "^1.23.1"
+tqdm = "^4.64.0"
+pandas = "^2.0.1"
+pypath-omnipath = "^0.15.4"
+bioregistry = "^0.6.9"
+biocypher = "^0.5.4"
+psutil = "^5.9.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

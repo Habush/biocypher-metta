@@ -2,7 +2,7 @@
 from biocypher import BioCypher
 import pathlib
 import os
-import logging as log
+from biocypher._logger import logger
 import networkx as nx
 
 class MeTTaWriter:
@@ -14,7 +14,7 @@ class MeTTaWriter:
         self.output_path = pathlib.Path(output_dir)
 
         if not os.path.exists(output_dir):
-            log.info(f"Directory {output_dir} doesn't exist. Creating it...")
+            logger.info(f"Directory {output_dir} doesn't exist. Creating it...")
             self.output_path.mkdir()
 
         self.bcy = BioCypher(schema_config_path=schema_config,
@@ -40,11 +40,11 @@ class MeTTaWriter:
 
             self.create_data_constructors(f)
 
-        log.info("Type hierarchy created successfully.")
+        logger.info("Type hierarchy created successfully.")
 
     def create_data_constructors(self, file):
-        schema = self.onotology.mapping._extend_schema()
-
+        schema = self.bcy._get_ontology_mapping()._extend_schema()
+        self.edge_node_types = {}
         def edge_data_constructor(edge_type, source_type, target_type, label):
             return f"(: ({label.lower()} $x $y) (-> {source_type.upper()} {target_type.upper()} {edge_type.upper()})"
 
@@ -54,11 +54,20 @@ class MeTTaWriter:
         for k, v in schema.items():
             if v["represented_as"] == "edge": #(: (label $x $y) (-> source_type target_type
                 edge_type = self.convert_input_labels(k)
-                label = self.convert_input_labels(v["input_label"])
-                source_type = self.convert_input_labels(v["source"])
-                target_type = self.convert_input_labels(v["target"])
+
+                ## TODO fix this in the scheme config
+                if isinstance(v["input_label"], list):
+                    label = self.convert_input_labels(v["input_label"][0])
+                    source_type = self.convert_input_labels(v["source"][0])
+                    target_type = self.convert_input_labels(v["target"][0])
+                else:
+                    label = self.convert_input_labels(v["input_label"])
+                    source_type = self.convert_input_labels(v["source"])
+                    target_type = self.convert_input_labels(v["target"])
+
                 out_str = edge_data_constructor(edge_type, source_type, target_type, label)
                 file.write(out_str + "\n")
+                self.edge_node_types[label.lower()] = {"source": source_type.lower(), "target": target_type.lower()}
 
             elif v["represented_as"] == "node":
                 label = v["input_label"]
@@ -80,7 +89,7 @@ class MeTTaWriter:
                 for s in out_str:
                     f.write(s + "\n")
 
-        log.info("Finished writing out nodes")
+        logger.info("Finished writing out nodes")
 
 
 
@@ -112,9 +121,9 @@ class MeTTaWriter:
         # target_id = edge["target"]
         # properties = edge.get_properties()
         id, source_id, target_id, label, properties = edge
-        rel = properties["relationship"]
-        source_type, target_type = rel["from"], rel["to"]
-        del properties["relationship"]
+        label = label.lower()
+        source_type = self.edge_node_types[label]["source"]
+        target_type = self.edge_node_types[label]["target"]
         def_out = f"({label} ({source_type} {source_id}) ({target_type} {target_id}))"
         out_str = [def_out]
         for k, v in properties.items():

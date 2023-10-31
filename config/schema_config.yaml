@@ -1,21 +1,661 @@
-# add your desired knowledge graph components here
+Title: BioCypher graph schema configuration file
+# ---
+# "Named Things"
+# ---
+
+gene:
+  represented_as: node
+  preferred_id: ncbigene
+  input_label: gene
+  properties:    
+    gene_names: str[]
+    xref_kegg: str[]
+    xref_ensembl: str[]
+    ensembl_gene_ids: str[]
 
 protein:
-    represented_as: node
-    preferred_id: uniprot
-    label_in_input: uniprot_protein
+  represented_as: node
+  preferred_id: uniprot
+  input_label: protein
+  properties:
+    length: int
+    mass: int
+    protein_name: str[]
+    xref_proteomes: str[]
+    organism_name: str
+    organism_id: int
+    ec: str[]
+    virus_hosts: int[]
+  
+organism taxon:
+  represented_as: node
+  preferred_id: ncbitaxon
+  input_label: organism
+  properties:
+    organism_name: str
 
-disease:
-    represented_as: node
-    preferred_id: doid
-    label_in_input: do_disease
+protein domain:  
+  represented_as: node
+  preferred_id: interpro
+  input_label: domain
+  properties:    
+    protein_count: int
+    name: str
+    type: str
+    parent_list: str[]
+    child_list: str[]
+    pfam: str[]
+    ec: str[]
+    pdb: str[]
     
-protein interaction:
-    is_a: pairwise molecular interaction
-    represented_as: edge
-    label_in_input: protein_protein_interaction
+biological process: 
+  represented_as: node
+  preferred_id: go
+  input_label: biological process
+  properties:
+    name: str
+  
+cellular component:
+  represented_as: node
+  preferred_id: go
+  input_label: cellular component
+  properties:
+    name: str
 
-protein to disease association:
-    is_a: association
-    represented_as: edge
-    label_in_input: protein_disease_association
+molecular function:
+  synonym_for: molecular activity
+  represented_as: node
+  preferred_id: go
+  input_label: molecular function
+  properties:
+    name: str
+  
+small molecule:
+  represented_as: node
+  preferred_id: drugbank
+  input_label: drug
+  properties:
+    drugbank_id: str
+    cas_number: str
+    name: str
+    groups: str[]
+    general_references: str[]
+    atc_codes: str[]
+    kegg_drug: str
+    rxcui: str
+    pharmgkb: str
+    pdb: str
+    drugcentral: str
+    zinc: str
+    chembl: str
+    bindingdb: str
+    clinicaltrials: str
+    chebi: str
+    pubchem: str
+    inchi: str
+    inchikey: str
+
+molecular mixture:
+  represented_as: node
+  preferred_id: id
+  input_label: compound
+  properties:
+    type: str
+    full_mwt: float
+    species: str
+    heavy_atoms: int
+    alogp: float
+    inchi: str
+    inchikey: str
+    qed_score: float 
+
+# disease:
+  # represented_as: node
+  # preferred_id: mondo
+  # input_label: Disease
+
+#pathway:
+#   represented_as: node
+#   preferred_id: [reactome, kegg]
+#   input_label: [Pathway_Reactome, Pathway_KEGG]
+  
+# molecular mixture: # there is no compound in Biolink. could be molecular mixture
+  # represented_as: node
+  # preferred_id: chembl.compound
+  # input_label: Compound
+
+# Cell: # relevant?
+  # represented_as: node
+  # preferred_id: CL
+  # input_label: Cell
+
+# phenotype:
+  # represented_as: node
+  # preferred_id: hp
+  # input_label: Phenotype
+      
+# biological process: # other two go categories?
+  # represented_as: node
+  # preferred_id: go
+  # input_label: Function
+
+# cell line:
+  # represented_as: node
+  # preferred_id: ccle
+  # input_label: Cell_Line
+
+# tissue:
+  # is_a: grossanatomicalstructure
+  # represented_as: node
+  # preferred_id: uberon
+  # input_label: Tissue
+
+# patient:
+  # is_a: case
+  # represented_as: node
+  # preferred_id: id
+  # input_label: Patient
+  
+# protein domain:
+  # represented_as: node
+  # preferred_id: interpro
+  # input_label: Domain
+
+# side effect:
+  # is_a: phenotypic feature
+  # represented_as: node
+  # preferred_id: sider.effect
+  # input_label: Side_Effect
+
+#location:
+#   represented_as: node
+#   preferred_id: go
+#   input_label: location
+
+# ---
+# Associations
+# ---
+
+gene to protein relationship:
+  is_a: gene to gene product relationship
+  represented_as: edge
+  label_as_edge: Gene_encodes_protein
+  preferred_id: id
+  source: gene
+  target: protein
+  input_label: Gene_encodes_protein
+  
+protein to organism taxon association:
+  is_a: association
+  represented_as: edge
+  label_as_edge: Protein_belongs_to_organism
+  preferred_id: id
+  source: protein
+  target: organismTaxon
+  input_label: Protein_belongs_to_organism
+  
+post translational interaction:
+  is_a: pairwise molecular interaction
+  represented_as: edge
+  label_as_edge: Protein_interacts_with_protein
+  preferred_id: id
+  source: protein
+  target: protein
+  input_label: Protein_interacts_with_protein
+  properties:    
+    source: str[]
+    pubmed_ids: str[]
+    method: str
+    interaction_type: str
+    intact_score: float
+    string_combined_score: int
+    string_physical_combined_score: int
+
+protein to protein domain association:
+  is_a: association
+  represented_as: edge
+  label_as_edge: protein_has_domain
+  preferred_id: id
+  source: protein
+  target: protein domain
+  input_label: protein_has_domain
+  properties:
+    start: str
+    end: str
+
+protein to biological process association:
+  is_a: macromolecular machine to biological process association
+  represented_as: edge
+  label_as_edge: protein_involved_in_biological_process
+  preferred_id: go
+  source: protein
+  target: biological process
+  input_label: protein_involved_in_biological_process
+  properties:
+    reference: str
+    evidence_code: str
+
+## TODO expand this to separate definitions
+
+protein to cellular component association:
+  is_a: macromolecular machine to cellular component association
+  represented_as: edge
+  preferred_id: go
+  source: [protein_located_in_cellular_component, protein_part_of_cellular_component, protein_is_active_in_cellular_component]
+  target: cellular component
+  input_label: [protein_located_in_cellular_component, protein_part_of_cellular_component, protein_is_active_in_cellular_component] 
+  properties:
+    reference: str
+    evidence_code: str
+  
+protein to molecular function association:
+  is_a: macromolecular machine to molecular function association
+  represented_as: edge
+  preferred_id: go
+  source: [protein_enables_molecular_function, protein_contributes_to_molecular_function]
+  target: molecular function
+  input_label: [protein_enables_molecular_function, protein_contributes_to_molecular_function]
+  properties:
+    reference: str
+    evidence_code: str
+
+biological process to biological process association:
+  is_a: association
+  represented_as: edge
+  preferred_id: go
+  source: [biological_process_is_a_biological_process, biological_process_part_of_biological_process, biological_process_positively_regulates_biological_process, biological_process_negatively_regulates_biological_process]
+  target: biological process
+  input_label: [biological_process_is_a_biological_process, biological_process_part_of_biological_process, biological_process_positively_regulates_biological_process, biological_process_negatively_regulates_biological_process]
+
+biological process to molecular function association:
+  is_a: association
+  represented_as: edge
+  preferred_id: go
+  source: [biological_process_positively_regulates_molecular_function, biological_process_negatively_regulates_molecular_function]
+  target: molecular function
+  input_label: [biological_process_positively_regulates_molecular_function, biological_process_negatively_regulates_molecular_function]
+
+molecular function to molecular function association:
+  is_a: association
+  represented_as: edge
+  preferred_id: go
+  source: [molecular_function_is_a_molecular_function, molecular_function_part_of_molecular_function, molecular_function_positively_regulates_molecular_function, molecular_function_negatively_regulates_molecular_function]
+  target: molecular function
+  input_label: [molecular_function_is_a_molecular_function, molecular_function_part_of_molecular_function, molecular_function_positively_regulates_molecular_function, molecular_function_negatively_regulates_molecular_function]
+
+cellular component to cellular component association:
+  is_a: association
+  represented_as: edge
+  preferred_id: go
+  source: [cellular_component_is_a_cellular_component, cellular_component_part_of_cellular_component]
+  target: cellular component
+  input_label: [cellular_component_is_a_cellular_component, cellular_component_part_of_cellular_component]
+
+protein domain to molecular function association:
+  is_a: association
+  represented_as: edge
+  label_as_edge: protein_domain_enables_molecular_function
+  preferred_id: id
+  source: protein domain
+  target: molecular function
+  input_label: protein_domain_enables_molecular_function
+  
+protein domain to biological process association:
+  is_a: association
+  represented_as: edge
+  label_as_edge: protein_domain_involved_in_biological_process
+  preferred_id: id
+  source: protein domain
+  target: biological process
+  input_label: protein_domain_involved_in_biological_process
+  
+protein domain to cellular component association:
+  is_a: association
+  represented_as: edge
+  label_as_edge: protein_domain_located_in_cellular_component
+  preferred_id: id
+  source: protein domain
+  target: cellular component
+  input_label: protein_domain_located_in_cellular_component
+
+# small molecule to protein association:
+#   is_a: pairwise molecular interaction
+#   represented_as: edge
+#   label_as_edge: drug_targets_protein
+#   preferred_id: id
+#   source: small molecule
+#   target: protein
+#   input_label: drug_targets_protein
+#   properties:
+#     known_action: str
+#     activity_value: float
+#     confidence_score: float
+#     direct_interaction: bool
+#     disease_efficacy: bool
+#     mechanism_of_action: str
+#     pchembl: float
+#     activity_type: str
+#     dgidb_score: float
+#     references: str[]
+#     mechanism_of_action_type: str
+#     stitch_combined_score: float
+#     source: str[]
+
+small molecule to protein association:
+  is_a: pairwise molecular interaction
+  represented_as: edge
+  label_as_edge: drug_targets_protein
+  preferred_id: id
+  source: small molecule
+  target: protein
+  input_label: drug_targets_protein
+  properties:
+    known_action: str
+    references: str[]
+    actions: str[]
+
+small molecule to small molecule association:
+  is_a: pairwise molecular interaction
+  represented_as: edge
+  label_as_edge: drug_interacts_with_drug
+  preferred_id: id
+  source: small molecule
+  target: small molecule
+  input_label: drug_interacts_with_drug
+  properties:
+    recommendation: str
+    interaction_level: str
+    interaction_type: str[]
+    source: str[]
+
+
+# small molecule to gene association:
+#   represented_as: edge
+#   label_as_edge: [decreases_expression, increases_expression]
+#   preferred_id: id
+#   source: small molecule
+#   target: gene
+#   input_label: [drug_decreases_expression_gene, drug_increases_expression_gene]
+#   properties:
+#     source: str[]
+#     references: str[]
+
+
+molecular mixture to protein association:
+  is_a: pairwise molecular interaction
+  represented_as: edge
+  label_as_edge: targets
+  preferred_id: id
+  source: molecular mixture
+  target: protein
+  input_label: compound_targets_protein
+  properties:
+    source: str[]
+    pchembl: float
+    activity_value: float
+    activity_type: str
+    assay_chembl: str[]
+    confidence_score: float
+    stitch_combined_score: float
+
+
+gene to gene orthology association:
+  is_a: association
+  represented_as: edge
+  label_as_edge: Is_Orthologous_With
+  preferred_id: id
+  source: gene
+  target: gene
+  input_label: gene_is_orthologous_with_gene
+  properties:
+    source: str[]
+    relation_type: str
+    oma_orthology_score: float
+
+
+
+
+# protein to protein domain association:
+  # represented_as: edge
+  # label_as_edge: Has_Domain
+  # preferred_id: id
+  # source: protein
+  # target: protein domain
+  # input_label: Protein_Has_Domain
+
+# protein to pathway association:
+  # represented_as: edge
+  # label_as_edge: Takes_Part_In
+  # preferred_id: id
+  # source: protein
+  # target: pathway
+  # input_label: Take_Part_In
+
+# protein to disease association:
+  # represented_as: edge
+  # label_as_edge: Is_Targeted_In
+  # preferred_id: id
+  # source: protein
+  # target: disease
+  # input_label: Protein_Is_Related_To_Disease
+
+# gene to gene homology association:
+  # represented_as: edge
+  # label_as_edge: Is_Ortholog_To
+  # preferred_id: id
+  # source: gene
+  # target: gene
+  # input_label: Is_Ortholog_To
+
+# pairwise gene to gene interaction:
+  # represented_as: edge
+  # label_as_edge: Regulates
+  # preferred_id: id
+  # source: gene
+  # target: gene
+  # input_label: Regulates
+
+# mutation to tissue association:
+  # is_a: [genotype to tissue association, association]
+  # represented_as: edge
+  # label_as_edge: Is_Mutated_In
+  # preferred_id: id
+  # source: gene
+  # target: tissue
+  # input_label: Gene_Is_Mutated_In_Tissue
+
+# mutation to cell line association:
+  # is_a: [genotype to cell line association, association]
+  # represented_as: edge
+  # label_as_edge: Is_Mutated_In
+  # preferred_id: id
+  # source: gene
+  # target: cell line
+  # input_label: Gene_Is_Mutated_In_Cell_Line
+
+# expression to tissue association:
+  # is_a: [genotype to tissue association, association]
+  # represented_as: edge
+  # label_as_edge: Is_DEG_In
+  # preferred_id: id
+  # source: gene
+  # target: tissue
+  # input_label: Gene_Is_DEG_In_Tissue
+
+# expression to cell line association:
+  # is_a: [genotype to cell line association, association]
+  # represented_as: edge
+  # label_as_edge: Is_DEG_In
+  # preferred_id: id
+  # source: gene
+  # target: cell line
+# input_label: Gene_Is_DEG_In_Cell_Line
+
+# gene to phenotypic feature association:
+  # represented_as: edge
+  # label_as_edge: Is_Associated_With
+  # preferred_id: id
+  # source: gene
+  # target: phenotypic feature
+  # input_label: Gene_Is_Associated_With_Phenotype
+
+# mutation to case association:
+  # is_a: association
+  # represented_as: edge
+  # label_as_edge: Is_Mutated_In
+  # preferred_id: id
+  # source: gene
+  # target: case
+  # input_label: Gene_Is_Mutated_In_Patient
+
+# expression to case association:
+  # is_a: association
+  # represented_as: edge
+  # label_as_edge: Is_DEG_In
+  # preferred_id: id
+  # source: gene
+  # target: case
+  # input_label: Gene_Is_DEG_In_Patient
+
+# gene to pathway association:
+  # represented_as: edge
+  # label_as_edge: Is_Member_Of
+  # source: protein
+  # target: pathway
+  # preferred_id: id
+  # input_label: Is_Member_Of
+
+# gene to disease association:
+  # represented_as: edge
+  # label_as_edge: Is_Related_To
+  # preferred_id: id
+  # source: gene
+  # target: disease
+  # input_label: Gene_Is_Related_To_Disease
+
+# drug interaction:
+  # is_a: chemical to chemical association
+  # represented_as: edge
+  # label_as_edge: Interacts_With
+  # preferred_id: id
+  # source: small molecule
+  # target: small molecule
+  # input_label: Drug_Interacts_With_Drug
+
+# small molecule to side effect association:
+  # represented_as: edge
+  # label_as_edge: Has_Side_Effect
+  # preferred_id: id
+  # source: small molecule
+  # target: side effect
+  # input_label: Drug_Has_Side_Effect
+
+# small molecule to tissue association:
+  # represented_as: edge
+  # preferred_id: id
+  # source: small molecule
+  # target: tissue
+  # input_label: Drug_Targets_Tissue
+
+# small molecule to cell line association:
+  # represented_as: edge
+  # preferred_id: id
+  # source: small molecule
+  # target: tissue
+  # input_label: Drug_Targets_Cell_Line
+
+# small molecule to pathway association:
+  # represented_as: edge
+  # label_as_edge: Has_Target_In
+  # preferred_id: id
+  # source: small molecule
+  # target: pathway
+  # input_label: Has_Target_In
+
+# molecular mixture to protein association:
+  # represented_as: edge
+  # label_as_edge: Compound_Targets_Protein
+  # preferred_id: id
+  # source: molecular mixture
+  # target: protein
+  # input_label: Compound_Targets_Protein
+
+# tissue to disease association:
+  # represented_as: edge
+  # label_as_edge: Has_Disease
+  # preferred_id: id
+  # source: tissue
+  # target: disease
+  # input_label: Tissue_Has_Disease
+
+# cell line as a model of disease association:
+  # represented_as: edge
+  # preferred_id: id
+  # source: cell line
+  # target: disease
+  # input_label: Cell_Line_Has_Disease
+
+# case to disease association:
+  # represented_as: edge
+  # label_as_edge: Has_Disease
+  # preferred_id: id
+  # source: patient
+  # target: disease
+  # input_label: Patient_Has_Disease
+
+# disease to disease association:
+  # represented_as: edge
+  # label_as_edge: Comorbid_With
+  # preferred_id: id
+  # source: disease
+  # target: disease
+  # input_label: Comorbid_With
+
+# disease to phenotypic feature association:
+  # represented_as: edge
+  # label_as_edge: Is_Associated_With
+  # preferred_id: id
+  # source: disease
+  # target: phenotypic feature
+  # input_label: Disease_Is_Associated_With_Phenotype
+
+# disease to pathway association:
+  # represented_as: edge
+  # label_as_edge: Modulates
+  # preferred_id: id
+  # source: disease
+  # target: pathway
+  # input_label: Modulates
+
+# disease to small molecule association:
+  # represented_as: edge
+  # label_as_edge: Is_Treated_By
+  # preferred_id: id
+  # source: disease
+  # target: small molecule
+  # input_label: Is_Treated_By
+
+# protein domain to molecular activity association:
+  # represented_as: edge
+  # label_as_edge: Has_Function
+  # preferred_id: id
+  # source: protein domain
+  # target: molecular activity
+  # input_label: Domain_Has_Function
+
+# protein domain to cellular component association:
+  # represented_as: edge
+  # preferred_id: id
+  # source: protein domain
+  # target: cellular component
+  # input_label: Domain_Has_Location
+
+# suggestion for drug - small molecule
+# drug to small molecule association:
+  # is_a: association
+  # represented_as: edge
+  # label_as_edge: Contains_Active_Ingredient
+  # preferred_id: id
+  # source: drug
+  # target: small molecule
+  # input_label: Contains_Active_Ingredient

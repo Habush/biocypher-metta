@@ -23,6 +23,8 @@ class MeTTaWriter:
         self.onotology = self.bcy._get_ontology()
         self.create_type_hierarchy()
 
+        self.excluded_properties = ["licence", "version", "source"]
+
     def create_type_hierarchy(self):
         G = self.onotology._nx_graph
         file_path = f"{self.output_path}/type_defs.metta"
@@ -81,8 +83,14 @@ class MeTTaWriter:
                     file.write(out_str + "\n")
 
 
-    def write_nodes(self, nodes):
-        file_path = f"{self.output_path}/nodes.metta"
+    def write_nodes(self, nodes, path_prefix=None, create_dir=True):
+        if path_prefix is not None:
+            file_path = f"{self.output_path}/{path_prefix}/nodes.metta"
+            if create_dir:
+                if not os.path.exists(f"{self.output_path}/{path_prefix}"):
+                    os.mkdir(f"{self.output_path}/{path_prefix}")
+        else:
+            file_path = f"{self.output_path}/nodes.metta"
         with open(file_path, "w") as f:
             for node in nodes:
                 out_str = self.write_node(node)
@@ -93,8 +101,14 @@ class MeTTaWriter:
 
 
 
-    def write_edges(self, edges):
-        file_path = f"{self.output_path}/edges.metta"
+    def write_edges(self, edges, path_prefix=None, create_dir=True):
+        if path_prefix is not None:
+            file_path = f"{self.output_path}/{path_prefix}/edges.metta"
+            if create_dir:
+                if not os.path.exists(f"{self.output_path}/{path_prefix}"):
+                    os.mkdir(f"{self.output_path}/{path_prefix}")
+        else:
+            file_path = f"{self.output_path}/edges.metta"
 
         with open(file_path, "w") as f:
             for edge in edges:
@@ -111,15 +125,14 @@ class MeTTaWriter:
         def_out = f"({self.convert_input_labels(label)} {id})"
         out_str.append(def_out)
         for k, v in properties.items():
+            if k in self.excluded_properties or v is None: continue
+            if isinstance(v, list):
+                v = tuple(v)
             out_str.append(f"(has-property {k} {def_out} {v})")
 
         return out_str
 
     def write_edge(self, edge):
-        # label = self.convert_input_labels(edge["label"])
-        # source_id = edge["source"]
-        # target_id = edge["target"]
-        # properties = edge.get_properties()
         id, source_id, target_id, label, properties = edge
         label = label.lower()
         source_type = self.edge_node_types[label]["source"]
@@ -127,6 +140,7 @@ class MeTTaWriter:
         def_out = f"({label} ({source_type} {source_id}) ({target_type} {target_id}))"
         out_str = [def_out]
         for k, v in properties.items():
+            if k in self.excluded_properties or v is None: continue
             out_str.append(f"(has-property {k} {def_out} {v})")
 
         return out_str
@@ -152,3 +166,6 @@ class MeTTaWriter:
 
     def show_ontology_structure(self):
         self.bcy.show_ontology_structure()
+
+    def summary(self):
+        self.bcy.summary()

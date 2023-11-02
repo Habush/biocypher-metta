@@ -47,7 +47,7 @@ from biocypher import BioCypher
 uniprot_node_types = [
     UniprotNodeType.PROTEIN,
     UniprotNodeType.GENE,
-    UniprotNodeType.ORGANISM,
+    # UniprotNodeType.ORGANISM,
 ]
 
 uniprot_node_fields = [
@@ -196,8 +196,8 @@ def main():
 
     # Write uniprot nodes and edges
     logger.info("Writing uniprot nodes & edges")
-    bc.write_nodes(uniprot_adapter.get_nodes())
-    bc.write_edges(uniprot_adapter.get_edges())
+    bc.write_nodes(uniprot_adapter.get_nodes(), path_prefix="uniprot")
+    bc.write_edges(uniprot_adapter.get_edges(), path_prefix="uniprot")
 
     # write ppi edges
     # logger.info("Writing uniprot edges")

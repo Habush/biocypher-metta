@@ -57,15 +57,14 @@ class MeTTaWriter:
             if v["represented_as"] == "edge": #(: (label $x $y) (-> source_type target_type
                 edge_type = self.convert_input_labels(k)
 
-                ## TODO fix this in the scheme config
-                if isinstance(v["input_label"], list):
-                    label = self.convert_input_labels(v["input_label"][0])
-                    source_type = self.convert_input_labels(v["source"][0])
-                    target_type = self.convert_input_labels(v["target"][0])
-                else:
-                    label = self.convert_input_labels(v["input_label"])
-                    source_type = self.convert_input_labels(v["source"])
-                    target_type = self.convert_input_labels(v["target"])
+                # ## TODO fix this in the scheme config
+                # if isinstance(v["input_label"], list):
+                #     label = self.convert_input_labels(v["input_label"][0])
+                #     source_type = self.convert_input_labels(v["source"][0])
+                #     target_type = self.convert_input_labels(v["target"][0])
+                label = self.convert_input_labels(v["input_label"])
+                source_type = self.convert_input_labels(v["source"])
+                target_type = self.convert_input_labels(v["target"])
 
                 out_str = edge_data_constructor(edge_type, source_type, target_type, label)
                 file.write(out_str + "\n")

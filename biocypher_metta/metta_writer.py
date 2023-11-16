@@ -38,7 +38,7 @@ class MeTTaWriter:
                     f.write(f"(: {node.upper()} Type)\n")
 
                 else:
-                    f.write(f"(: {node.upper()} {ancestor.upper()})\n")
+                    f.write(f"(<: {node.upper()} {ancestor.upper()})\n")
 
             self.create_data_constructors(f)
 
@@ -48,23 +48,24 @@ class MeTTaWriter:
         schema = self.bcy._get_ontology_mapping()._extend_schema()
         self.edge_node_types = {}
         def edge_data_constructor(edge_type, source_type, target_type, label):
-            return f"(: ({label.lower()} $x $y) (-> {source_type.upper()} {target_type.upper()} {edge_type.upper()})"
+            return f"(: {label.lower()} (-> {source_type.upper()} {target_type.upper()} {edge_type.upper()})"
 
         def node_data_constructor(node_type, node_label):
-            return f"(: ({node_label.lower()} $x) (-> $x {node_type.upper()}))"
+            return f"(: {node_label.lower()} (-> $x {node_type.upper()}))"
 
         for k, v in schema.items():
             if v["represented_as"] == "edge": #(: (label $x $y) (-> source_type target_type
                 edge_type = self.convert_input_labels(k)
 
                 # ## TODO fix this in the scheme config
-                # if isinstance(v["input_label"], list):
-                #     label = self.convert_input_labels(v["input_label"][0])
-                #     source_type = self.convert_input_labels(v["source"][0])
-                #     target_type = self.convert_input_labels(v["target"][0])
-                label = self.convert_input_labels(v["input_label"])
-                source_type = self.convert_input_labels(v["source"])
-                target_type = self.convert_input_labels(v["target"])
+                if isinstance(v["input_label"], list):
+                    label = self.convert_input_labels(v["input_label"][0])
+                    source_type = self.convert_input_labels(v["source"][0])
+                    target_type = self.convert_input_labels(v["target"][0])
+                else:
+                    label = self.convert_input_labels(v["input_label"])
+                    source_type = self.convert_input_labels(v["source"])
+                    target_type = self.convert_input_labels(v["target"])
 
                 out_str = edge_data_constructor(edge_type, source_type, target_type, label)
                 file.write(out_str + "\n")
@@ -90,11 +91,13 @@ class MeTTaWriter:
                     os.mkdir(f"{self.output_path}/{path_prefix}")
         else:
             file_path = f"{self.output_path}/nodes.metta"
-        with open(file_path, "w") as f:
+        with open(file_path, "a") as f:
             for node in nodes:
                 out_str = self.write_node(node)
                 for s in out_str:
                     f.write(s + "\n")
+
+            f.write("\n")
 
         logger.info("Finished writing out nodes")
 
@@ -109,12 +112,13 @@ class MeTTaWriter:
         else:
             file_path = f"{self.output_path}/edges.metta"
 
-        with open(file_path, "w") as f:
+        with open(file_path, "a") as f:
             for edge in edges:
                 out_str = self.write_edge(edge)
                 for s in out_str:
                     f.write(s + "\n")
 
+            f.write("\n")
 
     def write_node(self, node):
         id, label, properties = node
@@ -127,12 +131,12 @@ class MeTTaWriter:
             if k in self.excluded_properties or v is None: continue
             if isinstance(v, list):
                 v = tuple(v)
-            out_str.append(f"(has-property {k} {def_out} {v})")
+            out_str.append(f"((has-property {def_out}) {k} {v})")
 
         return out_str
 
     def write_edge(self, edge):
-        id, source_id, target_id, label, properties = edge
+        _, source_id, target_id, label, properties = edge
         label = label.lower()
         source_type = self.edge_node_types[label]["source"]
         target_type = self.edge_node_types[label]["target"]
@@ -140,7 +144,12 @@ class MeTTaWriter:
         out_str = [def_out]
         for k, v in properties.items():
             if k in self.excluded_properties or v is None: continue
-            out_str.append(f"(has-property {k} {def_out} {v})")
+            if isinstance(v, list):
+                if len(v) == 1:
+                    v = v[0]
+                else:
+                    v = tuple(v)
+            out_str.append(f"((has-property {def_out}) {k} {v})")
 
         return out_str
 

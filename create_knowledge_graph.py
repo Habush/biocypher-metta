@@ -1,107 +1,162 @@
 """
 Knowledge graph generation through BioCypher script
 """
-
 from biocypher_metta.metta_writer import *
 from biocypher._logger import logger
-from biocypher_metta.adapters.uniprot_adapter import (
-    Uniprot,
-    UniprotNodeType,
-    UniprotNodeField,
-    UniprotEdgeType,
-    UniprotEdgeField,
-)
+from biocypher_metta.adapters.uniprot_protein_adapter import UniprotProteinAdapter
+from biocypher_metta.adapters.gencode_adapter import GencodeAdapter
+from biocypher_metta.adapters.gencode_gene_adapter import GencodeGeneAdapter
+from biocypher_metta.adapters.uniprot_adapter import UniprotAdapter
+from biocypher_metta.adapters.reactome_pathway_adapter import ReactomePathwayAdapter
+from biocypher_metta.adapters.reactome_adapter import ReactomeAdapter
+from biocypher_metta.adapters.ontologies_adapter import OntologyAdapter
+from biocypher_metta.adapters.gaf_adapter import GAFAdapter
+from biocypher_metta.adapters.coxpresdb_adapter import CoxpresdbAdapter
+from biocypher_metta.adapters.ccre_adapter import CCREAdapter
+from biocypher_metta.adapters.encode_enhancer_gene_adapter import EncodeEnhancerGeneLinkAdapter
+from biocypher_metta.adapters.tflink_adapter import TFLinkAdapter
+from biocypher_metta.adapters.string_ppi_adapter import StringPPIAdapter
 
-from biocypher_metta.adapters.ppi_adapter import (
-    PPI,
-    IntactEdgeField,
-    BiogridEdgeField,
-    StringEdgeField,
-)
+ADAPTERS = {
+    # 'gencode_gene': {'adapter': GencodeGeneAdapter(filepath='./samples/gencode_sample.gtf',
+    #                                          gene_alias_file_path='./samples/Homo_sapiens.gene_info.gz'),
+    #                  'outdir': 'gencode', 'nodes': True, 'edges': False},
+    # 'gencode_transcripts': {
+    #     'adapter': GencodeAdapter(filepath='./samples/gencode_sample.gtf', type='transcript',
+    #                               label='transcript'),
+    #     'outdir': 'gencode',
+    #     'nodes': True,
+    #     'edges': False
+    # },
+    #
+    # 'transcribed_to': {
+    #     'adapter': GencodeAdapter(filepath='./samples/gencode_sample.gtf', type='transcribed to',
+    #                                  label='transcribed_to'),
+    #     'outdir': 'gencode',
+    #     'nodes': False,
+    #     'edges': True
+    # },
+    # 'transcribed_from': {
+    #     'adapter': GencodeAdapter(filepath='./samples/gencode_sample.gtf', type='transcribed from',
+    #                               label='transcribed_from'),
+    #     'outdir': 'gencode',
+    #     'nodes': False,
+    #     'edges': True
+    # },
+    # 'uniprotkb_sprot': {
+    #     'adapter': UniprotProteinAdapter(filepath='./samples/uniprot_sprot_human_sample.dat.gz',
+    #                               source='UniProtKB/Swiss-Prot'),
+    #     'outdir': 'uniprot',
+    #     'nodes': True,
+    #     'edges': False
+    # },
+    #
+    # 'uniprotkb_translates_to': {
+    #     'adapter': UniprotAdapter(filepath='./samples/uniprot_sprot_human_sample.dat.gz', type='translates to',
+    #                               label='translates_to'),
+    #     'outdir': 'uniprot',
+    #     'nodes': False,
+    #     'edges': True
+    # },
+    # 'uniprotkb_translation_of': {
+    #     'adapter': UniprotAdapter(filepath='./samples/uniprot_sprot_human_sample.dat.gz', type='translation of',
+    #                               label='translation_of'),
+    #     'outdir': 'uniprot',
+    #     'nodes': False,
+    #     'edges': True
+    # },
+    #
+    # 'pathway': {
+    #     'adapter': ReactomePathwayAdapter('./samples/reactome/ReactomePathways.txt'),
+    #     'outdir': 'pathway',
+    #     'nodes': True,
+    #     'edges': False
+    # },
+    #
+    # 'genes_pathways': {
+    #     'adapter': ReactomeAdapter('./samples/reactome/Ensembl2Reactome_All_Levels_sample.txt', 'genes_pathways'),
+    #     'outdir': 'pathway',
+    #     'nodes': False,
+    #     'edges': True
+    # },
+    #
+    # 'parent_pathway_of': {
+    #     'adapter': ReactomeAdapter('./samples/reactome/ReactomePathwaysRelation.txt', 'parent_pathway_of'),
+    #     'outdir': 'pathway',
+    #     'nodes': False,
+    #     'edges': True
+    # },
+    #
+    # 'child_pathway_of': {
+    #     'adapter': ReactomeAdapter('./samples/reactome/ReactomePathwaysRelation.txt', 'child_pathway_of'),
+    #     'outdir': 'pathway',
+    #     'nodes': False,
+    #     'edges': True
+    # },
+    #
+    # 'onotology_terms': {
+    #     'adapter': OntologyAdapter(type='node', dry_run=True),
+    #     'outdir': 'ontology',
+    #     'nodes': True,
+    #     'edges': False
+    # },
+    # 'onotology_relationships': {
+    #     'adapter': OntologyAdapter(type='edge', dry_run=True),
+    #     'outdir': 'ontology',
+    #     'nodes': False,
+    #     'edges': True
+    # },
+    #
+    # 'gaf': {
+    #     'adapter': GAFAdapter(filepath='./samples/goa_human_sample.gaf.gz'),
+    #     'outdir': 'gaf',
+    #     'nodes': False,
+    #     'edges': True
+    # },
+    #
+    # 'coexpression': {
+    #     'adapter': CoxpresdbAdapter(filepath='./samples/coxpresdb',
+    #                                 ensemble_to_entrez_path='./aux_files/entrez_to_ensembl.pkl'),
+    #     'outdir': 'coexpression',
+    #     'nodes': False,
+    #     'edges': True
+    # },
+    #
+    # 'ccre': {
+    #     'adapter': CCREAdapter(filepath='./samples/ccre_example.bed.gz'),
+    #     'outdir': 'tf',
+    #     'nodes': True,
+    #     'edges': False
+    # },
+    #
+    # 'encode_epiraction': {
+    #     'adapter': EncodeEnhancerGeneLinkAdapter(filepath='./samples/epiraction_ENCFF712SUP.bed.gz',
+    #                                              source='ENCODE_EpiRaction',
+    #                                              source_url='https://www.encodeproject.org/annotations/ENCSR831INH/',
+    #                                              biological_context='CL_0000765'),
+    #
+    #     'outdir': 'tf',
+    #     'nodes': False,
+    #     'edges': True
+    # },
 
-from biocypher_metta.adapters.interpro_adapter import (
-    InterPro,
-    InterProNodeField,
-    InterProEdgeField,
-)
+    # 'tflink': {
+    #     'adapter': TFLinkAdapter(filepath='./samples/tflink_homo_sapiens_interactions.tsv',
+    #                             entrez_to_ensemble_map='./aux_files/entrez_to_ensembl.pkl'),
+    #     'outdir': 'tf',
+    #     'nodes': False,
+    #     'edges': True
+    # },
 
-from biocypher_metta.adapters.go_adapter import (
-    GO,
-    GONodeType,
-    GOEdgeType,
-    GONodeField,
-    GOEdgeField,
-)
+    'string': {
+        'adapter': StringPPIAdapter(filepath="./samples/string_human_ppi_v12.0.txt",
+                                    ensembl_to_uniprot_map="./aux_files/string_ensembl_uniprot_map.pkl"),
+        "outdir": "ppi",
+        "nodes": False,
+        "edges": True
+    }
 
-from biocypher_metta.adapters.drugbank_adapter import (
-    DrugBank,
-    DrugBankNodeField,
-    DrugbankDTIEdgeField,
-    DrugbankEdgeType,
-    PrimaryNodeIdentifier,
-)
-
-from biocypher import BioCypher
-
-# uniprot configuration
-uniprot_node_types = [
-    UniprotNodeType.PROTEIN,
-    UniprotNodeType.GENE,
-    # UniprotNodeType.ORGANISM,
-]
-
-uniprot_node_fields = [
-    # UniprotNodeField.PROTEIN_SECONDARY_IDS,
-    UniprotNodeField.PROTEIN_LENGTH,
-    UniprotNodeField.PROTEIN_MASS,
-    UniprotNodeField.PROTEIN_ORGANISM,
-    UniprotNodeField.PROTEIN_ORGANISM_ID,
-    UniprotNodeField.PROTEIN_NAMES,
-    UniprotNodeField.PROTEIN_PROTEOME,
-    UniprotNodeField.PROTEIN_SUBCELLULAR_LOCATION,
-    UniprotNodeField.PROTEIN_EC,
-    UniprotNodeField.PROTEIN_GENE_NAMES,
-    UniprotNodeField.PROTEIN_ENSEMBL_TRANSCRIPT_IDS,
-    UniprotNodeField.PROTEIN_ENSEMBL_GENE_IDS,
-    UniprotNodeField.PROTEIN_ENTREZ_GENE_IDS,
-    UniprotNodeField.PROTEIN_VIRUS_HOSTS,
-    UniprotNodeField.PROTEIN_KEGG_IDS,
-]
-
-uniprot_edge_types = [
-    UniprotEdgeType.PROTEIN_TO_ORGANISM,
-    UniprotEdgeType.GENE_TO_PROTEIN,
-]
-
-uniprot_edge_fields = [
-    UniprotEdgeField.GENE_ENSEMBL_GENE_ID,
-]
-
-# ppi configuration
-intact_fields = [field for field in IntactEdgeField]
-biogrid_fields = [field for field in BiogridEdgeField]
-string_fields = [field for field in StringEdgeField]
-
-# interpro (protein-domain edges and domain nodes) configuration
-interpro_node_fields = [field for field in InterProNodeField]
-interpro_edge_fields = [field for field in InterProEdgeField]
-
-# GO configuration (Protein-GO, Domain-GO, GO-GO)
-go_node_types = [GONodeType.PROTEIN, GONodeType.DOMAIN, GONodeType.BIOLOGICAL_PROCESS,
-                 GONodeType.CELLULAR_COMPONENT, GONodeType.MOLECULAR_FUNCTION]
-go_edge_types = [GOEdgeType.PROTEIN_TO_BIOLOGICAL_PROCESS, GOEdgeType.DOMAIN_TO_BIOLOGICAL_PROCESS,
-                 GOEdgeType.DOMAIN_TO_CELLULAR_COMPONENT, GOEdgeType.DOMAIN_TO_MOLECULAR_FUNCTION] # There are more associations available, however current version of BioCypher probably only supports these
-go_node_fields = [field for field in GONodeField]
-go_edge_fields = [field for field in GOEdgeField]
-
-
-# drugbank configuration
-drugbank_node_fields = [field for field in DrugBankNodeField]
-drugbank_dti_edge_fields = [field for field in DrugbankDTIEdgeField]
-drugbank_edge_types = [DrugbankEdgeType.DRUG_TARGET_INTERACTION]
-primary_drug_id = PrimaryNodeIdentifier.DRUGBANK
-
-
+}
 # Run build
 def main():
     """
@@ -115,115 +170,27 @@ def main():
                      biocypher_config="config/biocypher_config.yaml",
                      output_dir="metta_out")
 
-    logger.info("Downloading uniprot...")
-    # Start uniprot adapter and load data
-    uniprot_adapter = Uniprot(
-        organism="9606",
-        node_types=uniprot_node_types,
-        node_fields=uniprot_node_fields,
-        edge_types=uniprot_edge_types,
-        edge_fields=uniprot_edge_fields,
-        test_mode=True,
-    )
+    # bc.show_ontology_structure()
 
-    uniprot_adapter.download_uniprot_data(
-        cache=True,
-        retries=5,
-    )
+    # Run adapters
 
-    logger.info("Downloaded uniprot data")
+    for k, v in ADAPTERS.items():
+        logger.info("Running adapter: " + k)
+        adapter = v['adapter']
+        write_nodes = v['nodes']
+        write_edges = v['edges']
+        outdir = v['outdir']
 
-    # logger.info("Downloading ppi datasets...")
-    # ppi_adapter = PPI(cache=True,
-    #                   organism=9606,
-    #                   intact_fields=intact_fields,
-    #                   biogrid_fields=biogrid_fields,
-    #                   string_fields=string_fields,
-    #                   test_mode=True)
-    #
-    # # download and process intact data
-    # ppi_adapter.download_intact_data()
-    # ppi_adapter.intact_process()
-    #
-    # # download and process biogrid data
-    # ppi_adapter.download_biogrid_data()
-    # ppi_adapter.biogrid_process()
-    #
-    # # download and process string data
-    # ppi_adapter.download_string_data()
-    # ppi_adapter.string_process()
-    #
-    # # Merge all ppi data
-    # ppi_adapter.merge_all()
-    #
-    # logger.info("Downloadeded ppi data")
+        if write_nodes:
+            nodes = adapter.get_nodes()
+            bc.write_nodes(nodes, path_prefix=outdir)
 
-    # interpro_adapter = InterPro(cache=False,
-    #                             page_size=100,
-    #                             organism="9606",
-    #                             node_fields=interpro_node_fields,
-    #                             edge_fields=interpro_edge_fields,
-    #                             test_mode=True)
-    #
-    # # download domain data
-    # interpro_adapter.download_domain_node_data()
-    # interpro_adapter.download_domain_edge_data()
-    #
-    # # get interpro nodes and edge
-    # interpro_adapter.get_interpro_nodes()
-    # interpro_adapter.get_interpro_edges()
-    #
-    # go_adapter = GO(organism=9606, node_types=go_node_types, go_node_fields=go_node_fields,
-    #                 edge_types=go_edge_types, go_edge_fields=go_edge_fields, test_mode=True)
-    #
-    # # download go data
-    # go_adapter.download_go_data(cache=False)
-    #
-    # # get go nodes and go-protein, domain-go edges
-    # go_adapter.get_go_nodes()
-    # go_adapter.get_go_edges()
-    #
-    # drugbank_adapter = DrugBank(drugbank_user="drugbank_username", drugbank_passwd="drugbank_password", node_fields=drugbank_node_fields,
-    #                             dti_edge_fields=drugbank_dti_edge_fields, edge_types=drugbank_edge_types, primary_node_id=primary_drug_id,
-    #                             test_mode=True)
-    #
-    # # download drugbank data
-    # drugbank_adapter.download_drugbank_data(cache=False)
-    #
-    # # get drug nodes and drug-target edges
-    # drugbank_adapter.get_drug_nodes()
-    # drugbank_adapter.get_dti_edges()
+        if write_edges:
+            edges = adapter.get_edges()
+            bc.write_edges(edges, path_prefix=outdir)
 
-    # Write uniprot nodes and edges
-    logger.info("Writing uniprot nodes & edges")
-    bc.write_nodes(uniprot_adapter.get_nodes(), path_prefix="uniprot")
-    bc.write_edges(uniprot_adapter.get_edges(), path_prefix="uniprot")
 
-    # write ppi edges
-    # logger.info("Writing uniprot edges")
-    # bc.write_edges(ppi_adapter.get_ppi_edges())
 
-    # # write interpro (domain) nodes
-    # bc.write_nodes(interpro_adapter.node_list)
-    #
-    # # write interpro edges (protein-domain) edges
-    # bc.write_edges(interpro_adapter.edge_list)
-    #
-    # # write GO nodes
-    # bc.write_nodes(go_adapter.node_list)
-    #
-    # # write GO edges
-    # bc.write_edges(go_adapter.edge_list)
-    #
-    # # write drug nodes
-    # bc.write_nodes(drugbank_adapter.node_list)
-    #
-    # # write dti edges
-    # bc.write_edges(drugbank_adapter.dti_edge_list)
-    #
-    # # Write import call and other post-processing
-    # bc.write_import_call()
-    # bc.summary()
     logger.info("Done")
 
 if __name__ == "__main__":

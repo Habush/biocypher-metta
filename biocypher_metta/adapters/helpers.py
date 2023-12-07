@@ -53,7 +53,7 @@ def build_variant_id_from_hgvs(hgvs_id, validate=True, assembly='GRCh38'):
             return None
 
         if type == 'sub' or type == 'delins':
-            return build_variant_id(chr, pos_start+1, ref[1:], alt[1:])
+            return build_variant_id(chr, pos_start + 1, ref[1:], alt[1:])
         else:
             return build_variant_id(chr, pos_start, ref, alt)
 
@@ -83,6 +83,7 @@ def build_variant_id_from_hgvs(hgvs_id, validate=True, assembly='GRCh38'):
             print('Error: wrong hgvs format.')
             return None
 
+
 # Arangodb converts a number to string if it can't be represented in signed 64-bit
 # Using the approximation of a limit +/- 308 decimal points for 64 bits
 
@@ -111,3 +112,30 @@ def to_float(str):
             number = number / float(f'1e{abs(exponent) - MAX_EXPONENT}')
 
     return number
+
+
+def check_genomic_location(chr, start, end,
+                           curr_chr, curr_start, curr_end):
+    """
+    Checks if the curr locations are within the specified locations (chr, start, end)
+    If no chr is specified, then it returns True b/c that means we want to import all chromosomes
+    Used when we want to filter the data imported from a file by location
+    """
+    if chr is None:  # import the data on all chromosomes
+        return True
+    else:  # filter by chromosome and (if specified) by location
+        if chr != curr_chr:
+            return False
+        else:
+            if start and end:
+                if start >= int(curr_start) and end <= int(curr_end):
+                    return True
+            elif start:
+                if start >= int(curr_start):
+                    return True
+            elif end:
+                if end <= int(curr_end):
+                    return True
+            else:
+                return True
+    return False

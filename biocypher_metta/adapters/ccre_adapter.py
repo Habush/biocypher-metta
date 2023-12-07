@@ -1,7 +1,7 @@
 import gzip
 import csv
 from biocypher_metta.adapters import Adapter
-from biocypher_metta.adapters.helpers import build_regulatory_region_id
+from biocypher_metta.adapters.helpers import build_regulatory_region_id, check_genomic_location
 # cCRE,all input file has 10 columns: chromsome, start, end, ID, score (all 0), strand (NA), start, end, color, biochemical_activity
 # There are 8 types of biochemical_activity:
 # pELS - proximal Enhancer-ike signal
@@ -35,11 +35,25 @@ class CCREAdapter(Adapter):
         'PLS': 'Promoter-like signal'
     }
 
-    def __init__(self, filepath):
+    def __init__(self, filepath, chr=None, start=None, end=None):
+        """
+        :type filepath: str
+        :type chr: str
+        :type start: int
+        :type end: int
+        :param filepath: path to the cCRE file
+        :param chr: chromosome name
+        :param start: start position
+        :param end: end position
+        """
         self.filepath = filepath
         self.dataset = CCREAdapter.DATASET
         self.source = 'ENCODE_SCREEN (ccREs)'
         self.source_url = 'https://www.encodeproject.org/files/ENCFF420VPZ/'
+
+        self.chr = chr
+        self.start = start
+        self.end = end
 
         super(CCREAdapter, self).__init__()
 
@@ -50,17 +64,18 @@ class CCREAdapter(Adapter):
 
             for row in reader:
                 try:
-                    description = CCREAdapter.BIOCHEMICAL_DESCRIPTION.get(row[9])
-                    # _id = row[3] #TODO use the position as in id
-                    _id = build_regulatory_region_id(row[0], row[1], row[2])
-                    _props = {
-                        'chr': row[0],
-                        'start': row[1],
-                        'end': row[2],
-                        'biochemical_activity': row[9],
-                        'biochemical_activity_description': description,
-                    }
-                    yield _id, label, _props
+                    if check_genomic_location(self.chr, self.start, self.end, row[0], row[1], row[2]):
+                        #description = CCREAdapter.BIOCHEMICAL_DESCRIPTION.get(row[9])
+                        # _id = row[3] #TODO use the position as in id
+                        _id = build_regulatory_region_id(row[0], row[1], row[2])
+                        _props = {
+                            'chr': row[0],
+                            'start': row[1],
+                            'end': row[2],
+                            'biochemical_activity': str(row[9]),
+                            #'biochemical_activity_description': description,
+                        }
+                        yield _id, label, _props
 
                 except:
                     print(f'fail to process: {row}')

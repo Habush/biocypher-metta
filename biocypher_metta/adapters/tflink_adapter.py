@@ -27,6 +27,8 @@ class TFLinkAdapter(Adapter):
             self.entrez2ensemble = pickle.load(f)
 
         self.label = "regulates"
+        self.source = "TFLink"
+        self.source_url = "tflink.net"
 
     def get_edges(self):
         with open(self.filepath, "r") as fp:

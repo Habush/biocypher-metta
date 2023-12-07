@@ -33,6 +33,10 @@ class GencodeAdapter(Adapter):
         self.label = label
         self.dataset = label
 
+        self.source = 'GENCODE'
+        self.version = 'v43'
+        self.source_url = 'https://www.gencodegenes.org/human/'
+
     def parse_info_metadata(self, info):
         parsed_info = {}
         for key, value in zip(info, info[1:]):
@@ -68,9 +72,6 @@ class GencodeAdapter(Adapter):
                         'start': str(int(data[GencodeAdapter.INDEX['coord_start']]) - 1),
                         'end': data[GencodeAdapter.INDEX['coord_end']],
                         'gene_name': info['gene_name'],
-                        # 'source': 'GENCODE',
-                        # 'version': 'v43',
-                        # 'source_url': 'https://www.gencodegenes.org/human/'
                     }
                     yield(transcript_key, self.label, props)
             except:

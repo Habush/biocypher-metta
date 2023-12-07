@@ -56,9 +56,8 @@ class OntologyAdapter(Adapter):
     PREDICATES = [SUBCLASS, DB_XREF]
     RESTRICTION_PREDICATES = [HAS_PART, PART_OF]
 
-    def __init__(self, type='node', dry_run=False):
+    def __init__(self, type='node'):
         self.type = type
-        self.dry_run = dry_run
         if type == 'node':
             self.label = 'ontology_term'
         elif type == 'edge':
@@ -94,7 +93,7 @@ class OntologyAdapter(Adapter):
                 # term_id = str(node).split('/')[-1]
                 term_id = OntologyAdapter.to_key(node)
                 props = {
-                    'uri': str(node),
+                    # 'uri': str(node),
                     'term_name': ', '.join(self.get_all_property_values_from_node(node, 'term_names')),
                     'description': ' '.join(self.get_all_property_values_from_node(node, 'descriptions')),
                     'synonyms': self.get_all_property_values_from_node(node, 'related_synonyms') +

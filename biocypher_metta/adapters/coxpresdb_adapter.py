@@ -18,6 +18,7 @@ class CoxpresdbAdapter(Adapter):
         self.label = 'coexpressed_with'
         self.source = 'CoXPresdb'
         self.source_url = 'https://coxpresdb.jp/'
+
         assert os.path.isdir(self.file_path), "coxpresdb file path is not a directory"
         super(CoxpresdbAdapter, self).__init__()
 

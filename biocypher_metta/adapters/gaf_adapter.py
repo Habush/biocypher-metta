@@ -51,16 +51,18 @@ class GAFAdapter(Adapter):
         'rnacentral': 'https://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/id_mapping/database_mappings/ensembl_gencode.tsv'
     }
 
-    def __init__(self, filepath, gaf_type='human', dry_run=True):
+    def __init__(self, filepath, gaf_type='human'):
         if gaf_type not in GAFAdapter.SOURCES.keys():
             raise ValueError('Invalid type. Allowed values: ' +
                              ', '.join(GAFAdapter.SOURCES.keys()))
 
         self.filepath = filepath
         self.dataset = GAFAdapter.DATASET
-        self.dry_run = dry_run
         self.type = gaf_type
         self.label = "go_gene_product"
+        self.source = "GO"
+        self.source_url = GAFAdapter.SOURCES[gaf_type]
+
         super(GAFAdapter, self).__init__()
 
     def load_rnacentral_mapping(self):

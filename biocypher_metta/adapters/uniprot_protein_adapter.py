@@ -12,19 +12,14 @@ from Bio import SwissProt
 
 
 class UniprotProteinAdapter(Adapter):
-    ALLOWED_SOURCES = ['UniProtKB/Swiss-Prot', 'UniProtKB/TrEMBL']
+   # ALLOWED_SOURCES = ['UniProtKB/Swiss-Prot', 'UniProtKB/TrEMBL']
 
-    def __init__(self, filepath, source, dry_run=False):
-        if source not in UniprotProteinAdapter.ALLOWED_SOURCES:
-            raise ValueError('Invalid source. Allowed values: ' +
-                             ', '.join(UniprotProteinAdapter.ALLOWED_SOURCES))
+    def __init__(self, filepath):
         self.filepath = filepath
         self.dataset = 'UniProtKB_protein'
         self.label = 'protein'
-        self.source = source
-        self.dry_run = dry_run
-        self.SKIP_BIOCYPHER = True
-
+        self.source = "Uniprot"
+        self.source_url = "https://www.uniprot.org/"
     def get_dbxrefs(self, cross_references):
         dbxrefs = []
         for cross_reference in cross_references:

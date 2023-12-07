@@ -17,14 +17,16 @@ class GencodeGeneAdapter(Adapter):
                     'transcript_id', 'transcript_type', 'transcript_name', 'hgnc_id']
     INDEX = {'chr': 0, 'type': 2, 'coord_start': 3, 'coord_end': 4, 'info': 8}
 
-    def __init__(self, filepath=None, gene_alias_file_path=None, chr='all', dry_run=False):
+    def __init__(self, filepath=None, gene_alias_file_path=None, chr='all'):
 
         self.filepath = filepath
         self.chr = chr
         self.label = 'gene'
         self.dataset = 'gencode_gene'
         self.gene_alias_file_path = gene_alias_file_path
-        self.dry_run = dry_run
+        self.source = 'GENCODE'
+        self.version = 'v43'
+        self.source_url = 'https://www.gencodegenes.org/human/'
 
     def parse_info_metadata(self, info):
         parsed_info = {}
@@ -101,9 +103,6 @@ class GencodeGeneAdapter(Adapter):
                     'end': int(split_line[GencodeGeneAdapter.INDEX['coord_end']]),
                     'gene_name': info['gene_name'],
                     'synonyms': alias,
-                    'source': 'GENCODE',
-                    'version': 'v43',
-                    'source_url': 'https://www.gencodegenes.org/human/'
                 }
 
                 yield id, self.label, props

@@ -24,6 +24,8 @@ class UniprotAdapter(Adapter):
         self.dataset = label
         self.type = type
         self.label = label
+        self.source = "Uniprot"
+        self.source_url = "https://www.uniprot.org/"
 
     def get_edges(self):
         with gzip.open(self.filepath, 'rt') as input_file:

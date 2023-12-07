@@ -27,6 +27,9 @@ class StringPPIAdapter(Adapter):
             self.ensembl2uniprot = pickle.load(f)
 
         self.label = "interacts_with"
+        self.source = "STRING"
+        self.source_url = "https://string-db.org/"
+        self.version = "12.0"
 
     def get_edges(self):
         with open(self.filepath, "r") as fp:

@@ -87,7 +87,7 @@ ontology term:
   represented_as: node
   input_label: ontology term
   properties:
-    uri: str
+#    uri: str
     term_name: str
     description: str
     synonyms: obj
@@ -114,6 +114,18 @@ pathway:
     disease_ontology_terms: array
     go_biological_process: str
     is_top_level_pathway: boolean
+
+tad:
+  is_a: entity
+  represented_as: node
+  input_label: tad
+  properties:
+    chr: str
+    start: int
+    end: int
+    genes: str[]
+
+
 # ---
 # Associations
 # ---

@@ -55,13 +55,13 @@ class CCREAdapter(Adapter):
         self.start = start
         self.end = end
 
+        self.label = "regulatory_region"
+
         super(CCREAdapter, self).__init__()
 
     def get_nodes(self):
         with gzip.open(self.filepath, 'rt') as input_file:
             reader = csv.reader(input_file, delimiter='\t')
-            label = 'regulatory_region'
-
             for row in reader:
                 try:
                     if check_genomic_location(self.chr, self.start, self.end, row[0], row[1], row[2]):
@@ -75,7 +75,7 @@ class CCREAdapter(Adapter):
                             'biochemical_activity': str(row[9]),
                             #'biochemical_activity_description': description,
                         }
-                        yield _id, label, _props
+                        yield _id, self.label, _props
 
                 except:
                     print(f'fail to process: {row}')

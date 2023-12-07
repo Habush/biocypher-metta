@@ -2,8 +2,7 @@ import os
 import json
 import csv
 
-from adapters import Adapter
-from db.arango_db import ArangoDB
+from biocypher_metta.adapters import Adapter
 
 # Example TF motif file from HOCOMOCO (e.g. ATF1_HUMAN.H11MO.0.B.pwm), which adastra used.
 # Each pwm (position weight matrix) is a N x 4 matrix, where N is the length of the TF motif.

@@ -93,7 +93,9 @@ class GAFAdapter(Adapter):
                 props = {
                     'qualifier': annotation['Qualifier'],
                     'db_reference': annotation['DB:Reference'],
-                    'evidence': annotation['Evidence']
+                    'evidence': annotation['Evidence'],
+                    'source': self.source,
+                    'source_url': self.source_url,
                 }
 
                 yield "", source, target, self.label, props

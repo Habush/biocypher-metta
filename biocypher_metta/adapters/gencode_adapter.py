@@ -69,9 +69,12 @@ class GencodeAdapter(Adapter):
                         'transcript_type': info['transcript_type'],
                         'chr': data[GencodeAdapter.INDEX['chr']],
                         # the gtf file format is [1-based,1-based], needs to convert to BED format [0-based,1-based]
-                        'start': str(int(data[GencodeAdapter.INDEX['coord_start']]) - 1),
-                        'end': data[GencodeAdapter.INDEX['coord_end']],
+                        'start': int(data[GencodeAdapter.INDEX['coord_start']]) - 1,
+                        'end': int(data[GencodeAdapter.INDEX['coord_end']]),
                         'gene_name': info['gene_name'],
+                        'source': self.source,
+                        'version': self.version,
+                        'source_url': self.source_url
                     }
                     yield(transcript_key, self.label, props)
             except:
@@ -99,22 +102,22 @@ class GencodeAdapter(Adapter):
                     _id = gene_key + '_' + transcript_key
                     _source = gene_key
                     _target = transcript_key
-                    # _props = {
-                    #     'source': 'GENCODE',
-                    #     'version': 'v43',
-                    #     'source_url': 'https://www.gencodegenes.org/human/'
-                    # }
+                    _props = {
+                        'source': self.source,
+                        'version': self.version,
+                        'source_url': self.source_url
+                    }
                     _props = {}
                     yield(_id, _source, _target, self.label, _props)
                 elif self.type == 'transcribed from':
                     _id = transcript_key + '_' + gene_key
                     _source = transcript_key
                     _target = gene_key
-                    # _props = {
-                    #     'source': 'GENCODE',
-                    #     'version': 'v43',
-                    #     'source_url': 'https://www.gencodegenes.org/human/'
-                    # }
+                    _props = {
+                        'source': self.source,
+                        'version': self.version,
+                        'source_url': self.source_url
+                    }
                     _props = {}
                     yield(_id, _source, _target, self.label, _props)
             except:

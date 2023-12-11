@@ -70,10 +70,12 @@ class CCREAdapter(Adapter):
                         _id = build_regulatory_region_id(row[0], row[1], row[2])
                         _props = {
                             'chr': row[0],
-                            'start': row[1],
-                            'end': row[2],
-                            'biochemical_activity': str(row[9]),
+                            'start': int(row[1]),
+                            'end': int(row[2]),
+                            'biochemical_activity': row[9],
                             #'biochemical_activity_description': description,
+                            'source': self.source,
+                            'source_url': self.source_url
                         }
                         yield _id, self.label, _props
 

@@ -18,6 +18,7 @@ class CoxpresdbAdapter(Adapter):
         self.label = 'coexpressed_with'
         self.source = 'CoXPresdb'
         self.source_url = 'https://coxpresdb.jp/'
+        self.version = 'v8'
 
         assert os.path.isdir(self.file_path), "coxpresdb file path is not a directory"
         super(CoxpresdbAdapter, self).__init__()
@@ -47,6 +48,9 @@ class CoxpresdbAdapter(Adapter):
                             source = ensembl_id
                             target = co_ensembl_id
                             _props = {
-                                'score': score
+                                'score': float(score),
+                                'source': self.source,
+                                'version': self.version,
+                                'source_url': self.source_url
                             }
                             yield(_id, source, target, self.label, _props)

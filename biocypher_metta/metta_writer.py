@@ -23,7 +23,8 @@ class MeTTaWriter:
         self.onotology = self.bcy._get_ontology()
         self.create_type_hierarchy()
 
-        self.excluded_properties = ["licence", "version", "source"]
+        #self.excluded_properties = ["licence", "version", "source"]
+        self.excluded_properties = []
 
     def create_type_hierarchy(self):
         G = self.onotology._nx_graph
@@ -91,7 +92,7 @@ class MeTTaWriter:
                     os.mkdir(f"{self.output_path}/{path_prefix}")
         else:
             file_path = f"{self.output_path}/nodes.metta"
-        with open(file_path, "a") as f:
+        with open(file_path, "w") as f:
             for node in nodes:
                 out_str = self.write_node(node)
                 for s in out_str:
@@ -112,7 +113,7 @@ class MeTTaWriter:
         else:
             file_path = f"{self.output_path}/edges.metta"
 
-        with open(file_path, "a") as f:
+        with open(file_path, "w") as f:
             for edge in edges:
                 out_str = self.write_edge(edge)
                 for s in out_str:
@@ -124,16 +125,8 @@ class MeTTaWriter:
         id, label, properties = node
         if "." in label:
             label = label.split(".")[1]
-        out_str = []
         def_out = f"({self.convert_input_labels(label)} {id})"
-        out_str.append(def_out)
-        for k, v in properties.items():
-            if k in self.excluded_properties or v is None: continue
-            if isinstance(v, list):
-                v = tuple(v)
-            out_str.append(f"((has-property {def_out}) {k} {v})")
-
-        return out_str
+        return self.write_property(def_out, properties)
 
     def write_edge(self, edge):
         _, source_id, target_id, label, properties = edge
@@ -141,21 +134,27 @@ class MeTTaWriter:
         source_type = self.edge_node_types[label]["source"]
         target_type = self.edge_node_types[label]["target"]
         def_out = f"({label} ({source_type} {source_id}) ({target_type} {target_id}))"
+        return self.write_property(def_out, properties)
+
+
+    def write_property(self, def_out, property):
         out_str = [def_out]
-        for k, v in properties.items():
+        for k, v in property.items():
             if k in self.excluded_properties or v is None: continue
             if isinstance(v, list):
-                if len(v) == 1:
-                    v = v[0]
+                prop = "("
+                for i in v:
+                    if isinstance(i, str):
+                        prop += f'\"{i}\"'
+                    else: prop += str(i)
+                prop += ")"
+                out_str.append(f'((has-property {def_out}) {k} {prop})')
+            else:
+                if isinstance(v, str):
+                    out_str.append(f'((has-property {def_out}) {k} \"{v}\")')
                 else:
-                    v = tuple(v)
-            out_str.append(f"((has-property {def_out}) {k} {v})")
-
+                    out_str.append(f'((has-property {def_out}) {k} {v})')
         return out_str
-
-
-    def write_property(self, node):
-        pass
 
     def convert_input_labels(self, label, replace_char="_"):
         """

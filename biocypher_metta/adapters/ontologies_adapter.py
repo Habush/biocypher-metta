@@ -56,8 +56,9 @@ class OntologyAdapter(Adapter):
     PREDICATES = [SUBCLASS, DB_XREF]
     RESTRICTION_PREDICATES = [HAS_PART, PART_OF]
 
-    def __init__(self, type='node'):
+    def __init__(self, type='node', dry_run=False):
         self.type = type
+        self.dry_run = dry_run
         if type == 'node':
             self.label = 'ontology_term'
         elif type == 'edge':
@@ -98,8 +99,9 @@ class OntologyAdapter(Adapter):
                     'description': ' '.join(self.get_all_property_values_from_node(node, 'descriptions')),
                     'synonyms': self.get_all_property_values_from_node(node, 'related_synonyms') +
                     self.get_all_property_values_from_node(node, 'exact_synonyms'),
+                    'subontology': nodes_in_go_namespaces.get(node, None),
                     'source': ontology.upper(),
-                    'subontology': nodes_in_go_namespaces.get(node, None)
+                    'source_url': OntologyAdapter.ONTOLOGIES[ontology],
 
                 }
                 i += 1
@@ -165,7 +167,8 @@ class OntologyAdapter(Adapter):
                         )
                         props = {
                             'rel_type': self.predicate_name(predicate),
-                            'source': ontology.upper()
+                            'source': ontology.upper(),
+                            'source_url': OntologyAdapter.ONTOLOGIES[ontology],
                         }
 
                         yield key, from_node_key, to_node_key, self.label, props

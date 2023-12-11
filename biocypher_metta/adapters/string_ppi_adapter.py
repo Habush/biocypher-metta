@@ -29,7 +29,7 @@ class StringPPIAdapter(Adapter):
         self.label = "interacts_with"
         self.source = "STRING"
         self.source_url = "https://string-db.org/"
-        self.version = "12.0"
+        self.version = "v12.0"
 
     def get_edges(self):
         with open(self.filepath, "r") as fp:
@@ -45,6 +45,9 @@ class StringPPIAdapter(Adapter):
                     _source = protein1_uniprot
                     _target = protein2_uniprot
                     _props = {
-                        "score": float(row[2]) / 1000 # divide by 1000 to normalize score
+                        "score": float(row[2]) / 1000, # divide by 1000 to normalize score
+                        "source": self.source,
+                        "source_url": self.source_url,
+                        "version": self.version
                     }
                     yield _id, _source, _target, self.label, _props

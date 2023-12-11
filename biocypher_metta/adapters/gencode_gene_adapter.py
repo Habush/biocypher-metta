@@ -103,6 +103,9 @@ class GencodeGeneAdapter(Adapter):
                     'end': int(split_line[GencodeGeneAdapter.INDEX['coord_end']]),
                     'gene_name': info['gene_name'],
                     'synonyms': alias,
+                    'source': self.source,
+                    'version': self.version,
+                    'source_url': self.source_url
                 }
 
                 yield id, self.label, props

@@ -40,7 +40,10 @@ class UniprotAdapter(Adapter):
                                 _id = record.id + '_' + ensg_id
                                 _source = ensg_id
                                 _target = record.id
-                                _props = {}
+                                _props = {
+                                    'source': self.source,
+                                    'source_url': self.source_url
+                                }
                                 yield(_id, _source, _target, self.label, _props)
 
                             except:
@@ -56,7 +59,10 @@ class UniprotAdapter(Adapter):
                                 _id = ensg_id + '_' + record.id
                                 _target = ensg_id
                                 _source = record.id
-                                _props = {}
+                                _props = {
+                                    'source': self.source,
+                                    'source_url': self.source_url
+                                }
                                 yield(_id, _source, _target, self.label, _props)
 
                             except:

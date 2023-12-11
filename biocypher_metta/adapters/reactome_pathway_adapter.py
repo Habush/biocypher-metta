@@ -20,6 +20,8 @@ class ReactomePathwayAdapter(Adapter):
         self.filepath = filepath
         self.label = 'pathway'
         self.dataset = 'pathway'
+        self.source = "REACTOME"
+        self.source_url = "https://reactome.org"
 
     def get_nodes(self):
         session = requests.Session()
@@ -47,6 +49,8 @@ class ReactomePathwayAdapter(Adapter):
                     #     is_top_level_pathway = True
                     props = {
                             'name': name,
+                            'source': self.source,
+                            'source_url': self.source_url
                             # 'id_version': id_version,
                             # 'is_in_disease': is_in_disease,
                             # 'name_aliases': name_aliases,

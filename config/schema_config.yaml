@@ -196,6 +196,9 @@ translation of:
   input_label: translation_of
   source: protein
   target: transcript
+  properties:
+    source: str
+    source_url: str
   description: >-
     inverse of translates to
   inverse: translates to
@@ -252,6 +255,8 @@ go gene product:
     qualifier: obj
     db_reference: obj
     evidence: str
+    source: str
+    source_url: str
 
 gene to gene coexpression association:
   description: >-
@@ -274,6 +279,9 @@ gene to gene coexpression association:
   target: gene
   properties:
     score: int
+    source: str
+    source_url: str
+    version: str
 
 regulatory element to gene expression association:
   description: >-
@@ -311,8 +319,10 @@ transcription factor to gene association:
   properties:
     evidence: str[]
     detection_method: str
-    source: str[]
+    databases: str[]
     evidence_type: str
+    source: str,
+    source_url: str
 
 post translational interaction:
   is_a: pairwise molecular interaction
@@ -321,4 +331,7 @@ post translational interaction:
   source: protein
   target: protein
   properties:
-    score: float
+    score: float,
+    source: str,
+    source_url: str,
+    version: str

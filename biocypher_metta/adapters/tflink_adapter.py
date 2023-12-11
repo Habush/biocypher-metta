@@ -51,8 +51,10 @@ class TFLinkAdapter(Adapter):
                         evidence_type = "large_scale_evidence"
                     _props = {
                         "evidence": pubmed_ids,
-                        "sources": sources,
+                        "databases": sources,
                         "evidence_type": evidence_type,
-                        "detection_method": row[6]
+                        "detection_method": row[6],
+                        "source": self.source,
+                        "source_url": self.source_url
                     }
                     yield _id, _source, _target, self.label, _props

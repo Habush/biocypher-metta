@@ -39,10 +39,14 @@ class ReactomeAdapter(Adapter):
         self.filepath = filepath
         self.dataset = label
         self.label = label
-
+        self.source = "REACTOME"
+        self.source_url = "https://reactome.org"
     def get_edges(self):
         with open(self.filepath) as input:
-            _props = {}
+            _props = {
+                'source': self.source,
+                'source_url': self.source_url
+            }
             for line in input:
                 if self.label == 'genes_pathways':
                     data = line.strip().split('\t')

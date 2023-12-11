@@ -89,7 +89,7 @@ class MeTTaWriter:
             file_path = f"{self.output_path}/{path_prefix}/nodes.metta"
             if create_dir:
                 if not os.path.exists(f"{self.output_path}/{path_prefix}"):
-                    os.mkdir(f"{self.output_path}/{path_prefix}")
+                    pathlib.Path(f"{self.output_path}/{path_prefix}").mkdir(parents=True, exist_ok=True)
         else:
             file_path = f"{self.output_path}/nodes.metta"
         with open(file_path, "w") as f:
@@ -109,7 +109,7 @@ class MeTTaWriter:
             file_path = f"{self.output_path}/{path_prefix}/edges.metta"
             if create_dir:
                 if not os.path.exists(f"{self.output_path}/{path_prefix}"):
-                    os.mkdir(f"{self.output_path}/{path_prefix}")
+                    pathlib.Path(f"{self.output_path}/{path_prefix}").mkdir(parents=True, exist_ok=True)
         else:
             file_path = f"{self.output_path}/edges.metta"
 

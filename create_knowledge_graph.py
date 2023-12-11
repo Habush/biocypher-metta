@@ -16,11 +16,14 @@ from biocypher_metta.adapters.ccre_adapter import CCREAdapter
 from biocypher_metta.adapters.encode_enhancer_gene_adapter import EncodeEnhancerGeneLinkAdapter
 from biocypher_metta.adapters.tflink_adapter import TFLinkAdapter
 from biocypher_metta.adapters.string_ppi_adapter import StringPPIAdapter
+from biocypher_metta.adapters.tad_adapter import TADAdapter
+from biocypher_metta.adapters.chromatin_state_adapter import ChromatinStateAdapter
+from biocypher_metta.adapters.gtex_eqtl_adapter import GTExEQTLAdapter
 
 ADAPTERS = {
-    # 'gencode_gene': {'adapter': GencodeGeneAdapter(filepath='./samples/gencode_sample.gtf',
-    #                                          gene_alias_file_path='./samples/Homo_sapiens.gene_info.gz'),
-    #                  'outdir': 'gencode', 'nodes': True, 'edges': False},
+    'gencode_gene': {'adapter': GencodeGeneAdapter(filepath='./samples/gencode_sample.gtf',
+                                             gene_alias_file_path='./samples/Homo_sapiens.gene_info.gz'),
+                     'outdir': 'gencode', 'nodes': True, 'edges': False},
     # 'gencode_transcripts': {
     #     'adapter': GencodeAdapter(filepath='./samples/gencode_sample.gtf', type='transcript',
     #                               label='transcript'),
@@ -44,8 +47,7 @@ ADAPTERS = {
     #     'edges': True
     # },
     # 'uniprotkb_sprot': {
-    #     'adapter': UniprotProteinAdapter(filepath='./samples/uniprot_sprot_human_sample.dat.gz',
-    #                               source='UniProtKB/Swiss-Prot'),
+    #     'adapter': UniprotProteinAdapter(filepath='./samples/uniprot_sprot_human_sample.dat.gz'),
     #     'outdir': 'uniprot',
     #     'nodes': True,
     #     'edges': False
@@ -106,7 +108,7 @@ ADAPTERS = {
     #     'nodes': False,
     #     'edges': True
     # },
-    #
+
     # 'gaf': {
     #     'adapter': GAFAdapter(filepath='./samples/goa_human_sample.gaf.gz'),
     #     'outdir': 'gaf',
@@ -124,11 +126,11 @@ ADAPTERS = {
     #
     # 'ccre': {
     #     'adapter': CCREAdapter(filepath='./samples/ccre_example.bed.gz'),
-    #     'outdir': 'tf',
+    #     'outdir': 'ccre',
     #     'nodes': True,
     #     'edges': False
     # },
-    #
+
     # 'encode_epiraction': {
     #     'adapter': EncodeEnhancerGeneLinkAdapter(filepath='./samples/epiraction_ENCFF712SUP.bed.gz',
     #                                              source='ENCODE_EpiRaction',
@@ -140,21 +142,45 @@ ADAPTERS = {
     #     'edges': True
     # },
 
-    # 'tflink': {
-    #     'adapter': TFLinkAdapter(filepath='./samples/tflink_homo_sapiens_interactions.tsv',
-    #                             entrez_to_ensemble_map='./aux_files/entrez_to_ensembl.pkl'),
-    #     'outdir': 'tf',
-    #     'nodes': False,
-    #     'edges': True
+    'tflink': {
+        'adapter': TFLinkAdapter(filepath='./samples/tflink_homo_sapiens_interactions.tsv',
+                                entrez_to_ensemble_map='./aux_files/entrez_to_ensembl.pkl'),
+        'outdir': 'tflink',
+        'nodes': False,
+        'edges': True
+    },
+    #
+    # 'string': {
+    #     'adapter': StringPPIAdapter(filepath="./samples/string_human_ppi_v12.0.txt",
+    #                                 ensembl_to_uniprot_map="./aux_files/string_ensembl_uniprot_map.pkl"),
+    #     "outdir": "ppi",
+    #     "nodes": False,
+    #     "edges": True
     # },
 
-    'string': {
-        'adapter': StringPPIAdapter(filepath="./samples/string_human_ppi_v12.0.txt",
-                                    ensembl_to_uniprot_map="./aux_files/string_ensembl_uniprot_map.pkl"),
-        "outdir": "ppi",
-        "nodes": False,
-        "edges": True
+    # 'tad': {
+    #     'adapter': TADAdapter(filepath="./samples/tad_sample.csv"),
+    #     "outdir": "tad",
+    #     "nodes": True,
+    #     "edges": False
+    # },
+
+    # 'chromatin_state': {
+    #     'adapter': ChromatinStateAdapter(filepath="./samples/roadmap",
+    #                                      tissue_id_map="./aux_files/roadmap_epigenomics_tissue_id_map.pkl"),
+    #     'outdir': "roadmap",
+    #     "nodes": True,
+    #     "edges": False
+    # },
+
+    'GTEx_eQTL': {
+        'adapter': GTExEQTLAdapter(filepath="./samples/gtex"),
+        'outdir': "gtex/eqtl",
+        'nodes': False,
+        'edges': True
     }
+
+
 
 }
 # Run build

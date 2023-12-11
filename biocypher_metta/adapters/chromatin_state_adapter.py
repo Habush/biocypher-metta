@@ -55,7 +55,7 @@ class ChromatinStateAdapter(Adapter):
                                 'chr': row[0],
                                 'start': int(row[1]),
                                 'end': int(row[2]),
-                                'tissue': tissue_name,
+                                'biological_context': tissue_name,
                                 'biochemical_activity': row[3].split("_")[1],
                                 'source': self.source,
                                 'source_url': self.source_url

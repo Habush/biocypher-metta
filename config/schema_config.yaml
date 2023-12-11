@@ -16,6 +16,7 @@ gene:
     synonyms: str[]
     source: str
     version: str
+    source_url: str
 
 protein:
   represented_as: node
@@ -26,6 +27,9 @@ protein:
     organism_id: int
     name: str
     synonyms: str[]
+    source: str
+    version: str
+    source_url: str
 
 transcript:
   represented_as: node
@@ -55,18 +59,15 @@ transcript:
 regulatory region:
   represented_as: node
   input_label: regulatory_region
-  accessible_via:
-    name: regulatory_regions
-    description: 'Retrieve regulatory regions data. Example: region = chr1:1157520-1158189 or biochemical_activity = CA or source = ENCODE_SCREEN (ccREs)'
-    filter_by: _id, chr, type
-    filter_by_range: start, end
-    return: _id, chr, start, end, type, biochemical_activity, biochemical_activity_description, type, source, source_url
   properties:
     chr: str
     start: int
     end: int
+    tissue: str
     biochemical_activity: str
-    biochemical_activity_description: str
+#    biochemical_activity_description: str
+    source: str
+    source_url: str
   aliases: ['regulatory element', 'accessible dna element']
   description: >-
     A region (or regions) of the genome that contains known or putative regulatory elements
@@ -91,9 +92,10 @@ ontology term:
     term_name: str
     description: str
     synonyms: obj
-    source: str
     subontology: str
     subset: str
+    source: str
+    source_url: str
 
 pathway:
   is_a: biological process
@@ -114,6 +116,8 @@ pathway:
     disease_ontology_terms: array
     go_biological_process: str
     is_top_level_pathway: boolean
+    source: str
+    source_url: str
 
 tad:
   is_a: entity
@@ -124,6 +128,8 @@ tad:
     start: int
     end: int
     genes: str[]
+    source: str
+    source_url: str
 
 
 # ---

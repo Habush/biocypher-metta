@@ -65,11 +65,10 @@ class GTExEQTLAdapter(Adapter):
                                 chr, pos, ref_seq, alt_seq, 'GRCh38'
                             )
                             if check_genomic_location(self.chr, self.start, self.end, chr, pos, None):
-                                _id = variant_id + '_' + \
-                                    row[0].split('.')[0] + '_' + tissue_name
                                 _source = variant_id
                                 _target = row[0].split('.')[0]
                                 _props = {
+                                    #add re factor
                                     'chr': chr,
                                     'rsId': row[18],
                                     'maf': to_float(row[21]),
@@ -82,7 +81,7 @@ class GTExEQTLAdapter(Adapter):
                                     'version': self.version,
                                 }
 
-                                yield(_id, _source, _target, self.label, _props)
+                                yield '', _source, _target, self.label, _props
                         except Exception as e:
                             print(row)
                             print(e)

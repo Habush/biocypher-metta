@@ -131,6 +131,30 @@ tad:
     source: str
     source_url: str
 
+motif:
+  represented_as: node
+  is_a: ontology class
+  input_label: motif
+  db_collection_name: motifs
+  db_collection_per_chromosome: false
+  db_indexes:
+    text:
+      type: inverted
+      fields: tf_name
+  accessible_via:
+    name: motifs
+    description: 'TF binding motifs.'
+    fuzzy_text_search: tf_name
+    return: _id, tf_name, source, source_url, pwm, length
+  properties:
+    tf_name: str
+    source: str
+    source_url: str
+    pwm_A: float[]
+    pwm_C: float[]
+    pwm_G: float[]
+    pwm_T: float[]
+    length: str
 
 # ---
 # Associations

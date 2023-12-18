@@ -143,17 +143,18 @@ class MeTTaWriter:
             if k in self.excluded_properties or v is None: continue
             if isinstance(v, list):
                 prop = "("
-                for i in v:
-                    if isinstance(i, str):
-                        prop += f'\"{i}\"'
-                    else: prop += str(i)
+                for i, e in enumerate(v):
+                    if isinstance(e, str):
+                        prop += f'\"{e}\"'
+                    else: prop += f'{e}'
+                    if i != len(v) - 1: prop += " "
                 prop += ")"
-                out_str.append(f'((has-property {def_out}) {k} {prop})')
+                out_str.append(f'(has-property {def_out} {k} {prop})')
             else:
                 if isinstance(v, str):
-                    out_str.append(f'((has-property {def_out}) {k} \"{v}\")')
+                    out_str.append(f'(has-property {def_out} {k} \"{v}\")')
                 else:
-                    out_str.append(f'((has-property {def_out}) {k} {v})')
+                    out_str.append(f'(has-property {def_out} {k} {v})')
         return out_str
 
     def convert_input_labels(self, label, replace_char="_"):

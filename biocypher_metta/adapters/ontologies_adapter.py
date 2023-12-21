@@ -6,8 +6,6 @@ from biocypher_metta.adapters import Adapter
 
 
 class OntologyAdapter(Adapter):
-    SKIP_BIOCYPHER = True
-    OUTPUT_PATH = './parsed-data'
 
     ONTOLOGIES = {
         # 'uberon': 'http://purl.obolibrary.org/obo/uberon.owl',

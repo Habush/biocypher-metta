@@ -150,6 +150,10 @@ class MeTTaWriter:
                     if i != len(v) - 1: prop += " "
                 prop += ")"
                 out_str.append(f'(has-property {def_out} {k} {prop})')
+            elif isinstance(v, dict):
+                prop = f"({k} {def_out})"
+                out_str.append(f'(has-property {def_out} {k} {prop})')
+                out_str.extend(self.write_property(prop, v))
             else:
                 if isinstance(v, str):
                     out_str.append(f'(has-property {def_out} {k} \"{v}\")')

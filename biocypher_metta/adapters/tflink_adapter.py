@@ -42,7 +42,7 @@ class TFLinkAdapter(Adapter):
                     _id = tf_ensemble_id + "_" + target_ensemble_id + "_" + self.label
                     _source = tf_ensemble_id
                     _target = target_ensemble_id
-                    pubmed_ids = [int(i) for i in row[7].split(";")]
+                    pubmed_ids = [f"pubmed:{i}" for i in row[7].split(";")]
                     sources = row[9].split(";")
                     small_scale_evidence = row[10]
                     if small_scale_evidence == "Yes":

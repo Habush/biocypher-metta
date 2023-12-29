@@ -13,9 +13,11 @@ class MeTTaWriter:
         self.biocypher_config = biocypher_config
         self.output_path = pathlib.Path(output_dir)
 
-        if not os.path.exists(output_dir):
-            logger.info(f"Directory {output_dir} doesn't exist. Creating it...")
-            self.output_path.mkdir()
+        assert not os.path.exists(output_dir), f"Directory {output_dir} already exists. Please choose a different directory." \
+
+        # if not os.path.exists(output_dir):
+        #     logger.info(f"Directory {output_dir} doesn't exist. Creating it...")
+        self.output_path.mkdir()
 
         self.bcy = BioCypher(schema_config_path=schema_config,
                              biocypher_config_path=biocypher_config)
@@ -49,7 +51,7 @@ class MeTTaWriter:
         schema = self.bcy._get_ontology_mapping()._extend_schema()
         self.edge_node_types = {}
         def edge_data_constructor(edge_type, source_type, target_type, label):
-            return f"(: {label.lower()} (-> {source_type.upper()} {target_type.upper()} {edge_type.upper()})"
+            return f"(: {label.lower()} (-> {source_type.upper()} {target_type.upper()} {edge_type.upper()}))"
 
         def node_data_constructor(node_type, node_label):
             return f"(: {node_label.lower()} (-> $x {node_type.upper()}))"
@@ -92,7 +94,7 @@ class MeTTaWriter:
                     pathlib.Path(f"{self.output_path}/{path_prefix}").mkdir(parents=True, exist_ok=True)
         else:
             file_path = f"{self.output_path}/nodes.metta"
-        with open(file_path, "w") as f:
+        with open(file_path, "a") as f:
             for node in nodes:
                 out_str = self.write_node(node)
                 for s in out_str:
@@ -113,7 +115,7 @@ class MeTTaWriter:
         else:
             file_path = f"{self.output_path}/edges.metta"
 
-        with open(file_path, "w") as f:
+        with open(file_path, "a") as f:
             for edge in edges:
                 out_str = self.write_edge(edge)
                 for s in out_str:
@@ -125,7 +127,7 @@ class MeTTaWriter:
         id, label, properties = node
         if "." in label:
             label = label.split(".")[1]
-        def_out = f"({self.convert_input_labels(label)} {id})"
+        def_out = f'({self.convert_input_labels(label)} \"{id}\")'
         return self.write_property(def_out, properties)
 
     def write_edge(self, edge):
@@ -133,14 +135,14 @@ class MeTTaWriter:
         label = label.lower()
         source_type = self.edge_node_types[label]["source"]
         target_type = self.edge_node_types[label]["target"]
-        def_out = f"({label} ({source_type} {source_id}) ({target_type} {target_id}))"
+        def_out = f'({label} ({source_type} \"{source_id}\") ({target_type} \"{target_id}\"))'
         return self.write_property(def_out, properties)
 
 
     def write_property(self, def_out, property):
         out_str = [def_out]
         for k, v in property.items():
-            if k in self.excluded_properties or v is None: continue
+            if k in self.excluded_properties or v is None or v == "": continue
             if isinstance(v, list):
                 prop = "("
                 for i, e in enumerate(v):
@@ -149,16 +151,16 @@ class MeTTaWriter:
                     else: prop += f'{e}'
                     if i != len(v) - 1: prop += " "
                 prop += ")"
-                out_str.append(f'(has-property {def_out} {k} {prop})')
+                out_str.append(f'({k} {def_out} {prop})')
             elif isinstance(v, dict):
                 prop = f"({k} {def_out})"
-                out_str.append(f'(has-property {def_out} {k} {prop})')
+                # out_str.append(f'({k} {def_out} {prop})')
                 out_str.extend(self.write_property(prop, v))
             else:
                 if isinstance(v, str):
-                    out_str.append(f'(has-property {def_out} {k} \"{v}\")')
+                    out_str.append(f'({k} {def_out} \"{v}\")') #TODO change to predicate
                 else:
-                    out_str.append(f'(has-property {def_out} {k} {v})')
+                    out_str.append(f'({k} {def_out} {v})')
         return out_str
 
     def convert_input_labels(self, label, replace_char="_"):

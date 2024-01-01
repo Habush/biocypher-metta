@@ -34,7 +34,7 @@ class GencodeAdapter(Adapter):
         self.dataset = label
 
         self.source = 'GENCODE'
-        self.version = 'v43'
+        self.version = 'v44'
         self.source_url = 'https://www.gencodegenes.org/human/'
 
     def parse_info_metadata(self, info):

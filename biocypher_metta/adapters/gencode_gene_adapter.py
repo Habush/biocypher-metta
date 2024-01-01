@@ -25,7 +25,7 @@ class GencodeGeneAdapter(Adapter):
         self.dataset = 'gencode_gene'
         self.gene_alias_file_path = gene_alias_file_path
         self.source = 'GENCODE'
-        self.version = 'v43'
+        self.version = 'v44'
         self.source_url = 'https://www.gencodegenes.org/human/'
 
     def parse_info_metadata(self, info):

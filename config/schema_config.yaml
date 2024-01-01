@@ -191,14 +191,8 @@ pathway:
   represented_as: node
   input_label: pathway
   properties:
-    id_version: str
     name: str
-    is_in_disease: boolean
-    name_aliases: array
-    species: str
-    disease_ontology_terms: array
-    go_biological_process: str
-    is_top_level_pathway: boolean
+    evidence: str
     source: str
     source_url: str
 

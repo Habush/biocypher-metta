@@ -19,6 +19,7 @@ biopython = "^1.8.1" #Solution for psycopg2 install error -> https://stackoverfl
 owlready2 = "^0.44"
 obonet = "1.0.0"
 hgvs = "1.5.4"
+typer = "^0.9.0"
 
 
 [build-system]

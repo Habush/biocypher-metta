@@ -25,6 +25,8 @@ class TopLDAdapter(Adapter):
         self.chr = chr
         self.ancestry = ancestry
         self.label = "in_ld_with"
+        self.source = "TopLD"
+        self.source_url = "http://topld.genetics.unc.edu/"
         super(TopLDAdapter, self).__init__()
 
     def get_edges(self):
@@ -44,8 +46,8 @@ class TopLDAdapter(Adapter):
                         'r2': to_float(f"{row[6]}{row[4]}"),
                         'd_prime': float(row[5]),
                         'ancestry': self.ancestry,
-                        'source': 'TopLD',
-                        'source_url': 'http://topld.genetics.unc.edu/'
+                        'source': self.source,
+                        'source_url': self.source_url
                     }
 
                     yield '', _source, _target, self.label, props

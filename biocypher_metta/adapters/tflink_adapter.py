@@ -2,7 +2,7 @@
 from biocypher_metta.adapters import Adapter
 import pickle
 import csv
-
+import gzip
 
 # Transcription factor - target gene relationships from TFLink
 
@@ -31,7 +31,7 @@ class TFLinkAdapter(Adapter):
         self.source_url = "tflink.net"
 
     def get_edges(self):
-        with open(self.filepath, "r") as fp:
+        with gzip.open(self.filepath, 'rt') as fp:
             table = csv.reader(fp, delimiter="\t", quotechar='"')
             for row in table:
                 tf_entrez_id = row[2]

@@ -2,6 +2,7 @@
 from biocypher_metta.adapters import Adapter
 import pickle
 import csv
+import gzip
 
 # Imports STRING Protein-Protein interactions
 
@@ -32,7 +33,7 @@ class StringPPIAdapter(Adapter):
         self.version = "v12.0"
 
     def get_edges(self):
-        with open(self.filepath, "r") as fp:
+        with gzip.open(self.filepath, "rt") as fp:
             table = csv.reader(fp, delimiter=" ", quotechar='"')
             table.__next__() # skip header
             for row in table:

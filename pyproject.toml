@@ -20,6 +20,7 @@ owlready2 = "^0.44"
 obonet = "1.0.0"
 hgvs = "1.5.4"
 typer = "^0.9.0"
+google-cloud-storage = "^2.14.0" #Needed to download GTex data from Google Cloud Storage
 
 
 [build-system]

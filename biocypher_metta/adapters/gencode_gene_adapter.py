@@ -77,35 +77,36 @@ class GencodeGeneAdapter(Adapter):
 
     def get_nodes(self):
         alias_dict = self.get_gene_alias()
-        for line in open(self.filepath, 'r'):
-            if line.startswith('#'):
-                continue
-            split_line = line.strip().split()
-            if split_line[GencodeGeneAdapter.INDEX['type']] == 'gene':
-                info = self.parse_info_metadata(
-                    split_line[GencodeGeneAdapter.INDEX['info']:])
-                gene_id = info['gene_id']
-                id = gene_id.split('.')[0]
-                alias = alias_dict.get(id)
-                if not alias:
-                    hgnc_id = info.get('hgnc_id')
-                    if hgnc_id:
-                        alias = alias_dict.get(hgnc_id)
-                if gene_id.endswith('_PAR_Y'):
-                    id = id + '_PAR_Y'
+        with gzip.open(self.filepath, 'rt') as input:
+            for line in input:
+                if line.startswith('#'):
+                    continue
+                split_line = line.strip().split()
+                if split_line[GencodeGeneAdapter.INDEX['type']] == 'gene':
+                    info = self.parse_info_metadata(
+                        split_line[GencodeGeneAdapter.INDEX['info']:])
+                    gene_id = info['gene_id']
+                    id = gene_id.split('.')[0]
+                    alias = alias_dict.get(id)
+                    if not alias:
+                        hgnc_id = info.get('hgnc_id')
+                        if hgnc_id:
+                            alias = alias_dict.get(hgnc_id)
+                    if gene_id.endswith('_PAR_Y'):
+                        id = id + '_PAR_Y'
 
-                props = {
-                    # 'gene_id': gene_id, # TODO should this be included?
-                    'gene_type': info['gene_type'],
-                    'chr': split_line[GencodeGeneAdapter.INDEX['chr']],
-                    # the gtf file format is [1-based,1-based], needs to convert to BED format [0-based,1-based]
-                    'start': int(split_line[GencodeGeneAdapter.INDEX['coord_start']]) - 1,
-                    'end': int(split_line[GencodeGeneAdapter.INDEX['coord_end']]),
-                    'gene_name': info['gene_name'],
-                    'synonyms': alias,
-                    'source': self.source,
-                    'version': self.version,
-                    'source_url': self.source_url
-                }
+                    props = {
+                        # 'gene_id': gene_id, # TODO should this be included?
+                        'gene_type': info['gene_type'],
+                        'chr': split_line[GencodeGeneAdapter.INDEX['chr']],
+                        # the gtf file format is [1-based,1-based], needs to convert to BED format [0-based,1-based]
+                        'start': int(split_line[GencodeGeneAdapter.INDEX['coord_start']]) - 1,
+                        'end': int(split_line[GencodeGeneAdapter.INDEX['coord_end']]),
+                        'gene_name': info['gene_name'],
+                        'synonyms': alias,
+                        'source': self.source,
+                        'version': self.version,
+                        'source_url': self.source_url
+                    }
 
-                yield id, self.label, props
+                    yield id, self.label, props

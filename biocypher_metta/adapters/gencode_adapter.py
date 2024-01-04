@@ -1,5 +1,5 @@
 from biocypher_metta.adapters import Adapter
-
+import gzip
 # Example genocde vcf input file:
 # ##description: evidence-based annotation of the human genome (GRCh38), version 42 (Ensembl 108)
 # ##provider: GENCODE
@@ -45,81 +45,83 @@ class GencodeAdapter(Adapter):
         return parsed_info
 
     def get_nodes(self):
-        for line in open(self.filepath, 'r'):
-            if line.startswith('#'):
-                continue
+        with gzip.open(self.filepath, 'rt') as input:
+            for line in input:
+                if line.startswith('#'):
+                    continue
 
-            data_line = line.strip().split()
-            if data_line[GencodeAdapter.INDEX['type']] != 'transcript':
-                continue
+                data_line = line.strip().split()
+                if data_line[GencodeAdapter.INDEX['type']] != 'transcript':
+                    continue
 
-            data = data_line[:GencodeAdapter.INDEX['info']]
-            info = self.parse_info_metadata(data_line[GencodeAdapter.INDEX['info']:])
-            transcript_key = info['transcript_id'].split('.')[0]
-            if info['transcript_id'].endswith('_PAR_Y'):
-                transcript_key = transcript_key + '_PAR_Y'
-            gene_key = info['gene_id'].split('.')[0]
-            if info['gene_id'].endswith('_PAR_Y'):
-                gene_key = gene_key + '_PAR_Y'
-            try:
-                if self.type == 'transcript':
-                    props = {
-                        'transcript_id': info['transcript_id'],
-                        'transcript_name': info['transcript_name'],
-                        'transcript_type': info['transcript_type'],
-                        'chr': data[GencodeAdapter.INDEX['chr']],
-                        # the gtf file format is [1-based,1-based], needs to convert to BED format [0-based,1-based]
-                        'start': int(data[GencodeAdapter.INDEX['coord_start']]) - 1,
-                        'end': int(data[GencodeAdapter.INDEX['coord_end']]),
-                        'gene_name': info['gene_name'],
-                        'source': self.source,
-                        'version': self.version,
-                        'source_url': self.source_url
-                    }
-                    yield(transcript_key, self.label, props)
-            except:
-                print(
-                    f'fail to process for label to load: {self.label}, type to load: {self.type}, data: {line}')
+                data = data_line[:GencodeAdapter.INDEX['info']]
+                info = self.parse_info_metadata(data_line[GencodeAdapter.INDEX['info']:])
+                transcript_key = info['transcript_id'].split('.')[0]
+                if info['transcript_id'].endswith('_PAR_Y'):
+                    transcript_key = transcript_key + '_PAR_Y'
+                gene_key = info['gene_id'].split('.')[0]
+                if info['gene_id'].endswith('_PAR_Y'):
+                    gene_key = gene_key + '_PAR_Y'
+                try:
+                    if self.type == 'transcript':
+                        props = {
+                            'transcript_id': info['transcript_id'],
+                            'transcript_name': info['transcript_name'],
+                            'transcript_type': info['transcript_type'],
+                            'chr': data[GencodeAdapter.INDEX['chr']],
+                            # the gtf file format is [1-based,1-based], needs to convert to BED format [0-based,1-based]
+                            'start': int(data[GencodeAdapter.INDEX['coord_start']]) - 1,
+                            'end': int(data[GencodeAdapter.INDEX['coord_end']]),
+                            'gene_name': info['gene_name'],
+                            'source': self.source,
+                            'version': self.version,
+                            'source_url': self.source_url
+                        }
+                        yield(transcript_key, self.label, props)
+                except:
+                    print(
+                        f'fail to process for label to load: {self.label}, type to load: {self.type}, data: {line}')
 
     def get_edges(self):
-        for line in open(self.filepath, 'r'):
-            if line.startswith('#'):
-                continue
+        with gzip.open(self.filepath, 'rt') as input:
+            for line in input:
+                if line.startswith('#'):
+                    continue
 
-            data_line = line.strip().split()
-            if data_line[GencodeAdapter.INDEX['type']] != 'transcript':
-                continue
+                data_line = line.strip().split()
+                if data_line[GencodeAdapter.INDEX['type']] != 'transcript':
+                    continue
 
-            info = self.parse_info_metadata(data_line[GencodeAdapter.INDEX['info']:])
-            transcript_key = info['transcript_id'].split('.')[0]
-            if info['transcript_id'].endswith('_PAR_Y'):
-                transcript_key = transcript_key + '_PAR_Y'
-            gene_key = info['gene_id'].split('.')[0]
-            if info['gene_id'].endswith('_PAR_Y'):
-                gene_key = gene_key + '_PAR_Y'
-            try:
-                if self.type == 'transcribed to':
-                    _id = gene_key + '_' + transcript_key
-                    _source = gene_key
-                    _target = transcript_key
-                    _props = {
-                        'source': self.source,
-                        'version': self.version,
-                        'source_url': self.source_url
-                    }
-                    _props = {}
-                    yield(_id, _source, _target, self.label, _props)
-                elif self.type == 'transcribed from':
-                    _id = transcript_key + '_' + gene_key
-                    _source = transcript_key
-                    _target = gene_key
-                    _props = {
-                        'source': self.source,
-                        'version': self.version,
-                        'source_url': self.source_url
-                    }
-                    _props = {}
-                    yield(_id, _source, _target, self.label, _props)
-            except:
-                print(
-                    f'fail to process for label to load: {self.label}, type to load: {self.type}, data: {line}')
+                info = self.parse_info_metadata(data_line[GencodeAdapter.INDEX['info']:])
+                transcript_key = info['transcript_id'].split('.')[0]
+                if info['transcript_id'].endswith('_PAR_Y'):
+                    transcript_key = transcript_key + '_PAR_Y'
+                gene_key = info['gene_id'].split('.')[0]
+                if info['gene_id'].endswith('_PAR_Y'):
+                    gene_key = gene_key + '_PAR_Y'
+                try:
+                    if self.type == 'transcribed to':
+                        _id = gene_key + '_' + transcript_key
+                        _source = gene_key
+                        _target = transcript_key
+                        _props = {
+                            'source': self.source,
+                            'version': self.version,
+                            'source_url': self.source_url
+                        }
+                        _props = {}
+                        yield(_id, _source, _target, self.label, _props)
+                    elif self.type == 'transcribed from':
+                        _id = transcript_key + '_' + gene_key
+                        _source = transcript_key
+                        _target = gene_key
+                        _props = {
+                            'source': self.source,
+                            'version': self.version,
+                            'source_url': self.source_url
+                        }
+                        _props = {}
+                        yield(_id, _source, _target, self.label, _props)
+                except:
+                    print(
+                        f'fail to process for label to load: {self.label}, type to load: {self.type}, data: {line}')

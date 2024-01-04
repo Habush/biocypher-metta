@@ -35,21 +35,18 @@ class ReactomePathwayAdapter(Adapter):
                 self.pubmed_map[pathway_id] = pubmed_id
 
     def get_nodes(self):
-        session = requests.Session()
-        retries = Retry(total=5, backoff_factor=1,
-                        status_forcelist=[500, 502, 503, 504])
-        session.mount('https://', HTTPAdapter(max_retries=retries))
-
         with open(self.filepath) as input:
             for line in input:
                 id, name, species = line.strip().split('\t')
                 if species == 'Homo sapiens':
-                    pubmed_url = f"https://pubmed.ncbi.nlm.nih.gov/{self.pubmed_map[id]}"
                     props = {
                             'name': name,
-                            'evidence': pubmed_url,
                             'source': self.source,
                             'source_url': self.source_url
                     }
+                    pubmed_id = self.pubmed_map.get(id, None)
+                    if pubmed_id is not None:
+                        pubmed_url = f"https://pubmed.ncbi.nlm.nih.gov/{self.pubmed_map[id]}"
+                        props['evidence'] = pubmed_url,
 
                     yield id, self.label, props

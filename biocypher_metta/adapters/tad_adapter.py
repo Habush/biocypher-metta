@@ -53,9 +53,12 @@ class TADAdapter(Adapter):
                 end = loc_info[3]
                 genes = []
                 for gene in genes_info:
-                    gene = gene.split('|')
-                    gene = gene[1].split(':')[1]
-                    genes.append(gene)
+                    try:
+                        gene = gene.split('|')
+                        gene = gene[1].split(':')[1]
+                        genes.append(gene)
+                    except IndexError:
+                        continue
 
                 if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
                     _id = build_regulatory_region_id(chr, start, end)

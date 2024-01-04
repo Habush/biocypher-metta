@@ -20,12 +20,12 @@ from biocypher_metta.adapters import Adapter
 
 
 class HoCoMoCoMotifAdapter(Adapter):
-    def __init__(self, filepath, hgnc_to_ensembl_map):
+    def __init__(self, filepath, annotation_file, hgnc_to_ensembl_map):
 
         self.filepath = filepath
         assert os.path.isdir(self.filepath), f"{self.filepath} is not a directory"
         self.hgnc_to_ensembl_map = pickle.load(open(hgnc_to_ensembl_map, 'rb'))
-        self.model_tf_path = f"{filepath}/HOCOMOCOv11_core_annotation_HUMAN_mono.tsv"
+        self.model_tf_path = annotation_file
 
         self.label = 'motif'
         self.source = 'HOCOMOCOv11'

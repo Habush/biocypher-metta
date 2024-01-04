@@ -127,13 +127,13 @@ def check_genomic_location(chr, start, end,
             return False
         else:
             if start and end:
-                if start >= int(curr_start) and end <= int(curr_end):
+                if int(curr_start) >= start and int(curr_end) <= end:
                     return True
             elif start:
-                if start >= int(curr_start):
+                if int(curr_start) >= start:
                     return True
             elif end:
-                if end <= int(curr_end):
+                if int(curr_end) <= end:
                     return True
             else:
                 return True

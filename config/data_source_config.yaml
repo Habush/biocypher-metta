@@ -1,0 +1,52 @@
+---
+roadmap:
+  name: Roadmap Epigenomics Project
+  url: https://personal.broadinstitute.org/jernst/MODEL_IMPUTED12MARKS
+gencode:
+  name: GENCODE v44
+  url: https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/gencode.v44.annotation.gtf.gz
+uniprot:
+  name: UniProtKB/Swiss-Prot
+  url: https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/taxonomic_divisions/uniprot_sprot_human.dat.gz
+reactome:
+  name: Reactome
+  url:
+  - https://reactome.org/download/current/ReactomePathways.txt
+  - https://reactome.org/download/current/ReactomePathwaysRelation.txt
+  - https://reactome.org/download/current/Ensembl2Reactome_All_Levels.txt
+  - https://reactome.org/download/current/ReactionPMIDS.txt
+gaf:
+  name: GO Annotation File (GAF)
+  url: http://geneontology.org/gene-associations/goa_human.gaf.gz
+coxpressdb:
+  name: Coxpress DB
+  url: https://zenodo.org/record/6861444/files/Hsa-u.v22-05.G16651-S245698.combat_pca.subagging.z.d.zip
+tflink:
+  name: TFLink
+  url: https://cdn.netbiol.org/tflink/download_files/TFLink_Homo_sapiens_interactions_All_simpleFormat_v1.0.tsv.gz
+string:
+  name: STRING PPI
+  url: https://stringdb-downloads.org/download/protein.links.v12.0/9606.protein.links.v12.0.txt.gz
+tadmap:
+  name: TADMap
+  url: https://cb.csail.mit.edu/cb/tadmap/TADMap_geneset_hs.csv
+gtex_eqtl:
+  name: GTEx eQTL
+  bucket: adult-gtex
+  path: bulk-qtl/v8/single-tissue-cis-qtl/GTEx_Analysis_v8_eQTL.tar
+topld:
+  name: TopLD
+  url:
+    AFR: http://topld.genetics.unc.edu/downloads/downloads/AFR/SNV/AFR_xx_no_filter_0.2_1000000_LD.csv.gz
+    EAS: http://topld.genetics.unc.edu/downloads/downloads/EAS/SNV/EAS_xx_no_filter_0.2_1000000_LD.csv.gz
+    EUR: http://topld.genetics.unc.edu/downloads/downloads/EUR/SNV/EUR_xx_no_filter_0.2_1000000_LD.csv.gz
+    SAS: http://topld.genetics.unc.edu/downloads/downloads/SAS/SNV/SAS_xx_no_filter_0.2_1000000_LD.csv.gz
+hocomoco:
+  name: HOCOMOCOv11
+  url:
+    annotation: https://hocomoco11.autosome.org/final_bundle/hocomoco11/core/HUMAN/mono/HOCOMOCOv11_core_annotation_HUMAN_mono.tsv
+    pwm: https://hocomoco11.autosome.org/final_bundle/hocomoco11/core/HUMAN/mono/HOCOMOCOv11_core_pwm_HUMAN_mono.tar.gz
+favor:
+  name: FAVOR
+  url:
+    chr16: https://dataverse.harvard.edu/api/access/datafile/6388551

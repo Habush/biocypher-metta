@@ -3,203 +3,17 @@ Knowledge graph generation through BioCypher script
 """
 from biocypher_metta.metta_writer import *
 from biocypher._logger import logger
-from biocypher_metta.adapters.uniprot_protein_adapter import UniprotProteinAdapter
-from biocypher_metta.adapters.gencode_adapter import GencodeAdapter
-from biocypher_metta.adapters.gencode_gene_adapter import GencodeGeneAdapter
-from biocypher_metta.adapters.uniprot_adapter import UniprotAdapter
-from biocypher_metta.adapters.reactome_pathway_adapter import ReactomePathwayAdapter
-from biocypher_metta.adapters.reactome_adapter import ReactomeAdapter
-from biocypher_metta.adapters.ontologies_adapter import OntologyAdapter
-from biocypher_metta.adapters.gaf_adapter import GAFAdapter
-from biocypher_metta.adapters.coxpresdb_adapter import CoxpresdbAdapter
-from biocypher_metta.adapters.ccre_adapter import CCREAdapter
-from biocypher_metta.adapters.encode_enhancer_gene_adapter import EncodeEnhancerGeneLinkAdapter
-from biocypher_metta.adapters.tflink_adapter import TFLinkAdapter
-from biocypher_metta.adapters.string_ppi_adapter import StringPPIAdapter
-from biocypher_metta.adapters.tad_adapter import TADAdapter
-from biocypher_metta.adapters.chromatin_state_adapter import ChromatinStateAdapter
-from biocypher_metta.adapters.gtex_eqtl_adapter import GTExEQTLAdapter
-from biocypher_metta.adapters.topld_adapter import TopLDAdapter
-from biocypher_metta.adapters.hocomoco_motif_adapter import HoCoMoCoMotifAdapter
-from biocypher_metta.adapters.favor_adapter import FavorAdapter
+import typer
+import yaml
+import importlib #for reflection
+from typing_extensions import Annotated
 
-ADAPTERS = {
-    'gencode_gene': {'adapter': GencodeGeneAdapter(filepath='./samples/gencode_sample.gtf',
-                                             gene_alias_file_path='./samples/Homo_sapiens.gene_info.gz'),
-                     'outdir': 'gencode',
-                     'nodes': True,
-                     'edges': False},
-    'gencode_transcripts': {
-        'adapter': GencodeAdapter(filepath='./samples/gencode_sample.gtf', type='transcript',
-                                  label='transcript'),
-        'outdir': 'gencode',
-        'nodes': True,
-        'edges': False
-    },
+app = typer.Typer()
 
-    'transcribed_to': {
-        'adapter': GencodeAdapter(filepath='./samples/gencode_sample.gtf', type='transcribed to',
-                                     label='transcribed_to'),
-        'outdir': 'gencode',
-        'nodes': False,
-        'edges': True
-    },
-    'transcribed_from': {
-        'adapter': GencodeAdapter(filepath='./samples/gencode_sample.gtf', type='transcribed from',
-                                  label='transcribed_from'),
-        'outdir': 'gencode',
-        'nodes': False,
-        'edges': True
-    },
-    'uniprotkb_sprot': {
-        'adapter': UniprotProteinAdapter(filepath='./samples/uniprot_sprot_human_sample.dat.gz'),
-        'outdir': 'uniprot',
-        'nodes': True,
-        'edges': False
-    },
-
-    'uniprotkb_translates_to': {
-        'adapter': UniprotAdapter(filepath='./samples/uniprot_sprot_human_sample.dat.gz', type='translates to',
-                                  label='translates_to'),
-        'outdir': 'uniprot',
-        'nodes': False,
-        'edges': True
-    },
-    'uniprotkb_translation_of': {
-        'adapter': UniprotAdapter(filepath='./samples/uniprot_sprot_human_sample.dat.gz', type='translation of',
-                                  label='translation_of'),
-        'outdir': 'uniprot',
-        'nodes': False,
-        'edges': True
-    },
-
-    'pathway': {
-        'adapter': ReactomePathwayAdapter('./samples/reactome/ReactomePathways.txt', './samples/reactome/ReactionPMIDS.txt'),
-        'outdir': 'pathway',
-        'nodes': True,
-        'edges': False
-    },
-
-    'genes_pathways': {
-        'adapter': ReactomeAdapter('./samples/reactome/Ensembl2Reactome_All_Levels_sample.txt', 'genes_pathways'),
-        'outdir': 'pathway/genes_pathways',
-        'nodes': False,
-        'edges': True
-    },
-
-    #TODO add parent_pathway_of and child_pathway_of to the same class
-    'parent_pathway_of': {
-        'adapter': ReactomeAdapter('./samples/reactome/ReactomePathwaysRelation.txt', 'parent_pathway_of'),
-        'outdir': 'pathway',
-        'nodes': False,
-        'edges': True
-    },
-
-    'child_pathway_of': {
-        'adapter': ReactomeAdapter('./samples/reactome/ReactomePathwaysRelation.txt', 'child_pathway_of'),
-        'outdir': 'pathway',
-        'nodes': False,
-        'edges': True
-    },
-
-    'onotology_terms': {
-        'adapter': OntologyAdapter(type='node', dry_run=True),
-        'outdir': 'ontology',
-        'nodes': True,
-        'edges': False
-    },
-    'onotology_relationships': {
-        'adapter': OntologyAdapter(type='edge', dry_run=True),
-        'outdir': 'ontology',
-        'nodes': False,
-        'edges': True
-    },
-
-    'gaf': {
-        'adapter': GAFAdapter(filepath='./samples/goa_human_sample.gaf.gz'),
-        'outdir': 'gaf',
-        'nodes': False,
-        'edges': True
-    },
-
-    'coexpression': {
-        'adapter': CoxpresdbAdapter(filepath='./samples/coxpresdb',
-                                    ensemble_to_entrez_path='./aux_files/entrez_to_ensembl.pkl'),
-        'outdir': 'coexpression',
-        'nodes': False,
-        'edges': True
-    },
-
-    'ccre': {
-        'adapter': CCREAdapter(filepath='./samples/ccre_example.bed.gz'),
-        'outdir': 'ccre',
-        'nodes': True,
-        'edges': False
-    },
-
-    'tflink': {
-        'adapter': TFLinkAdapter(filepath='./samples/tflink_homo_sapiens_interactions.tsv',
-                                entrez_to_ensemble_map='./aux_files/entrez_to_ensembl.pkl'),
-        'outdir': 'tflink',
-        'nodes': False,
-        'edges': True
-    },
-
-    'string': {
-        'adapter': StringPPIAdapter(filepath="./samples/string_human_ppi_v12.0.txt",
-                                    ensembl_to_uniprot_map="./aux_files/string_ensembl_uniprot_map.pkl"),
-        "outdir": "ppi",
-        "nodes": False,
-        "edges": True
-    },
-
-    'tad': {
-        'adapter': TADAdapter(filepath="./samples/tad_sample.csv"),
-        "outdir": "tad",
-        "nodes": True,
-        "edges": False
-    },
-
-    'chromatin_state': {
-        'adapter': ChromatinStateAdapter(filepath="./samples/roadmap",
-                                         tissue_id_map="./aux_files/roadmap_epigenomics_tissue_id_map.pkl"),
-        'outdir': "roadmap",
-        "nodes": True,
-        "edges": False
-    },
-
-    'GTEx_eQTL': {
-        'adapter': GTExEQTLAdapter(filepath="./samples/gtex"),
-        'outdir': "gtex/eqtl",
-        'nodes': False,
-        'edges': True
-    },
-
-    'topld': {
-        'adapter': TopLDAdapter(filepath="./samples/topld_sample.csv.gz", chr="chr22", ancestry="SAS"),
-        'outdir': "topld",
-        'nodes': False,
-        'edges': True
-    },
-
-    'hocomoco_motif': {
-        'adapter': HoCoMoCoMotifAdapter(filepath="./samples/motifs",
-                                        hgnc_to_ensembl_map="./aux_files/hgnc_to_ensembl.pkl"),
-        'outdir': "hocomoco",
-        'nodes': True,
-        'edges': False
-    },
-
-    'favor': {
-        'adapter': FavorAdapter(filepath="./samples/favor_chr16_sample.csv"),
-        'outdir': "favor",
-        'nodes': True,
-        'edges': False
-    },
-
-}
 # Run build
-def main():
+@app.command()
+def main(output_dir: Annotated[pathlib.Path, typer.Option(exists=False, file_okay=False, dir_okay=True)],
+         adapter_config: Annotated[pathlib.Path, typer.Option(exists=True, file_okay=True, dir_okay=False)]):
     """
     Main function. Call individual adapters to download and process data. Build
     via BioCypher from node and edge data.
@@ -209,18 +23,29 @@ def main():
 
     bc = MeTTaWriter(schema_config="config/schema_config.yaml",
                      biocypher_config="config/biocypher_config.yaml",
-                     output_dir="metta_out")
+                     output_dir=output_dir)
 
     # bc.show_ontology_structure()
 
     # Run adapters
 
-    for k, v in ADAPTERS.items():
-        logger.info("Running adapter: " + k)
-        adapter = v['adapter']
-        write_nodes = v['nodes']
-        write_edges = v['edges']
-        outdir = v['outdir']
+    with open(adapter_config, "r") as fp:
+        try:
+            adapters_config = yaml.safe_load(fp)
+        except yaml.YAMLError as e:
+            logger.error(f"Error while trying to load adapter config")
+            logger.error(e)
+
+    for c in adapters_config:
+        logger.info(f"Running adapter: {c}")
+        adapter_config = adapters_config[c]["adapter"]
+        adapter_module = importlib.import_module(adapter_config["module"])
+        adapter_cls = getattr(adapter_module, adapter_config["cls"])
+        ctr_args = adapter_config["args"]
+        adapter = adapter_cls(**ctr_args)
+        write_nodes = adapters_config[c]["nodes"]
+        write_edges = adapters_config[c]["edges"]
+        outdir = adapters_config[c]["outdir"]
 
         if write_nodes:
             nodes = adapter.get_nodes()
@@ -231,8 +56,7 @@ def main():
             bc.write_edges(edges, path_prefix=outdir)
 
 
-
     logger.info("Done")
 
 if __name__ == "__main__":
-    main()
+    app()

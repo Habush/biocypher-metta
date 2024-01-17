@@ -8,7 +8,7 @@ import pickle
 from biocypher_metta.adapters.helpers import check_genomic_location, build_regulatory_region_id
 
 
-class ChromatinStateAdapter(Adapter):
+class RoadMapAdapter(Adapter):
 
     def __init__(self, filepath, tissue_id_map, chr=None, start=None, end=None):
         """
@@ -37,7 +37,7 @@ class ChromatinStateAdapter(Adapter):
 
         self.label = "regulatory_region"
 
-        super(ChromatinStateAdapter, self).__init__()
+        super(RoadMapAdapter, self).__init__()
 
 
     def get_nodes(self):

@@ -3,6 +3,7 @@ from biocypher_metta.adapters.helpers import build_variant_id, to_float, check_g
 import json
 import os
 import csv
+import gzip
 
 # FIELDS = ['chromosome', 'start_position',
 #      'ref_vcf', 'alt_vcf', 'aloft_value', 'aloft_description',

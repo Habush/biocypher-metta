@@ -13,10 +13,7 @@ class MeTTaWriter:
         self.biocypher_config = biocypher_config
         self.output_path = pathlib.Path(output_dir)
 
-        assert not os.path.exists(output_dir), f"Directory {output_dir} already exists. Please choose a different directory." \
-
-        # if not os.path.exists(output_dir):
-        #     logger.info(f"Directory {output_dir} doesn't exist. Creating it...")
+        assert not os.path.exists(output_dir), f"Directory {output_dir} already exists. Please choose a different directory."
         self.output_path.mkdir()
 
         self.bcy = BioCypher(schema_config_path=schema_config,
@@ -127,7 +124,7 @@ class MeTTaWriter:
         id, label, properties = node
         if "." in label:
             label = label.split(".")[1]
-        def_out = f'({self.convert_input_labels(label)} \"{id}\")'
+        def_out = f"({self.convert_input_labels(label)} {id})"
         return self.write_property(def_out, properties)
 
     def write_edge(self, edge):
@@ -135,7 +132,7 @@ class MeTTaWriter:
         label = label.lower()
         source_type = self.edge_node_types[label]["source"]
         target_type = self.edge_node_types[label]["target"]
-        def_out = f'({label} ({source_type} \"{source_id}\") ({target_type} \"{target_id}\"))'
+        def_out = f"({label} ({source_type} {source_id}) ({target_type} {target_id}))"
         return self.write_property(def_out, properties)
 
 
@@ -146,22 +143,21 @@ class MeTTaWriter:
             if isinstance(v, list):
                 prop = "("
                 for i, e in enumerate(v):
-                    if isinstance(e, str):
-                        prop += f'\"{e}\"'
-                    else: prop += f'{e}'
+                    prop += f'{self.check_property(e)}'
                     if i != len(v) - 1: prop += " "
                 prop += ")"
                 out_str.append(f'({k} {def_out} {prop})')
             elif isinstance(v, dict):
                 prop = f"({k} {def_out})"
-                # out_str.append(f'({k} {def_out} {prop})')
                 out_str.extend(self.write_property(prop, v))
             else:
-                if isinstance(v, str):
-                    out_str.append(f'({k} {def_out} \"{v}\")') #TODO change to predicate
-                else:
-                    out_str.append(f'({k} {def_out} {v})')
+                out_str.append(f'({k} {def_out} {self.check_property(v)})')
         return out_str
+
+    def check_property(self, prop):
+        if isinstance(prop, str) and " " in prop:
+            return f'"{prop}"'
+        return prop
 
     def convert_input_labels(self, label, replace_char="_"):
         """

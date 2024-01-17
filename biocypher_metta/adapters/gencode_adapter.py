@@ -73,9 +73,6 @@ class GencodeAdapter(Adapter):
                             'start': int(data[GencodeAdapter.INDEX['coord_start']]) - 1,
                             'end': int(data[GencodeAdapter.INDEX['coord_end']]),
                             'gene_name': info['gene_name'],
-                            'source': self.source,
-                            'version': self.version,
-                            'source_url': self.source_url
                         }
                         yield(transcript_key, self.label, props)
                 except:
@@ -104,22 +101,12 @@ class GencodeAdapter(Adapter):
                         _id = gene_key + '_' + transcript_key
                         _source = gene_key
                         _target = transcript_key
-                        _props = {
-                            'source': self.source,
-                            'version': self.version,
-                            'source_url': self.source_url
-                        }
                         _props = {}
                         yield(_id, _source, _target, self.label, _props)
                     elif self.type == 'transcribed from':
                         _id = transcript_key + '_' + gene_key
                         _source = transcript_key
                         _target = gene_key
-                        _props = {
-                            'source': self.source,
-                            'version': self.version,
-                            'source_url': self.source_url
-                        }
                         _props = {}
                         yield(_id, _source, _target, self.label, _props)
                 except:

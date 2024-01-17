@@ -45,9 +45,7 @@ class TopLDAdapter(Adapter):
                     props = {
                         'r2': to_float(f"{row[6]}{row[4]}"),
                         'd_prime': float(row[5]),
-                        'ancestry': self.ancestry,
-                        'source': self.source,
-                        'source_url': self.source_url
+                        'ancestry': self.ancestry
                     }
 
                     yield '', _source, _target, self.label, props

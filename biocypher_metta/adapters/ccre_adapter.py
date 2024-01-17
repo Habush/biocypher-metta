@@ -74,8 +74,6 @@ class CCREAdapter(Adapter):
                             'end': int(row[2]),
                             'biochemical_activity': row[9],
                             #'biochemical_activity_description': description,
-                            'source': self.source,
-                            'source_url': self.source_url
                         }
                         yield _id, self.label, _props
 

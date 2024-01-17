@@ -69,9 +69,7 @@ class HoCoMoCoMotifAdapter(Adapter):
                     'pwm_C': pwm["pmw_C"],
                     'pwm_G': pwm["pmw_G"],
                     'pwm_T': pwm["pmw_T"],
-                    'length': length,
-                    'source': self.source,
-                    'source_url': self.source_url + model_name
+                    'length': length
                 }
 
                 yield _id, self.label, props

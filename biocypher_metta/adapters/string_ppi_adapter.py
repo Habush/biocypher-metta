@@ -47,8 +47,5 @@ class StringPPIAdapter(Adapter):
                     _target = protein2_uniprot
                     _props = {
                         "score": float(row[2]) / 1000, # divide by 1000 to normalize score
-                        "source": self.source,
-                        "source_url": self.source_url,
-                        "version": self.version
                     }
                     yield _id, _source, _target, self.label, _props

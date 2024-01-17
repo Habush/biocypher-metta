@@ -48,9 +48,6 @@ class CoxpresdbAdapter(Adapter):
                             source = ensembl_id
                             target = co_ensembl_id
                             _props = {
-                                'score': float(score),
-                                'source': self.source,
-                                'version': self.version,
-                                'source_url': self.source_url
+                                'score': float(score)
                             }
                             yield(_id, source, target, self.label, _props)

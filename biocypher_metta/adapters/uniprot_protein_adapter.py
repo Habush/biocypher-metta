@@ -49,9 +49,6 @@ class UniprotProteinAdapter(Adapter):
                 properties = {
                     'accessions': record.accessions[1:] if len(record.accessions) > 1 else record.accessions[0],
                     'name': record.entry_name.split('_')[0],
-                    'synonyms': dbxrefs,
-                    'source': self.source,
-                    'source_url': self.source_url
-
+                    'synonyms': dbxrefs
                 }
                 yield id, self.label, properties

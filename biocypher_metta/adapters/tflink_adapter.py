@@ -53,8 +53,6 @@ class TFLinkAdapter(Adapter):
                         "evidence": pubmed_ids,
                         "databases": sources,
                         "evidence_type": evidence_type,
-                        "detection_method": row[6],
-                        "source": self.source,
-                        "source_url": self.source_url
+                        "detection_method": row[6]
                     }
                     yield _id, _source, _target, self.label, _props

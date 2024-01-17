@@ -90,8 +90,6 @@ class EncodeEnhancerGeneLinkAdapter(Adapter):
                 _target = gene_id
                 _props = {
                     'score': score,
-                    'source': self.source,
-                    'source_url': self.source_url,
                     'biological_context': f'(ontology_term {OntologyAdapter.to_key(self.biological_context)})'
                 }
                 yield _id, _source, _target, self.label, _props

@@ -97,10 +97,7 @@ class OntologyAdapter(Adapter):
                     'description': ' '.join(self.get_all_property_values_from_node(node, 'descriptions')),
                     'synonyms': self.get_all_property_values_from_node(node, 'related_synonyms') +
                     self.get_all_property_values_from_node(node, 'exact_synonyms'),
-                    'subontology': nodes_in_go_namespaces.get(node, None),
-                    'source': ontology.upper(),
-                    'source_url': OntologyAdapter.ONTOLOGIES[ontology],
-
+                    'subontology': nodes_in_go_namespaces.get(node, None)
                 }
                 i += 1
                 yield term_id, self.label, props
@@ -164,9 +161,7 @@ class OntologyAdapter(Adapter):
                             to_node_key
                         )
                         props = {
-                            'rel_type': self.predicate_name(predicate),
-                            'source': ontology.upper(),
-                            'source_url': OntologyAdapter.ONTOLOGIES[ontology],
+                            'rel_type': self.predicate_name(predicate)
                         }
 
                         yield key, from_node_key, to_node_key, self.label, props

@@ -56,9 +56,7 @@ class RoadMapAdapter(Adapter):
                                 'start': int(row[1]), #TODO check if this is 0-based or 1-based
                                 'end': int(row[2]),
                                 'biological_context': tissue_name,
-                                'biochemical_activity': row[3].split("_")[1],
-                                'source': self.source,
-                                'source_url': self.source_url
+                                'biochemical_activity': row[3].split("_")[1]
                             }
                             yield _id, self.label, _props
 

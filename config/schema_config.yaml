@@ -14,9 +14,6 @@ gene:
     name: str
     gene_type: str
     synonyms: str[]
-    source: str
-    version: str
-    source_url: str
 
 protein:
   represented_as: node
@@ -27,9 +24,6 @@ protein:
     organism_id: int
     name: str
     synonyms: str[]
-    source: str
-    version: str
-    source_url: str
 
 transcript:
   represented_as: node
@@ -42,9 +36,6 @@ transcript:
     transcript_name: str
     transcript_id: str
     transcript_type: str
-    source: str
-    version: str
-    source_url: str
   is_a: nucleic acid entity
   description: >-
     An RNA synthesized on a DNA or RNA template by an RNA polymerase.
@@ -72,8 +63,6 @@ sequence variant:
     rsid: array
     ref: str
     alt: str
-    source: str
-    source_url: str
     annotation: obj
   aliases: [ 'allele' ]
   local_names:
@@ -177,8 +166,6 @@ ontology term:
     synonyms: obj
     subontology: str
     subset: str
-    source: str
-    source_url: str
 
 pathway:
   is_a: biological process
@@ -193,8 +180,6 @@ pathway:
   properties:
     name: str
     evidence: str
-    source: str
-    source_url: str
 
 tad:
   is_a: entity
@@ -205,8 +190,6 @@ tad:
     start: int
     end: int
     genes: str[]
-    source: str
-    source_url: str
 
 motif:
   represented_as: node
@@ -245,10 +228,6 @@ transcribed to:
   input_label: transcribed_to
   source: gene
   target: transcript
-  properties:
-    source: str
-    version: str
-    source_url: str
   description: >-
     inverse of transcribed from
   exact_mappings:
@@ -279,9 +258,6 @@ translates to:
   input_label: translates_to
   source: transcript
   target: protein
-  properties:
-    source: str
-    source_url: str
   inverse: translation of
   description: >-
     x (amino acid chain/polypeptide) is the ribosomal translation of y (transcript) if and only if a ribosome
@@ -297,9 +273,6 @@ translation of:
   input_label: translation_of
   source: protein
   target: transcript
-  properties:
-    source: str
-    source_url: str
   description: >-
     inverse of translates to
   inverse: translates to
@@ -344,7 +317,6 @@ ontology relationship:
   target: ontology term
   properties:
     rel_type: str
-    source: str
 
 go gene product:
   is_a: related to at instance level
@@ -356,8 +328,6 @@ go gene product:
     qualifier: obj
     db_reference: obj
     evidence: str
-    source: str
-    source_url: str
 
 gene to gene coexpression association:
   description: >-
@@ -379,10 +349,7 @@ gene to gene coexpression association:
   source: gene
   target: gene
   properties:
-    score: int
-    source: str
-    source_url: str
-    version: str
+    score: float
 
 regulatory element to gene expression association:
   description: >-
@@ -404,8 +371,6 @@ regulatory element to gene expression association:
   target: gene
   properties:
     score: int
-    source: str
-    source_url:  str
     biological_context: str
 
 
@@ -422,8 +387,6 @@ transcription factor to gene association:
     detection_method: str
     databases: str[]
     evidence_type: str
-    source: str,
-    source_url: str
 
 post translational interaction:
   is_a: pairwise molecular interaction
@@ -433,9 +396,6 @@ post translational interaction:
   target: protein
   properties:
     score: float,
-    source: str,
-    source_url: str,
-    version: str
 
 gtex variant to gene expression association:
   aliases: [ 'eQTL', 'e-QTL']
@@ -469,8 +429,6 @@ gtex variant to gene expression association:
     p_value: float
     q_value: float
     biological_context: str
-    source: str
-    source_url: str
 
 topld in linkage disequilibrium with:
   is_a: related to at instance level
@@ -497,5 +455,3 @@ topld in linkage disequilibrium with:
     ancestry: str
     r2: float
     d_prime: float
-    source: str
-    source_url: str

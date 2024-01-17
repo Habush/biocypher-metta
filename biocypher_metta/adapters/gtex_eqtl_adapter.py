@@ -74,10 +74,7 @@ class GTExEQTLAdapter(Adapter):
                                         'slope': to_float(row[24]),
                                         'p_value': to_float(row[27]),
                                         'q_value': to_float(row[28]),
-                                        'biological_context': tissue_name,
-                                        'source': self.source,
-                                        'source_url': self.source_url,
-                                        'version': self.version,
+                                        'biological_context': tissue_name
                                     }
 
                                     yield '', _source, _target, self.label, _props

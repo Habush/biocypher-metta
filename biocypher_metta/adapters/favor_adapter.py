@@ -117,8 +117,6 @@ class FavorAdapter(Adapter):
                         'ref': row[FIELDS["ref_vcf"]],
                         'alt': row[FIELDS["alt_vcf"]],
                         'annotation': self.parse_annotation(row),
-                        'source': self.source,
-                        'source_url': self.source_url
                     }
 
                     # TODO add a simple heuristics to resolve conflicting rsids appear close to each other in data

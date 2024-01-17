@@ -40,9 +40,7 @@ class ReactomePathwayAdapter(Adapter):
                 id, name, species = line.strip().split('\t')
                 if species == 'Homo sapiens':
                     props = {
-                            'name': name,
-                            'source': self.source,
-                            'source_url': self.source_url
+                            'name': name
                     }
                     pubmed_id = self.pubmed_map.get(id, None)
                     if pubmed_id is not None:

@@ -13,7 +13,7 @@ app = typer.Typer()
 # Run build
 @app.command()
 def main(output_dir: Annotated[pathlib.Path, typer.Option(exists=False, file_okay=False, dir_okay=True)],
-         adapter_config: Annotated[pathlib.Path, typer.Option(exists=True, file_okay=True, dir_okay=False)]):
+         adapters_config: Annotated[pathlib.Path, typer.Option(exists=True, file_okay=True, dir_okay=False)]):
     """
     Main function. Call individual adapters to download and process data. Build
     via BioCypher from node and edge data.
@@ -29,23 +29,23 @@ def main(output_dir: Annotated[pathlib.Path, typer.Option(exists=False, file_oka
 
     # Run adapters
 
-    with open(adapter_config, "r") as fp:
+    with open(adapters_config, "r") as fp:
         try:
-            adapters_config = yaml.safe_load(fp)
+            adapters_dict = yaml.safe_load(fp)
         except yaml.YAMLError as e:
             logger.error(f"Error while trying to load adapter config")
             logger.error(e)
 
-    for c in adapters_config:
+    for c in adapters_dict:
         logger.info(f"Running adapter: {c}")
-        adapter_config = adapters_config[c]["adapter"]
+        adapter_config = adapters_dict[c]["adapter"]
         adapter_module = importlib.import_module(adapter_config["module"])
         adapter_cls = getattr(adapter_module, adapter_config["cls"])
         ctr_args = adapter_config["args"]
         adapter = adapter_cls(**ctr_args)
-        write_nodes = adapters_config[c]["nodes"]
-        write_edges = adapters_config[c]["edges"]
-        outdir = adapters_config[c]["outdir"]
+        write_nodes = adapters_dict[c]["nodes"]
+        write_edges = adapters_dict[c]["edges"]
+        outdir = adapters_dict[c]["outdir"]
 
         if write_nodes:
             nodes = adapter.get_nodes()

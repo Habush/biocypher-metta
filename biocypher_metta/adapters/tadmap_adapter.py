@@ -66,9 +66,7 @@ class TADMapAdapter(Adapter):
                         'chr': chr,
                         'start': int(start),
                         'end': int(end),
-                        'genes': genes,
-                        'source': self.source,
-                        'source_url': self.source_url
+                        'genes': genes
                     }
 
                     yield _id, self.label, _props

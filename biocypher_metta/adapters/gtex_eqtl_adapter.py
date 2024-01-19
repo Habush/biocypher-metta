@@ -55,7 +55,7 @@ class GTExEQTLAdapter(Adapter):
                         for row in qtl_csv:
                             try:
                                 chr, pos, ref_seq, alt_seq, assembly_code = row[11].split('_')
-                                pos = int(pos) - 1 # 1-based to 0-based
+                                pos = int(pos)
                                 if assembly_code != 'b38':
                                     print('Unsuported assembly: ' + assembly_code)
                                     continue

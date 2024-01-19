@@ -37,6 +37,8 @@ class GencodeAdapter(Adapter):
         self.version = 'v44'
         self.source_url = 'https://www.gencodegenes.org/human/'
 
+        super(GencodeAdapter, self).__init__()
+
     def parse_info_metadata(self, info):
         parsed_info = {}
         for key, value in zip(info, info[1:]):
@@ -69,8 +71,7 @@ class GencodeAdapter(Adapter):
                             'transcript_name': info['transcript_name'],
                             'transcript_type': info['transcript_type'],
                             'chr': data[GencodeAdapter.INDEX['chr']],
-                            # the gtf file format is [1-based,1-based], needs to convert to BED format [0-based,1-based]
-                            'start': int(data[GencodeAdapter.INDEX['coord_start']]) - 1,
+                            'start': int(data[GencodeAdapter.INDEX['coord_start']]),
                             'end': int(data[GencodeAdapter.INDEX['coord_end']]),
                             'gene_name': info['gene_name'],
                         }

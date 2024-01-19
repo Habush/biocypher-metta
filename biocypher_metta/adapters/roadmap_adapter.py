@@ -53,7 +53,7 @@ class RoadMapAdapter(Adapter):
                             _id = build_regulatory_region_id(row[0], row[1], row[2])
                             _props = {
                                 'chr': row[0],
-                                'start': int(row[1]), #TODO check if this is 0-based or 1-based
+                                'start': int(row[1]) + 1,
                                 'end': int(row[2]),
                                 'biological_context': tissue_name,
                                 'biochemical_activity': row[3].split("_")[1]

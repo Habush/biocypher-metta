@@ -99,8 +99,7 @@ class GencodeGeneAdapter(Adapter):
                         # 'gene_id': gene_id, # TODO should this be included?
                         'gene_type': info['gene_type'],
                         'chr': split_line[GencodeGeneAdapter.INDEX['chr']],
-                        # the gtf file format is [1-based,1-based], needs to convert to BED format [0-based,1-based]
-                        'start': int(split_line[GencodeGeneAdapter.INDEX['coord_start']]) - 1,
+                        'start': int(split_line[GencodeGeneAdapter.INDEX['coord_start']]),
                         'end': int(split_line[GencodeGeneAdapter.INDEX['coord_end']]),
                         'gene_name': info['gene_name'],
                         'synonyms': alias

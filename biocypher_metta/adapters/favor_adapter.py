@@ -101,7 +101,7 @@ class FavorAdapter(Adapter):
             for row in reader:
 
                 chr = "chr" + row[FIELDS["chromosome"]]
-                pos = int(row[FIELDS["start_position"]]) - 1
+                pos = int(row[FIELDS["start_position"]])
 
                 if check_genomic_location(self.chr, self.start, self.end, chr, pos, pos):
                     id = build_variant_id(

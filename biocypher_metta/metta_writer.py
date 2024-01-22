@@ -13,8 +13,8 @@ class MeTTaWriter:
         self.biocypher_config = biocypher_config
         self.output_path = pathlib.Path(output_dir)
 
-        assert not os.path.exists(output_dir), f"Directory {output_dir} already exists. Please choose a different directory."
-        self.output_path.mkdir()
+        if not os.path.exists(output_dir):
+            self.output_path.mkdir()
 
         self.bcy = BioCypher(schema_config_path=schema_config,
                              biocypher_config_path=biocypher_config)
@@ -128,7 +128,7 @@ class MeTTaWriter:
         return self.write_property(def_out, properties)
 
     def write_edge(self, edge):
-        _, source_id, target_id, label, properties = edge
+        source_id, target_id, label, properties = edge
         label = label.lower()
         source_type = self.edge_node_types[label]["source"]
         target_type = self.edge_node_types[label]["target"]
@@ -156,7 +156,7 @@ class MeTTaWriter:
 
     def check_property(self, prop):
         if isinstance(prop, str) and " " in prop:
-            return f'"{prop}"'
+            return prop.replace(" ", "_")
         return prop
 
     def convert_input_labels(self, label, replace_char="_"):

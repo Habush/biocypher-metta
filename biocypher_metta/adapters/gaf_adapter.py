@@ -96,5 +96,5 @@ class GAFAdapter(Adapter):
                     'evidence': annotation['Evidence']
                 }
 
-                yield "", source, target, self.label, props
+                yield source, target, self.label, props
 

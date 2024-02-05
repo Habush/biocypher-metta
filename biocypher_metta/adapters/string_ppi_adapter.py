@@ -42,10 +42,9 @@ class StringPPIAdapter(Adapter):
                 if protein1 in self.ensembl2uniprot and protein2 in self.ensembl2uniprot:
                     protein1_uniprot = self.ensembl2uniprot[protein1]
                     protein2_uniprot = self.ensembl2uniprot[protein2]
-                    _id = protein1_uniprot + "_" + protein2_uniprot + "_" + self.label
                     _source = protein1_uniprot
                     _target = protein2_uniprot
                     _props = {
                         "score": float(row[2]) / 1000, # divide by 1000 to normalize score
                     }
-                    yield _id, _source, _target, self.label, _props
+                    yield _source, _target, self.label, _props

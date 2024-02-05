@@ -50,4 +50,4 @@ class CoxpresdbAdapter(Adapter):
                             _props = {
                                 'score': float(score)
                             }
-                            yield(_id, source, target, self.label, _props)
+                            yield source, target, self.label, _props

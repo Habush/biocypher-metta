@@ -60,16 +60,12 @@ class GTExEQTLAdapter(Adapter):
                                     print('Unsuported assembly: ' + assembly_code)
                                     continue
 
-                                variant_id = build_variant_id(
-                                    chr, pos, ref_seq, alt_seq, 'GRCh38'
-                                )
-                                if check_genomic_location(self.chr, self.start, self.end, chr, pos, None):
+                                variant_id = row[18]
+                                if check_genomic_location(self.chr, self.start, self.end, chr, pos, pos):
                                     _source = variant_id
                                     _target = row[0].split('.')[0]
                                     _props = {
                                         #add re factor
-                                        'chr': chr,
-                                        'rsId': row[18],
                                         'maf': to_float(row[21]),
                                         'slope': to_float(row[24]),
                                         'p_value': to_float(row[27]),
@@ -77,7 +73,7 @@ class GTExEQTLAdapter(Adapter):
                                         'biological_context': tissue_name
                                     }
 
-                                    yield '', _source, _target, self.label, _props
+                                    yield _source, _target, self.label, _props
                             except Exception as e:
                                 print(row)
                                 print(e)

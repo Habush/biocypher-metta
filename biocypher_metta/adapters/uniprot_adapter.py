@@ -41,7 +41,7 @@ class UniprotAdapter(Adapter):
                                 _source = ensg_id
                                 _target = record.id
                                 _props = {}
-                                yield(_id, _source, _target, self.label, _props)
+                                yield _source, _target, self.label, _props
 
                             except:
                                 print(
@@ -57,7 +57,7 @@ class UniprotAdapter(Adapter):
                                 _target = ensg_id
                                 _source = record.id
                                 _props = {}
-                                yield(_id, _source, _target, self.label, _props)
+                                yield  _source, _target, self.label, _props
 
                             except:
                                 print(

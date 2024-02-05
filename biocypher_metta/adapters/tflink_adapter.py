@@ -39,7 +39,6 @@ class TFLinkAdapter(Adapter):
                 if tf_entrez_id in self.entrez2ensemble and target_entrez_id in self.entrez2ensemble:
                     tf_ensemble_id = self.entrez2ensemble[tf_entrez_id]
                     target_ensemble_id = self.entrez2ensemble[target_entrez_id]
-                    _id = tf_ensemble_id + "_" + target_ensemble_id + "_" + self.label
                     _source = tf_ensemble_id
                     _target = target_ensemble_id
                     pubmed_ids = [f"pubmed:{i}" for i in row[7].split(";")]
@@ -55,4 +54,4 @@ class TFLinkAdapter(Adapter):
                         "evidence_type": evidence_type,
                         "detection_method": row[6]
                     }
-                    yield _id, _source, _target, self.label, _props
+                    yield _source, _target, self.label, _props

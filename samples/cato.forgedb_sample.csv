@@ -1,0 +1,10 @@
+rsid,chromosome,start_position,end_position,cato_score,strand,motif,score_1,score_2,allele_1,allele_2,biosample
+rs10,chr7,92383887,92383888,0.0168,+,V_MYOGNF1_01,25,1,A,C,AG04449;CD34;CD56;GM04503D;HAh;HAsp;HBVSMC;HGF;HPdLF;HSMM;HSMM_D;IMR90;Jurkat;LHCN_M2;LHCN_M2_D4;MSC;RPTEC;SKMC;SK_N_MC;SkMC;Skin_Fibroblasts;Skin_Keratinocytes;Small_Bowel_Mucosa;Trophoblast;fAdrenal;fBrain;fHeart;fIntestine_Lg;fIntestine_Sm;fKidney;fLung;fMuscle;fPlacenta;fSkin_fibro;fSpinal_cord;fSpleen;fThymus;hTH1;hTH2;iPS_19_11;vHMEC
+rs10000001,chr4,112583766,112583767,0.0462,-,V_SP1SP3_Q4,3,37,G,A,Mesendoderm
+rs10000008,chr4,172776203,172776204,0.019,+,Zfp740_primary,16,3,C,T,""
+rs10000014,chr4,178447147,178447148,0.0214,+,SP8_C2H2_1,9,11,C,T,""
+rs10000017,chr4,84778124,84778125,0.0792,+,V_E2A_Q2,4,9,C,T,Trophoblast;fKidney;fMuscle;fSpinal_cord;hESCT0;iPS_19_11;iPS_19_7
+rs10000018,chr4,100458447,100458448,0.0221,-,EGR3_C2H2_1,10,5,A,G,H7_hESC_T5;Small_Bowel_Mucosa;fIntestine_Lg;fIntestine_Sm
+rs1000002,chr3,183635767,183635768,0.0177,+,V_NF1_Q6,2,1,C,T,CD4;Gastric_Mucosa;H7_hESC_T9;HESC;HPAEC;Pancreas;PrEC;Psoas_Muscle;Small_Bowel_Mucosa;Trophoblast;fHeart;fKidney;fLung;fStomach;vHMEC
+rs10000023,chr4,95733905,95733906,0.0465,-,ZNF740_C2H2_2,7,7,G,T,Mesendoderm;hESCT0
+rs10000027,chr4,156176216,156176217,0.0615,-,V_AML_Q6,7,1,C,G,fBrain;fKidney

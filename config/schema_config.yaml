@@ -60,7 +60,6 @@ sequence variant:
   properties:
     chr: str
     pos: int
-    rsid: array
     ref: str
     alt: str
     annotation: obj
@@ -132,9 +131,6 @@ regulatory region:
   represented_as: node
   input_label: regulatory_region
   properties:
-    chr: str
-    start: int
-    end: int
     biological_context: str
     biochemical_activity: str
 #    biochemical_activity_description: str
@@ -366,12 +362,13 @@ regulatory element to gene expression association:
       subproperty_of: genetic association
   represented_as: edge
   input_label: regulates_gene
-  label_as_edge: ELEMENT_GENE
   source: regulatory region
   target: gene
   properties:
-    score: int
+    score: float
     biological_context: str
+    biochemical_activity: str
+    tissue: str
 
 
 transcription factor to gene association:
@@ -422,8 +419,6 @@ gtex variant to gene expression association:
     filter_by_range: beta, p_value, slope
     return: p_value, slope, beta, label, chr, source, source_url, biological_context
   properties:
-    chr: str
-    rsId: str
     slope: float
     maf: float
     p_value: float
@@ -455,3 +450,16 @@ topld in linkage disequilibrium with:
     ancestry: str
     r2: float
     d_prime: float
+
+closest gene to variant association:
+  is_a: related to at instance level
+  description: >-
+    holds between a sequence variant and a gene that is closest to the variant
+  represented_as: edge
+  input_label: closest_gene
+  source: sequence variant
+  target: gene
+  properties:
+    chr: str
+    pos: int
+    distance: int

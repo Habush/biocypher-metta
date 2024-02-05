@@ -53,7 +53,7 @@ class ReactomeAdapter(Adapter):
                         _id = ensg_id + '_' + pathway_id
                         _source = ensg_id
                         _target = pathway_id
-                        yield(_id, _source, _target, self.label, _props)
+                        yield _source, _target, self.label, _props
                 else:
                     parent, child = line.strip().split('\t')
                     if parent.startswith('R-HSA'):
@@ -62,9 +62,9 @@ class ReactomeAdapter(Adapter):
                             _source = parent
                             _target = child
 
-                            yield(_id, _source, _target, self.label, _props)
+                            yield _source, _target, self.label, _props
                         elif self.label == 'child_pathway_of':
                             _id = child + '_' + parent
                             _source =  child
                             _target =  parent
-                            yield(_id, _source, _target, self.label, _props)
+                            yield  _source, _target, self.label, _props

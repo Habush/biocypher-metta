@@ -2,20 +2,27 @@
 import csv
 import gzip
 import os.path
-
 from biocypher_metta.adapters import Adapter
-import biocypher._logger as logger
+from biocypher._logger import logger
+from biocypher_metta.adapters.helpers import check_genomic_location
 
 
 class RoadMapAdapter(Adapter):
 
-    def __init__(self, filepath):
+    def __init__(self, filepath, dbsnp_rsid_map,
+                 chr=None, start=None, end=None):
         """
-        :type filepath: str
         :param filepath: path to the directory containing epigenomic data
+        :param dbsnp_rsid_map: a dictionary mapping dbSNP rsid to genomic position
+        :param chr: chromosome name
+        :param start: start position
+        :param end: end position
         """
         self.filepath = filepath
-
+        self.dbsnp_rsid_map = dbsnp_rsid_map
+        self.chr = chr
+        self.start = start
+        self.end = end
         assert os.path.isdir(self.filepath), "The path to the directory containing epigenomic data is not directory"
 
         self.source = 'Roadmap Epigenomics Project'
@@ -39,12 +46,16 @@ class RoadMapAdapter(Adapter):
                 for row in reader:
                     try:
                         _id = row[0]
-                        _props = {
-                            'biological_context': row[2],
-                            'tissue': row[3],
-                            'biochemical_activity': row[4]
-                        }
-                        yield _id, self.label, _props
+                        chr = self.dbsnp_rsid_map[_id]["chr"]
+                        pos = self.dbsnp_rsid_map[_id]["pos"]
+                        if check_genomic_location(self.chr, self.start, self.end, chr, pos, pos):
+                            _props = {
+                                'biological_context': row[2],
+                                'tissue': row[3],
+                                'biochemical_activity': row[4]
+                            }
+                            yield _id, self.label, _props
 
                     except Exception as e:
-                        logger.get_logger(f"error while parsing row: {row}, error: {e} skipping...")
+                        print(f"error while parsing row: {row}, error: {e} skipping...")
+                        continue

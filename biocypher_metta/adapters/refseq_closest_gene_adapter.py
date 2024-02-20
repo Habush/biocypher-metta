@@ -40,7 +40,7 @@ class RefSeqClosestGeneAdapter(Adapter):
                 try:
                     rsid = row[0]
                     chr = row[1]
-                    pos = self.dbsnp_rsid_map[rsid]
+                    pos = self.dbsnp_rsid_map[rsid]["pos"]
                     if check_genomic_location(self.chr, self.start, self.end, chr, pos, pos):
                         try:
                             source_id = rsid

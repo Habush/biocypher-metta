@@ -155,16 +155,11 @@ class OntologyAdapter(Adapter):
 
                         predicate_name = self.predicate_name(predicate)
                         if predicate_name == 'dbxref': continue #TODO should we skip dbxref edges?
-                        key = '{}_{}_{}'.format(
-                            from_node_key,
-                            predicate_key,
-                            to_node_key
-                        )
                         props = {
                             'rel_type': self.predicate_name(predicate)
                         }
 
-                        yield key, from_node_key, to_node_key, self.label, props
+                        yield from_node_key, to_node_key, self.label, props
                         i += 1
 
 

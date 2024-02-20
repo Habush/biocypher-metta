@@ -37,7 +37,7 @@ class CADDAdapter(Adapter):
             for row in reader:
                 try:
                     rsid = row[0]
-                    pos = self.dbsnp_rsid_map[rsid]
+                    pos = self.dbsnp_rsid_map[rsid]["pos"]
                     chr = row[1]
                     ref = row[3]
                     alt = row[4]

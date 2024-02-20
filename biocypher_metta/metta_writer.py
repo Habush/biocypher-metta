@@ -155,8 +155,11 @@ class MeTTaWriter:
         return out_str
 
     def check_property(self, prop):
-        if isinstance(prop, str) and " " in prop:
-            return prop.replace(" ", "_")
+        if isinstance(prop, str):
+            if " " in prop:
+                return prop.replace(" ", "_")
+            elif "(" in prop or ")" in prop: #quote if there are paranthesis
+                return f"\"{prop}\""
         return prop
 
     def convert_input_labels(self, label, replace_char="_"):

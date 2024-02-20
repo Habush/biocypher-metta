@@ -69,9 +69,9 @@ def load_metta_space(input_dir: Annotated[pathlib.Path,
             metta.import_file(full_path)
             logger.debug(memory_usage(f"After loading {full_path}"))
 
-        # get properties of (gene "ENSG00000290825")
+        # get properties of (gene ENSG00000290825)
         prog1 = '''
-            !(match &self ($x (gene "ENSG00000290825") $y) ($x (gene "ENSG00000290825") $y))
+            !(match &self ($x (gene ENSG00000290825) $y) ($x (gene ENSG00000290825) $y))
         '''
         with Timer(f"Executing query : {prog1}", logger_name="metta_space_import"):
             logger.info(metta.run(prog1))

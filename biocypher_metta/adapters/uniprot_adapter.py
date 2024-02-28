@@ -37,11 +37,11 @@ class UniprotAdapter(Adapter):
                         if item.startswith('Ensembl') and 'ENST' in item:
                             try:
                                 ensg_id = item.split(':')[-1].split('.')[0]
-                                _id = record.id + '_' + ensg_id
+                                _id = f"{self.label}-{ensg_id}-{record.id}"
                                 _source = ensg_id
                                 _target = record.id
                                 _props = {}
-                                yield _source, _target, self.label, _props
+                                yield _id, _source, _target, self.label, _props
 
                             except:
                                 print(
@@ -53,11 +53,11 @@ class UniprotAdapter(Adapter):
                         if item.startswith('Ensembl') and 'ENST' in item:
                             try:
                                 ensg_id = item.split(':')[-1].split('.')[0]
-                                _id = ensg_id + '_' + record.id
+                                _id = f"{self.label}-{record.id}-{ensg_id}"
                                 _target = ensg_id
                                 _source = record.id
                                 _props = {}
-                                yield  _source, _target, self.label, _props
+                                yield  _id, _source, _target, self.label, _props
 
                             except:
                                 print(

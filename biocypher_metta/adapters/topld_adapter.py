@@ -57,8 +57,8 @@ class TopLDAdapter(Adapter):
                         'd_prime': float(row[5]),
                         'ancestry': self.ancestry
                     }
-
-                    yield rsid_1, rsid_2, self.label, props
+                    _id = f"{self.label}-{rsid_1}-{rsid_2}-{self.ancestry}"
+                    yield _id, rsid_1, rsid_2, self.label, props
 
                 except Exception as e:
                     logger.error(f"Error while processing line {row}, error: {e}, skipping...")

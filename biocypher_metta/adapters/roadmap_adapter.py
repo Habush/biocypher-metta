@@ -56,6 +56,6 @@ class RoadMapAdapter(Adapter):
                             }
                             yield _id, self.label, _props
 
-                    except Exception as e:
+                    except KeyError as e:
                         print(f"error while parsing row: {row}, error: {e} skipping...")
                         continue

@@ -77,8 +77,8 @@ class ABCAdapter(Adapter):
                                 "abc_score": row[COL_DICT['abc_score']],
                                 "biological_context": row[COL_DICT['cell_type']]
                             }
-
-                            yield _source, _target, self.label, props
+                            _id = f"{self.label}-{_source}-{_target}-{row[COL_DICT['cell_type']]}"
+                            yield _id, _source, _target, self.label, props
                         except Exception as e:
                             print(f"error while parsing row: {row}, error: {e} skipping...")
                             continue

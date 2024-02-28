@@ -185,7 +185,6 @@ tad:
     chr: str
     start: int
     end: int
-    genes: str[]
 
 motif:
   represented_as: node
@@ -424,6 +423,15 @@ gtex variant to gene expression association:
     p_value: float
     q_value: float
     biological_context: str
+
+in tad region:
+    is_a: related to at instance level
+    description: >-
+      holds between a gene and a TAD region
+    represented_as: edge
+    input_label: in_tad_region
+    source: gene
+    target: tad
 
 topld in linkage disequilibrium with:
   is_a: related to at instance level

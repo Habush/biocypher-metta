@@ -99,17 +99,17 @@ class GencodeAdapter(Adapter):
                     gene_key = gene_key + '_PAR_Y'
                 try:
                     if self.type == 'transcribed to':
-                        _id = gene_key + '_' + transcript_key
+                        _id = f"{self.label}-{gene_key}-{transcript_key}"
                         _source = gene_key
                         _target = transcript_key
                         _props = {}
-                        yield _source, _target, self.label, _props
+                        yield _id, _source, _target, self.label, _props
                     elif self.type == 'transcribed from':
-                        _id = transcript_key + '_' + gene_key
+                        _id = f"{self.label}-{transcript_key}-{gene_key}"
                         _source = transcript_key
                         _target = gene_key
                         _props = {}
-                        yield _source, _target, self.label, _props
+                        yield _id, _source, _target, self.label, _props
                 except:
                     print(
                         f'fail to process for label to load: {self.label}, type to load: {self.type}, data: {line}')

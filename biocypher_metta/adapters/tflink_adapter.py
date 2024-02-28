@@ -54,4 +54,5 @@ class TFLinkAdapter(Adapter):
                         "evidence_type": evidence_type,
                         "detection_method": row[6]
                     }
-                    yield _source, _target, self.label, _props
+                    _id = f"{self.label}-{_source}-{_target}"
+                    yield _id, _source, _target, self.label, _props

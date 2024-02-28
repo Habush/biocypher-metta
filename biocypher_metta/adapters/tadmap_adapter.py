@@ -13,18 +13,21 @@ class TADMapAdapter(Adapter):
     Source : TADMap https://cb.csail.mit.edu/cb/tadmap/
     """
 
-    def __init__(self, filepath, chr=None, start=None, end=None):
+    def __init__(self, filepath, type, chr=None, start=None, end=None):
         """
         :type filepath: str
+        :type type: str
         :type chr: str
         :type start: int
         :type end: int
         :param filepath: path to the TAD file
+        :param type: type of TAD data
         :param chr: chromosome name
         :param start: start position
         :param end: end position
         """
         self.filepath = filepath
+        self.type = type
         self.dataset = 'tad'
         self.source = 'TADMap'
         self.source_url = 'https://cb.csail.mit.edu/cb/tadmap/'
@@ -33,7 +36,10 @@ class TADMapAdapter(Adapter):
         self.start = start
         self.end = end
 
-        self.label = "tad"
+        if self.type == 'node':
+            self.label = "tad"
+        elif self.type == 'edge':
+            self.label = "in_tad_region"
 
         super(TADMapAdapter, self).__init__()
 
@@ -70,3 +76,31 @@ class TADMapAdapter(Adapter):
                     }
 
                     yield _id, self.label, _props
+
+    def get_edges(self):
+        """
+        :return: generator of TAD edges
+        """
+        with open(self.filepath, 'r') as tad_file:
+            next(tad_file)
+            for row in tad_file:
+                row = row.strip().split(',')
+                loc_info = row[0].split('|')
+                genes_info = row[1].split(';')
+                chr = loc_info[1]
+                start = loc_info[2]
+                end = loc_info[3]
+                genes = []
+                for gene in genes_info:
+                    try:
+                        gene = gene.split('|')
+                        gene = gene[1].split(':')[1]
+                        genes.append(gene)
+                    except IndexError:
+                        continue
+
+                if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
+                    _source = build_regulatory_region_id(chr, start, end)
+                    for gene in genes:
+                        _id = f"{self.label}-{_source}-{gene}"
+                        yield _id, gene, _source, self.label, {}

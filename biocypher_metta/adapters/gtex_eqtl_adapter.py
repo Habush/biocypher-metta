@@ -72,8 +72,8 @@ class GTExEQTLAdapter(Adapter):
                                         'q_value': to_float(row[28]),
                                         'biological_context': tissue_name
                                     }
-
-                                    yield _source, _target, self.label, _props
+                                    _id = f"{self.label}-{_source}-{_target}-{tissue_name}"
+                                    yield _id, _source, _target, self.label, _props
                             except Exception as e:
                                 print(row)
                                 print(e)

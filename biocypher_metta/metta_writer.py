@@ -124,20 +124,23 @@ class MeTTaWriter:
         id, label, properties = node
         if "." in label:
             label = label.split(".")[1]
+        _id = f"{label}-{id}"
         def_out = f"({self.convert_input_labels(label)} {id})"
-        return self.write_property(def_out, properties)
+        type_def = f"(: {label}-{id} {def_out})"
+        return self.write_property(def_out, type_def, _id, properties)
 
     def write_edge(self, edge):
-        source_id, target_id, label, properties = edge
+        _id, source_id, target_id, label, properties = edge
         label = label.lower()
         source_type = self.edge_node_types[label]["source"]
         target_type = self.edge_node_types[label]["target"]
         def_out = f"({label} ({source_type} {source_id}) ({target_type} {target_id}))"
-        return self.write_property(def_out, properties)
+        type_def = f"(: {_id} {def_out})"
+        return self.write_property(def_out, type_def, _id, properties)
 
 
-    def write_property(self, def_out, property):
-        out_str = [def_out]
+    def write_property(self, def_out, type_def, id, property):
+        out_str = [type_def]
         for k, v in property.items():
             if k in self.excluded_properties or v is None or v == "": continue
             if isinstance(v, list):
@@ -146,12 +149,12 @@ class MeTTaWriter:
                     prop += f'{self.check_property(e)}'
                     if i != len(v) - 1: prop += " "
                 prop += ")"
-                out_str.append(f'({k} {def_out} {prop})')
+                out_str.append(f'(: {k}-{id} ({k} {def_out} {prop}))')
             elif isinstance(v, dict):
                 prop = f"({k} {def_out})"
                 out_str.extend(self.write_property(prop, v))
             else:
-                out_str.append(f'({k} {def_out} {self.check_property(v)})')
+                out_str.append(f'(: {k}-{id} ({k} {def_out} {self.check_property(v)}))')
         return out_str
 
     def check_property(self, prop):

@@ -51,7 +51,7 @@ class RefSeqClosestGeneAdapter(Adapter):
                                 'pos': pos,
                                 'distance': distance
                             }
-
+                            _id = f"{self.label}-{source_id}-{target_id}"
                             yield source_id, target_id, self.label, props
 
                         except Exception as e:

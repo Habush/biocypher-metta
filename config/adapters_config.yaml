@@ -216,10 +216,23 @@ tadmap:
     cls: TADMapAdapter
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/tadmap/TADMap_geneset_hs.csv
+      type: node
 
   outdir: tadmap
   nodes: True
   edges: False
+
+tadmap:
+  adapter:
+    module: biocypher_metta.adapters.tadmap_adapter
+    cls: TADMapAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/tadmap/TADMap_geneset_hs.csv
+      type: edge
+
+  outdir: tadmap
+  nodes: False
+  edges: True
 
 
 gtex_eqtl:
@@ -342,39 +355,39 @@ refseq_closest_gene:
 
   outdir: refseq
   nodes: False
-  edges: edge
+  edges: True
 
-#topld_afr:
-#    adapter:
-#        module: biocypher_metta.adapters.topld_adapter
-#        cls: TopLDAdapter
-#        args:
-#            filepath: /mnt/hdd_2/abdu/biocypher_data/topld/AFR/AFR_chr16_no_filter_0.2_1000000_LD.csv.gz
-#            ancestry: AFR
-#            dbsnp_pos_map: None # will be provided by import script
-#            chr: chr16
-#            start: 53000000
-#            end:  56000000
-#
-#    outdir: top_ld/afr
-#    nodes: False
-#    edges: True
-#
-#topld_eas:
-#    adapter:
-#        module: biocypher_metta.adapters.topld_adapter
-#        cls: TopLDAdapter
-#        args:
-#            filepath: /mnt/hdd_2/abdu/biocypher_data/topld/EAS/EAS_chr16_no_filter_0.2_1000000_LD.csv.gz
-#            ancestry: EAS
-#            dbsnp_pos_map: None # will be provided by import script
-#            chr: chr16
-#            start: 53000000
-#            end:  56000000
-#
-#    outdir: top_ld/EAS
-#    nodes: False
-#    edges: True
+topld_afr:
+    adapter:
+        module: biocypher_metta.adapters.topld_adapter
+        cls: TopLDAdapter
+        args:
+            filepath: /mnt/hdd_2/abdu/biocypher_data/topld/AFR/AFR_chr16_no_filter_0.2_1000000_LD.csv.gz
+            ancestry: AFR
+            dbsnp_pos_map: None # will be provided by import script
+            chr: chr16
+            start: 53000000
+            end:  56000000
+
+    outdir: top_ld/afr
+    nodes: False
+    edges: True
+
+topld_eas:
+    adapter:
+        module: biocypher_metta.adapters.topld_adapter
+        cls: TopLDAdapter
+        args:
+            filepath: /mnt/hdd_2/abdu/biocypher_data/topld/EAS/EAS_chr16_no_filter_0.2_1000000_LD.csv.gz
+            ancestry: EAS
+            dbsnp_pos_map: None # will be provided by import script
+            chr: chr16
+            start: 53000000
+            end:  56000000
+
+    outdir: top_ld/EAS
+    nodes: False
+    edges: True
 
 topld_eur:
     adapter:
@@ -392,18 +405,18 @@ topld_eur:
     nodes: False
     edges: True
 
-#topld_sas:
-#    adapter:
-#        module: biocypher_metta.adapters.topld_adapter
-#        cls: TopLDAdapter
-#        args:
-#            filepath: /mnt/hdd_2/abdu/biocypher_data/topld/SAS/SAS_chr16_no_filter_0.2_1000000_LD.csv.gz
-#            ancestry: SAS
-#            dbsnp_pos_map: None # will be provided by import script
-#            chr: chr16
-#            start: 53000000
-#            end:  56000000
-#
-#    outdir: top_ld/SAS
-#    nodes: False
-#    edges: True
+topld_sas:
+    adapter:
+        module: biocypher_metta.adapters.topld_adapter
+        cls: TopLDAdapter
+        args:
+            filepath: /mnt/hdd_2/abdu/biocypher_data/topld/SAS/SAS_chr16_no_filter_0.2_1000000_LD.csv.gz
+            ancestry: SAS
+            dbsnp_pos_map: None # will be provided by import script
+            chr: chr16
+            start: 53000000
+            end:  56000000
+
+    outdir: top_ld/SAS
+    nodes: False
+    edges: True

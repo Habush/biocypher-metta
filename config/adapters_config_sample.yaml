@@ -216,11 +216,23 @@ tadmap:
     cls: TADMapAdapter
     args:
       filepath: ./samples/tad_sample.csv
+      type: node
 
   outdir: tadmap
   nodes: True
   edges: False
 
+tadmap:
+  adapter:
+    module: biocypher_metta.adapters.tadmap_adapter
+    cls: TADMapAdapter
+    args:
+      filepath: ./samples/tad_sample.csv
+      type: edge
+
+  outdir: tadmap
+  nodes: False
+  edges: True
 
 gtex_eqtl:
   adapter:
@@ -252,6 +264,10 @@ roadmap_chromatin_state:
     cls: RoadMapAdapter
     args:
       filepath: ./samples/roadmap/chromatin_state
+      dbsnp_rsid_map: None # will be provided by import script
+      chr: None
+      start: None
+      end: None
   outdir: roadmap
   nodes: True
   edges: False
@@ -262,6 +278,10 @@ roadmap_h3_mark:
     cls: RoadMapAdapter
     args:
       filepath: ./samples/roadmap/h3_marks
+      dbsnp_rsid_map: None # will be provided by import script
+      chr: None
+      start: None
+      end: None
   outdir: roadmap
   nodes: True
   edges: False
@@ -272,6 +292,10 @@ roadmap_dhs:
     cls: RoadMapAdapter
     args:
       filepath: ./samples/roadmap/dhs
+      dbsnp_rsid_map: None # will be provided by import script
+      chr: None
+      start: None
+      end: None
   outdir: roadmap
   nodes: True
   edges: False
@@ -327,7 +351,7 @@ refseq_closest_gene:
 
   outdir: refseq
   nodes: False
-  edges: edge
+  edges: True
 
 topld_eur:
     adapter:

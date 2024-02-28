@@ -158,8 +158,8 @@ class OntologyAdapter(Adapter):
                         props = {
                             'rel_type': self.predicate_name(predicate)
                         }
-
-                        yield from_node_key, to_node_key, self.label, props
+                        _id = f"{self.label}-{from_node_key}-{to_node_key}"
+                        yield _id, from_node_key, to_node_key, self.label, props
                         i += 1
 
 

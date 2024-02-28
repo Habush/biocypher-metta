@@ -47,4 +47,5 @@ class StringPPIAdapter(Adapter):
                     _props = {
                         "score": float(row[2]) / 1000, # divide by 1000 to normalize score
                     }
-                    yield _source, _target, self.label, _props
+                    _id = f"{self.label}-{_source}-{_target}"
+                    yield _id, _source, _target, self.label, _props

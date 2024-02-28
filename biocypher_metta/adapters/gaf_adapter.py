@@ -95,6 +95,6 @@ class GAFAdapter(Adapter):
                     'db_reference': annotation['DB:Reference'],
                     'evidence': annotation['Evidence']
                 }
-
-                yield source, target, self.label, props
+                _id = f"{self.label}-{source}-{target}"
+                yield _id, source, target, self.label, props
 

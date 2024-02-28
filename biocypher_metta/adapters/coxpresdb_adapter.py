@@ -44,10 +44,10 @@ class CoxpresdbAdapter(Adapter):
                         (co_entrez_id, score) = line.strip().split()
                         co_ensembl_id = entrez_ensembl_dict.get(co_entrez_id)
                         if co_ensembl_id:
-                            _id = entrez_id + '_' + co_entrez_id + '_' + self.label
                             source = ensembl_id
                             target = co_ensembl_id
                             _props = {
                                 'score': float(score)
                             }
-                            yield source, target, self.label, _props
+                            _id = f"{self.label}-{source}-{target}"
+                            yield _id, source, target, self.label, _props

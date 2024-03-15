@@ -413,7 +413,7 @@ gencode_exon:
     module: biocypher_metta.adapters.gencode_exon_adapter
     cls: GencodeExonAdapter
     args:
-      filepath: /home/developer/Desktop/datasets/gencode_sample.gtf.gz
+      filepath: /mnt/hdd_2/abdu/biocypher_data/gencode/gencode.annotation.gtf.gz
 
   outdir: gencode
   nodes: True

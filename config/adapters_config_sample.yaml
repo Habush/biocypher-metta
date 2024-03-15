@@ -342,3 +342,14 @@ topld_eur:
     outdir: top_ld
     nodes: False
     edges: True
+
+gencode_exon:
+  adapter:
+    module: biocypher_metta.adapters.gencode_exon_adapter
+    cls: GencodeExonAdapter
+    args:
+      filepath: ./samples/gencode_sample.gtf.gz
+
+  outdir: gencode
+  nodes: True
+  edges: False

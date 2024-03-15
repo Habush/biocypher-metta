@@ -47,6 +47,18 @@ transcript:
   in_subset:
     - model_organism_database
 
+exon:
+  represented_as: node
+  preferred_id: ensemble
+  input_label: exon
+  properties:
+    gene_id: str
+    transcript_id: str
+    chr: str
+    start: int
+    end: int
+    exon_number: int
+    exon_id: str
 
 sequence variant:
   represented_as: node

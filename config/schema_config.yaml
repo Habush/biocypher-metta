@@ -65,7 +65,7 @@ sequence variant:
   input_label: sequence_variant
   accessible_via:
     name: variants
-    description: 'Retrieve variant data. For example: region = chr1:1157520-1158189 or funseq_description = noncoding or rsid = rs2045642915'
+    description: "Retrieve variant data. For example: region = chr1:1157520-1158189 or funseq_description = noncoding or rsid = rs2045642915"
     filter_by: _id
     filter_by_range: pos
     return: _id, chr, pos, rsid, ref, alt, qual, filter, format, source, source_url, annotations
@@ -75,7 +75,7 @@ sequence variant:
     ref: str
     alt: str
     annotation: obj
-  aliases: [ 'allele' ]
+  aliases: ["allele"]
   local_names:
     agr: allele
   is_a: biological entity
@@ -138,17 +138,17 @@ sequence variant:
           description: NM_007294.3(BRCA1):c.2521C>T (p.Arg841Trp)
   in_subset:
     - model_organism_database
-  
+
 regulatory region:
   represented_as: node
   input_label: regulatory_region
   properties:
     biological_context: str
     biochemical_activity: str
-#    biochemical_activity_description: str
+    #    biochemical_activity_description: str
     source: str
     source_url: str
-  aliases: ['regulatory element', 'accessible dna element']
+  aliases: ["regulatory element", "accessible dna element"]
   description: >-
     A region (or regions) of the genome that contains known or putative regulatory elements
     that act in cis- or trans- to affect the transcription of gene
@@ -168,7 +168,7 @@ ontology term:
   represented_as: node
   input_label: ontology term
   properties:
-#    uri: str
+    #    uri: str
     term_name: str
     description: str
     synonyms: obj
@@ -211,7 +211,7 @@ motif:
       fields: tf_name
   accessible_via:
     name: motifs
-    description: 'TF binding motifs.'
+    description: "TF binding motifs."
     fuzzy_text_search: tf_name
     return: _id, tf_name, source, source_url, pwm, length
   properties:
@@ -227,6 +227,19 @@ motif:
 # ---
 # Associations
 # ---
+enhances:
+  represented_as: edge
+  is_a: related to at instance level
+  domain: enhancer
+  range: gene
+  input_label: regulate
+  source: enhancer
+  target: gene
+  description: >-
+    ehancers regulate genes
+  exact_mappings:
+    - RO:0002511
+    - SIO:010080
 
 transcribed to:
   represented_as: edge
@@ -300,22 +313,22 @@ gene to pathway association:
   target: pathway
 
 parent pathway of:
-    is_a: related to at concept level
-    description: >-
-      holds between two pathways where the domain class is a parent pathway of the range class
-    represented_as: edge
-    input_label: parent_pathway_of
-    source: pathway
-    target: pathway
+  is_a: related to at concept level
+  description: >-
+    holds between two pathways where the domain class is a parent pathway of the range class
+  represented_as: edge
+  input_label: parent_pathway_of
+  source: pathway
+  target: pathway
 
 child pathway of:
-    is_a: related to at concept level
-    description: >-
-      holds between two pathways where the domain class is a child pathway of the range class
-    represented_as: edge
-    input_label: child_pathway_of
-    source: pathway
-    target: pathway
+  is_a: related to at concept level
+  description: >-
+    holds between two pathways where the domain class is a child pathway of the range class
+  represented_as: edge
+  input_label: child_pathway_of
+  source: pathway
+  target: pathway
 
 ontology relationship:
   is_a: related to at instance level
@@ -382,7 +395,6 @@ regulatory element to gene expression association:
     biochemical_activity: str
     tissue: str
 
-
 transcription factor to gene association:
   description: >-
     An regulatory association between a transcription factor and its target gene
@@ -407,7 +419,7 @@ post translational interaction:
     score: float,
 
 gtex variant to gene expression association:
-  aliases: [ 'eQTL', 'e-QTL']
+  aliases: ["eQTL", "e-QTL"]
   description: >-
     An association between a variant and expression of a gene (i.e. e-QTL)
   is_a: variant to gene association
@@ -426,7 +438,7 @@ gtex variant to gene expression association:
   target: gene
   accessible_via:
     name: e-qtls
-    description: 'Retrieve e-qtls data along with correspondent variants and genes'
+    description: "Retrieve e-qtls data along with correspondent variants and genes"
     filter_by: beta, slope, source, label, p_value
     filter_by_range: beta, p_value, slope
     return: p_value, slope, beta, label, chr, source, source_url, biological_context
@@ -439,7 +451,8 @@ gtex variant to gene expression association:
 
 topld in linkage disequilibrium with:
   is_a: related to at instance level
-  description: holds between two sequence variants, the presence of which are correlated
+  description:
+    holds between two sequence variants, the presence of which are correlated
     in a population
   symmetric: true
   annotations:
@@ -453,7 +466,7 @@ topld in linkage disequilibrium with:
   target: sequence variant
   accessible_via:
     name: variants_variants
-    description: 'Retrieve variant correlation data. Example: r2 = gt:0.8, d_prime = lte:0.5, ancestry = SAS'
+    description: "Retrieve variant correlation data. Example: r2 = gt:0.8, d_prime = lte:0.5, ancestry = SAS"
     filter_by: r2, d_prime, ancestry, label
     filter_by_range: r2, d_prime
     return: chr, ancestry, d_prime, label, r2, variant_1_base_pair, variant_1_rsid, variant_2_base_pair, variant_2_rsid, source, source_url

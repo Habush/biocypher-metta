@@ -493,3 +493,35 @@ dbvar_variant:
   outdir: dbvar
   nodes: True
   edges: False
+
+peregrine_enhancer:
+  adapter:
+    module: biocypher_metta.adapters.peregrine_adapter
+    cls: PEREGRINEAdapter
+    args:
+      enhancers_file: /mnt/hdd_2/abdu/biocypher_data/peregrine/PEREGRINEenhancershg38.gz
+      enhancer_gene_link_scores: /mnt/hdd_2/abdu/biocypher_data/peregrine/PEREGRINEscores.gz
+      source_file: /mnt/hdd_2/abdu/biocypher_data/peregrine/PEREGRINEenhancersources.gz
+      hgnc_ensembl_map: ./aux_files/hgnc_ensembl_map.pkl
+      hgnc_symbol_map: ./aux_files/hgnc_symbol_map.pkl
+
+  outdir: peregrine
+  nodes: True
+  edges: False
+
+peregrine_enhancer_regulates:
+  adapter:
+    module: biocypher_metta.adapters.peregrine_adapter
+    cls: PEREGRINEAdapter
+    args:
+      enhancers_file: /mnt/hdd_2/abdu/biocypher_data/peregrine/PEREGRINEenhancershg38.gz
+      enhancer_gene_link_scores: /mnt/hdd_2/abdu/biocypher_data/peregrine/PEREGRINEscores.gz
+      source_file: /mnt/hdd_2/abdu/biocypher_data/peregrine/PEREGRINEenhancersources.gz
+      hgnc_ensembl_map: ./aux_files/hgnc_ensembl_map.pkl
+      hgnc_symbol_map: ./aux_files/hgnc_symbol_map.pkl
+      type: peregrine enhancer to gene association
+      label: enhancer_regulates
+
+  outdir: peregrine
+  nodes: False
+  edges: True

@@ -178,6 +178,9 @@ enhancer:
   input_label: enhancer
   is_a: non coding element
   inherit_properties: true
+  properties:
+    enhancer_type: str
+    gene: str[]
 
 promoter:
   represented_as: node

@@ -245,6 +245,16 @@ motif:
     pwm_T: float[]
     length: str
 
+promoter:
+  is_a: entity
+  represented_as: node
+  input_label: promoter
+  properties:
+    chr: str
+    start: int
+    end: int
+    gene: str
+
 # ---
 # 3D genome structures
 tad:

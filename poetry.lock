@@ -799,6 +799,54 @@ qa = ["flake8 (==5.0.4)", "mypy (==0.971)", "types-setuptools (==67.2.0.1)"]
 testing = ["Django", "attrs", "colorama", "docopt", "pytest (<7.0.0)"]
 
 [[package]]
+name = "liftover"
+version = "1.2.2"
+description = "Package for converting between genome build coordinates"
+optional = false
+python-versions = "*"
+files = [
+    {file = "liftover-1.2.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:51a2612d2d76306e9269e357fb932a7ccf4c31d63e29ff581a3be855b11067a6"},
+    {file = "liftover-1.2.2-cp310-cp310-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:b9e5432a805d738d677c8977f0a912b4912a65bb42827ca99a44272c15979efc"},
+    {file = "liftover-1.2.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:37810caa316a21a9231b0446fde87da2e27b6631a7b650030954234bacfe2495"},
+    {file = "liftover-1.2.2-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:a9ebe63b0af8fad21fc8cf664b7ddfa96377e5922fcc870503ed0a9a9ae35f1d"},
+    {file = "liftover-1.2.2-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:49207211c3ce895919d9d719f0f23c873911132112d3263d69d925f299ce609c"},
+    {file = "liftover-1.2.2-cp310-cp310-win32.whl", hash = "sha256:8241f27e32453bbf7193f23c3e0752f280edec4a7479ad486bd42627b7e6ac81"},
+    {file = "liftover-1.2.2-cp310-cp310-win_amd64.whl", hash = "sha256:668537a4f93b6cbac7897da4cef362f5d21ca1faafe6e5b219babffafa27d4c3"},
+    {file = "liftover-1.2.2-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:4a5533228b08e940aef983349e3e53e72b022cc9f9d3163801865af2de0c48ff"},
+    {file = "liftover-1.2.2-cp311-cp311-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:aa54d8774dcfe3ced655410123d6c77c2a68528e63eaca5b6c95a390dd633637"},
+    {file = "liftover-1.2.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e4bca270f3a1d1274b90e62b4c2bb342c168431edfdba55a977128bb967d6dd4"},
+    {file = "liftover-1.2.2-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:f0555d6e8e1be00b13d7b6ad26c7afef52e762c414e844502c06a0568a10b535"},
+    {file = "liftover-1.2.2-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:510cf0d744024cb7426d99935a7831e3a82a4e778f5121b2ff98cf24e1ab313f"},
+    {file = "liftover-1.2.2-cp311-cp311-win32.whl", hash = "sha256:d529d9b00aff25989669ea439513d8dfe32758a475fe1b0d9ddd1a3c519983fe"},
+    {file = "liftover-1.2.2-cp311-cp311-win_amd64.whl", hash = "sha256:ba60e5e0206144ca0c5568a785c352bc1d68e89ea1d4a10c46b8d3e13de6219e"},
+    {file = "liftover-1.2.2-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:daabc191f4ecd85f4ee8a26d76c70dd1867d76c045acba92c178c456946a0dbd"},
+    {file = "liftover-1.2.2-cp312-cp312-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:aab0522f34e9eeee6c0c0ab4169bff8d663a706302c556f1ba6417a8c86568db"},
+    {file = "liftover-1.2.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:11e3af9f83b9514788520c1aafd8eb2954bc408c6d009997e9c05b8fbfe27f05"},
+    {file = "liftover-1.2.2-cp312-cp312-musllinux_1_1_i686.whl", hash = "sha256:0cf5d9d059792e6b238e030c94408e5f00b8611755ba22ffff1cf7bb410ff4b1"},
+    {file = "liftover-1.2.2-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:ed59475d1ce3beeda6120b9555cf130740da969bb550c2e960a3c341ffee55e4"},
+    {file = "liftover-1.2.2-cp312-cp312-win32.whl", hash = "sha256:441d499994147d36d114902e0ea2a79deeba5973f044861c8ea672a048be2d9e"},
+    {file = "liftover-1.2.2-cp312-cp312-win_amd64.whl", hash = "sha256:51c85b57f8d0ba6b82ebbf3d4a8837eb9025c20df438ffdce1012ebf2064027a"},
+    {file = "liftover-1.2.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:714aa3dcde330d4690ea8d94392f07f80a38565ede500761ca08eb6d48da61c3"},
+    {file = "liftover-1.2.2-cp38-cp38-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:ce6409b3a3f71ea36782a5d412d3f1770a838a437a530004d7333cd4297760c1"},
+    {file = "liftover-1.2.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8116c150c3fa706a0090415b4c9973298fe3ba716d8681c5d9e065f1886d3ef8"},
+    {file = "liftover-1.2.2-cp38-cp38-musllinux_1_1_i686.whl", hash = "sha256:67fadae30cbb907c1d99b5356c444ae01470d4c31ec9370adc8e14cbb5f830ad"},
+    {file = "liftover-1.2.2-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:26b65bf359df2d4af25764899097089cd5138be673ca5c78d2565dc1b2a882a5"},
+    {file = "liftover-1.2.2-cp38-cp38-win32.whl", hash = "sha256:7c04760888081f980d47214e6d4e133137cbcaa4c92254d4aac6a5ec503758aa"},
+    {file = "liftover-1.2.2-cp38-cp38-win_amd64.whl", hash = "sha256:3b54a688ae436e5a59d23fa1f90f15cca34ae627ddc6110846ef2578fbe75c3a"},
+    {file = "liftover-1.2.2-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:e3fa2f6b49b3d3485d2f3d4aa29fad3b5f8ea7116a63700d44df91e3f6130406"},
+    {file = "liftover-1.2.2-cp39-cp39-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:0b3d317c80d88c9d9cd354065802aa84be72cdab780100bad3021020fef8bf09"},
+    {file = "liftover-1.2.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:19535a9b358c010e6d52ff24fa488395bb84138c204775437775b3589b52805f"},
+    {file = "liftover-1.2.2-cp39-cp39-musllinux_1_1_i686.whl", hash = "sha256:965e7002e5fd6e60d374fe0005f9f9e79a67cd68def1bd50efa115885e5eb29d"},
+    {file = "liftover-1.2.2-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:5112498248821879024ab6517ed0259ef5cfa8061c6ae449b515199eba2ef808"},
+    {file = "liftover-1.2.2-cp39-cp39-win32.whl", hash = "sha256:a8ea30c48820f4813b7a3432e3e08f18d6890c0110a7efcdb3ad5a9555de3221"},
+    {file = "liftover-1.2.2-cp39-cp39-win_amd64.whl", hash = "sha256:30d54a3c02942260c73b39ef69f6668b710da58c19d95b0cc080d5d598e12eb2"},
+    {file = "liftover-1.2.2.tar.gz", hash = "sha256:f858aed016227882263d369969790adf6df2c07399e16f063aec8a248a2b4513"},
+]
+
+[package.dependencies]
+urllib3 = "*"
+
+[[package]]
 name = "lxml"
 version = "5.0.0"
 description = "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
@@ -1499,6 +1547,7 @@ files = [
     {file = "PyYAML-6.0.1-cp311-cp311-win_amd64.whl", hash = "sha256:bf07ee2fef7014951eeb99f56f39c9bb4af143d8aa3c21b1677805985307da34"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:855fb52b0dc35af121542a76b9a84f8d1cd886ea97c84703eaa6d88e37a2ad28"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9"},
+    {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a08c6f0fe150303c1c6b71ebcd7213c2858041a7e01975da3a99aed1e7a378ef"},
     {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6c22bec3fbe2524cde73d7ada88f6566758a8f7227bfbf93a408a9d86bcc12a0"},
     {file = "PyYAML-6.0.1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:8d4e9c88387b0f5c7d5f281e55304de64cf7f9c0021a3525bd3b1c542da3b0e4"},
     {file = "PyYAML-6.0.1-cp312-cp312-win32.whl", hash = "sha256:d483d2cdf104e7c9fa60c544d92981f12ad66a457afae824d146093b8c294c54"},
@@ -1951,4 +2000,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "06ee5b713c7ece4abbe8d7b6a028c048edf43390f8e370cb7761d67c0362412e"
+content-hash = "2fb2b673e055dced1087b7c7d1d69e6f2c7eb2bcb3b09c4144edf4eaacfcca4f"

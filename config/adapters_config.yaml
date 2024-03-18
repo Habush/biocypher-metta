@@ -444,3 +444,29 @@ rna_central_non_coding_rna_belongs_to_go:
   outdir: rna_central
   nodes: False
   edges: True
+
+endb_enhancer:
+  adapter:
+    module: biocypher_metta.adapters.endb_adapter
+    cls: ENdbAdapter
+    args:
+      filepath: ./samples/ENdb_enhancer.csv.gz
+      hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+  
+  outdir: endb
+  nodes: True
+  edges: False
+
+endb_enhancer_regulates:
+  adapter:
+    module: biocypher_metta.adapters.endb_adapter
+    cls: ENdbAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/ENdb_enhancer.csv.gz
+      hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      type: enhancer to gene association
+      label: enhancer_regulates
+
+  outdir: endb
+  nodes: False
+  edges: True

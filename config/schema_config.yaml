@@ -224,6 +224,17 @@ motif:
     pwm_T: float[]
     length: str
 
+enhancer:
+  is_a: entity
+  represented_as: node
+  input_label: enhancer
+  properties:
+    chr: str
+    start: int
+    end: int
+    enhancer_type: str
+    target_genes: str[]
+
 # ---
 # Associations
 # ---
@@ -475,3 +486,20 @@ closest gene to variant association:
     chr: str
     pos: int
     distance: int
+
+peregrine enhancer to gene association:
+  represented_as: edge
+  is_a: association
+  domain: enhancer
+  range: gene
+  input_label: enhancer_regulates
+  source: enhancer
+  target: gene
+  properties:
+    uniprotkb: str
+    HepG2: str[]
+    HCT116: str[]
+    K562: str[]
+    MCF7: str[]
+  description: >-
+    ehancers regulate genes

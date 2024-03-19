@@ -353,3 +353,14 @@ gencode_exon:
   outdir: gencode
   nodes: True
   edges: False
+
+dgv_variant:
+  adapter:
+    module: biocypher_metta.adapters.dgv_variant_adapter
+    cls: DGVVariantAdapter
+    args:
+      filepath: ./samples/dgv_GRCh38_hg38_variants.txt.gz
+
+  outdir: dgv
+  nodes: True
+  edges: False

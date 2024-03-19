@@ -5,7 +5,6 @@ class EnhancerCCREAdapter(Adapter):
         self.filepath = filepath
         self.label = label
         self.source = "EnhancerCCRE"
-        self.source_url = "URL to dataset source"
         super(EnhancerCCREAdapter, self).__init__()
 
     def get_nodes(self):

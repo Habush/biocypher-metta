@@ -241,6 +241,34 @@ enhances:
     - RO:0002511
     - SIO:010080
 
+is_parent_of:
+  represented_as: edge
+  is_a: related to at instance level
+  domain: parent_cell_type
+  range: cell_type
+  input_label: is_parent_of
+  source: parent_cell_type
+  target: cell_type
+  description: >-
+    A relationship indicating that one cell type is a parent of another cell type in the cell ontology.
+  exact_mappings:
+    - RO:0002511
+    - SIO:010080
+
+is_root_of:
+  represented_as: edge
+  is_a: related to at instance level
+  domain: parent_cell_type
+  range: root_cell_type
+  input_label: is_root_of
+  source: parent_cell_type
+  target: root_cell_type
+  description: >-
+    A relationship indicating that one cell type is the root of another cell type in the cell ontology.
+  exact_mappings:
+    - RO:0002511
+    - SIO:010080
+
 transcribed to:
   represented_as: edge
   is_a: related to at instance level

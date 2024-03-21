@@ -358,3 +358,13 @@ enhancer_ccre:
   outdir: enhancer_ccre
   nodes: True
   edges: True
+
+cell_ontology:
+  adapter:
+    module: biocypher_metta.adapters.cell_ontology_adapter
+    cls: CellOntologyAdapter
+    args:
+      filepath: ./samples/CL.csv.gz
+  outdir: cell_ontology
+  nodes: True
+  edges: True

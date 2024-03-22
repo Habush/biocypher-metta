@@ -223,6 +223,18 @@ motif:
     pwm_G: float[]
     pwm_T: float[]
     length: str
+    
+enhancer:
+  is_a: entity
+  represented_as: node
+  input_label: enhancer
+  properties:
+    chr: str
+    start: int
+    end: int
+    enhancer_type: str
+    genes: str[]
+    snps: str[]
 
 # ---
 # Associations
@@ -475,3 +487,16 @@ closest gene to variant association:
     chr: str
     pos: int
     distance: int
+
+enhancer atlas enhancer to gene association:
+  represented_as: edge
+  is_a: association
+  domain: enhancer
+  range: gene
+  input_label: enhancer_regulates
+  source: enhancer
+  target: gene
+  properties:
+    score: float
+  description: >-
+    ehancers regulate genes

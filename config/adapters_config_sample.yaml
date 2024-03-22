@@ -501,3 +501,31 @@ dbsnp_snps:
   outdir: dbsnp
   nodes: True
   edges: False
+
+enhancer_atlas_enhancer:
+  adapter:
+    module: biocypher_metta.adapters.enhancer_atlas_adapter
+    cls: EnhancerAtlasAdapter
+    args:
+      filepath: ./samples/enhancer_atlas/enhancer.bed.gz
+      enhancer_gene_filepath: ./samples/enhancer_atlas/enhancer_gene.txt.gz
+      enhancer_snps_filepath: ./samples/enhancer_atlas/enhancer_snp.bed.gz
+
+  outdir: enhancer_atlas
+  nodes: True
+  edges: False
+
+enhancer_atlas_enhancer_regulates:
+  adapter:
+    module: biocypher_metta.adapters.enhancer_atlas_adapter
+    cls: EnhancerAtlasAdapter
+    args:
+      filepath: ./samples/enhancer_atlas/enhancer.bed.gz
+      enhancer_gene_filepath: ./samples/enhancer_atlas/enhancer_gene.txt.gz
+      enhancer_snps_filepath: ./samples/enhancer_atlas/enhancer_snp.bed.gz
+      type: enhancer to gene association
+      label: regulates
+
+  outdir: enhancer_atlas
+  nodes: False
+  edges: True

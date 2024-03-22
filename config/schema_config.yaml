@@ -73,8 +73,8 @@ epigenomic feature:
     source_url: str
 
 ontology term:
-  is_a: ontology class
   represented_as: node
+  is_a: ontology class
   input_label: ontology term
   properties:
     source: str
@@ -181,6 +181,9 @@ enhancer:
   inherit_properties: true
   properties:
     data_source: str
+  properties:
+    enhancer_type: str
+    snps: str[]
 
 promoter:
   represented_as: node
@@ -319,8 +322,8 @@ regulatory association:
     source_url: str
 
 transcribed to:
-  represented_as: edge
   is_a: expression
+  represented_as: edge
   inherit_properties: true
   input_label: transcribed_to
   source: gene

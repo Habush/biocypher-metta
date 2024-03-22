@@ -418,3 +418,31 @@ gencode_exon:
   outdir: gencode
   nodes: True
   edges: False
+
+enhancer_atlas_enhancer:
+  adapter:
+    module: biocypher_metta.adapters.enhancer_atlas_adapter
+    cls: EnhancerAtlasAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer.bed.gz
+      enhancer_gene_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_gene.txt.gz
+      enhancer_snps_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_snp.bed.gz
+
+  outdir: enhancer_atlas
+  nodes: True
+  edges: False
+
+enhancer_atlas_enhancer_regulates:
+  adapter:
+    module: biocypher_metta.adapters.enhancer_atlas_adapter
+    cls: EnhancerAtlasAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer.bed.gz
+      enhancer_gene_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_gene.txt.gz
+      enhancer_snps_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_snp.bed.gz
+      type: enhancer atlas enhancer to gene association
+      label: enhancer_regulates
+
+  outdir: enhancer_atlas
+  nodes: False
+  edges: True

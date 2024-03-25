@@ -2,6 +2,11 @@ from biocypher_metta.adapters import Adapter
 import gzip
 import csv
 
+# Example data from cell_ontology.csv.gz file:
+# Class ID,Preferred Label,Synonyms,Definitions,Obsolete,CUI,Semantic Types,Parents
+# http://purl.obolibrary.org/obo/UBERON_0009623,spinal nerve root,spinal root|spinal neural root|root of spinal nerve,"Paired bundles of nerve fibers entering and leaving the spinal cord at each segment.",false,,,http://purl.obolibrary.org/obo/UBERON_0002211
+# http://purl.obolibrary.org/obo/UBERON_0002211,spinal cord,,"The main trunk of the nervous system.",false,,,http://purl.obolibrary.org/obo/UBERON_0000955
+
 class CellOntologyAdapter(Adapter):
     """
     Adapter for Cell Ontology dataset

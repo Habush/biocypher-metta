@@ -353,3 +353,17 @@ gencode_exon:
   outdir: gencode
   nodes: True
   edges: False
+
+rna_central_non_coding_rna:
+  adapter:
+    module: biocypher_metta.adapters.rna_central_adapter
+    cls: RNACentralAdapter
+    args:
+      filepath: ./samples/rna_central/homo_sapiens.GRCh38.bed.gz
+      rfam_filepath: ./samples/rna_central/rnacentral_rfam_annotations.tsv.gz
+      write_properties: True
+      add_provenance: True
+
+  outdir: rna_central
+  nodes: True
+  edges: False

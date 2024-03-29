@@ -191,6 +191,16 @@ super enhancer:
   is_a: non coding element
   inherit_properties: true
 
+non coding rna:
+  represented_as: node
+  input_label: non_coding_rna
+  is_a: non coding element
+  inherit_properties: true
+  properties:
+    rna_type: str
+    rfam: str[]
+    go_term: str[]
+
 pathway:
   is_a: biological process
   exact_mappings:

@@ -1,352 +1,352 @@
-gencode_gene:
-  adapter:
-    module: biocypher_metta.adapters.gencode_gene_adapter
-    cls: GencodeGeneAdapter
-    args:
-      filepath: ./samples/gencode_sample.gtf.gz
-      gene_alias_file_path: ./aux_files/Homo_sapiens.gene_info.gz
+# gencode_gene:
+#   adapter:
+#     module: biocypher_metta.adapters.gencode_gene_adapter
+#     cls: GencodeGeneAdapter
+#     args:
+#       filepath: ./samples/gencode_sample.gtf.gz
+#       gene_alias_file_path: ./aux_files/Homo_sapiens.gene_info.gz
 
-  outdir: gencode
-  nodes: True
-  edges: False
+#   outdir: gencode
+#   nodes: True
+#   edges: False
 
-gencode_transcripts:
-  adapter:
-    module: biocypher_metta.adapters.gencode_adapter
-    cls: GencodeAdapter
-    args:
-      filepath: ./samples/gencode_sample.gtf.gz
-      type: transcript
-      label: transcript
+# gencode_transcripts:
+#   adapter:
+#     module: biocypher_metta.adapters.gencode_adapter
+#     cls: GencodeAdapter
+#     args:
+#       filepath: ./samples/gencode_sample.gtf.gz
+#       type: transcript
+#       label: transcript
 
-  outdir: gencode
-  nodes: True
-  edges: False
+#   outdir: gencode
+#   nodes: True
+#   edges: False
 
-transcribed_to:
-  adapter:
-    module: biocypher_metta.adapters.gencode_adapter
-    cls: GencodeAdapter
-    args:
-      filepath: ./samples/gencode_sample.gtf.gz
-      type: transcribed to
-      label: transcribed_to
+# transcribed_to:
+#   adapter:
+#     module: biocypher_metta.adapters.gencode_adapter
+#     cls: GencodeAdapter
+#     args:
+#       filepath: ./samples/gencode_sample.gtf.gz
+#       type: transcribed to
+#       label: transcribed_to
 
-  outdir: gencode
-  nodes: False
-  edges: True
+#   outdir: gencode
+#   nodes: False
+#   edges: True
 
-transcribed_from:
-  adapter:
-    module: biocypher_metta.adapters.gencode_adapter
-    cls: GencodeAdapter
-    args:
-      filepath: ./samples/gencode_sample.gtf.gz
-      type: transcribed from
-      label: transcribed_from
+# transcribed_from:
+#   adapter:
+#     module: biocypher_metta.adapters.gencode_adapter
+#     cls: GencodeAdapter
+#     args:
+#       filepath: ./samples/gencode_sample.gtf.gz
+#       type: transcribed from
+#       label: transcribed_from
 
-  outdir: gencode
-  nodes: False
-  edges: True
+#   outdir: gencode
+#   nodes: False
+#   edges: True
 
-uniprotkb_sprot:
-  adapter:
-    module: biocypher_metta.adapters.uniprot_protein_adapter
-    cls: UniprotProteinAdapter
-    args:
-      filepath: ./samples/uniprot_sprot_human_sample.dat.gz
+# uniprotkb_sprot:
+#   adapter:
+#     module: biocypher_metta.adapters.uniprot_protein_adapter
+#     cls: UniprotProteinAdapter
+#     args:
+#       filepath: ./samples/uniprot_sprot_human_sample.dat.gz
 
-  outdir: uniprot
-  nodes: True
-  edges: False
+#   outdir: uniprot
+#   nodes: True
+#   edges: False
 
-uniprotkb_sprot_translates_to:
-  adapter:
-    module: biocypher_metta.adapters.uniprot_adapter
-    cls: UniprotAdapter
-    args:
-      filepath: ./samples/uniprot_sprot_human_sample.dat.gz
-      type: translates to
-      label: translates_to
+# uniprotkb_sprot_translates_to:
+#   adapter:
+#     module: biocypher_metta.adapters.uniprot_adapter
+#     cls: UniprotAdapter
+#     args:
+#       filepath: ./samples/uniprot_sprot_human_sample.dat.gz
+#       type: translates to
+#       label: translates_to
 
-  outdir: uniprot
-  nodes: False
-  edges: True
+#   outdir: uniprot
+#   nodes: False
+#   edges: True
 
-uniprotkb_sprot_translates_of:
-  adapter:
-    module: biocypher_metta.adapters.uniprot_adapter
-    cls: UniprotAdapter
-    args:
-      filepath: ./samples/uniprot_sprot_human_sample.dat.gz
-      type: translation of
-      label: translation_of
+# uniprotkb_sprot_translates_of:
+#   adapter:
+#     module: biocypher_metta.adapters.uniprot_adapter
+#     cls: UniprotAdapter
+#     args:
+#       filepath: ./samples/uniprot_sprot_human_sample.dat.gz
+#       type: translation of
+#       label: translation_of
 
-  outdir: uniprot
-  nodes: False
-  edges: True
+#   outdir: uniprot
+#   nodes: False
+#   edges: True
 
-pathway:
-  adapter:
-    module: biocypher_metta.adapters.reactome_pathway_adapter
-    cls: ReactomePathwayAdapter
-    args:
-      filepath: ./samples/reactome/ReactomePathways.txt
-      pubmed_map_path: ./samples/reactome/ReactionPMIDS.txt
+# pathway:
+#   adapter:
+#     module: biocypher_metta.adapters.reactome_pathway_adapter
+#     cls: ReactomePathwayAdapter
+#     args:
+#       filepath: ./samples/reactome/ReactomePathways.txt
+#       pubmed_map_path: ./samples/reactome/ReactionPMIDS.txt
 
-  outdir: reactome
-  nodes: True
-  edges: False
+#   outdir: reactome
+#   nodes: True
+#   edges: False
 
-genes_pathways:
-  adapter:
-    module: biocypher_metta.adapters.reactome_adapter
-    cls: ReactomeAdapter
-    args:
-      filepath: ./samples/reactome/Ensembl2Reactome_All_Levels_sample.txt
-      label: genes_pathways
+# genes_pathways:
+#   adapter:
+#     module: biocypher_metta.adapters.reactome_adapter
+#     cls: ReactomeAdapter
+#     args:
+#       filepath: ./samples/reactome/Ensembl2Reactome_All_Levels_sample.txt
+#       label: genes_pathways
 
-  outdir: reactome
-  nodes: False
-  edges: True
+#   outdir: reactome
+#   nodes: False
+#   edges: True
 
-parent_pathway_of:
-  adapter:
-    module: biocypher_metta.adapters.reactome_adapter
-    cls: ReactomeAdapter
-    args:
-      filepath: ./samples/reactome/ReactomePathwaysRelation.txt
-      label: parent_pathway_of
+# parent_pathway_of:
+#   adapter:
+#     module: biocypher_metta.adapters.reactome_adapter
+#     cls: ReactomeAdapter
+#     args:
+#       filepath: ./samples/reactome/ReactomePathwaysRelation.txt
+#       label: parent_pathway_of
 
-  outdir: reactome
-  nodes: False
-  edges: True
+#   outdir: reactome
+#   nodes: False
+#   edges: True
 
-child_pathway_of:
-  adapter:
-    module: biocypher_metta.adapters.reactome_adapter
-    cls: ReactomeAdapter
-    args:
-      filepath: ./samples/reactome/ReactomePathwaysRelation.txt
-      label: child_pathway_of
+# child_pathway_of:
+#   adapter:
+#     module: biocypher_metta.adapters.reactome_adapter
+#     cls: ReactomeAdapter
+#     args:
+#       filepath: ./samples/reactome/ReactomePathwaysRelation.txt
+#       label: child_pathway_of
 
-  outdir: reactome
-  nodes: False
-  edges: True
+#   outdir: reactome
+#   nodes: False
+#   edges: True
 
-ontology_terms:
-  adapter:
-    module: biocypher_metta.adapters.ontologies_adapter
-    cls: OntologyAdapter
-    args:
-      type: node
-      dry_run: True
+# ontology_terms:
+#   adapter:
+#     module: biocypher_metta.adapters.ontologies_adapter
+#     cls: OntologyAdapter
+#     args:
+#       type: node
+#       dry_run: True
 
-  outdir: onotology
-  nodes: True
-  edges: False
+#   outdir: onotology
+#   nodes: True
+#   edges: False
 
-onotology_relationships:
-  adapter:
-    module: biocypher_metta.adapters.ontologies_adapter
-    cls: OntologyAdapter
-    args:
-      type: edge
-      dry_run: True
+# onotology_relationships:
+#   adapter:
+#     module: biocypher_metta.adapters.ontologies_adapter
+#     cls: OntologyAdapter
+#     args:
+#       type: edge
+#       dry_run: True
 
-  outdir: onotology
-  nodes: False
-  edges: True
+#   outdir: onotology
+#   nodes: False
+#   edges: True
 
-gaf:
-  adapter:
-    module: biocypher_metta.adapters.gaf_adapter
-    cls: GAFAdapter
-    args:
-      filepath: ./samples/goa_human_sample.gaf.gz
+# gaf:
+#   adapter:
+#     module: biocypher_metta.adapters.gaf_adapter
+#     cls: GAFAdapter
+#     args:
+#       filepath: ./samples/goa_human_sample.gaf.gz
 
-  outdir: gaf
-  nodes: False
-  edges: True
+#   outdir: gaf
+#   nodes: False
+#   edges: True
 
-coexpression:
-  adapter:
-    module: biocypher_metta.adapters.coxpresdb_adapter
-    cls: CoxpresdbAdapter
-    args:
-      filepath: ./samples/coxpressdb
-      ensemble_to_entrez_path: ./aux_files/entrez_to_ensembl.pkl
+# coexpression:
+#   adapter:
+#     module: biocypher_metta.adapters.coxpresdb_adapter
+#     cls: CoxpresdbAdapter
+#     args:
+#       filepath: ./samples/coxpressdb
+#       ensemble_to_entrez_path: ./aux_files/entrez_to_ensembl.pkl
 
-  outdir: coxpressdb
-  nodes: False
-  edges: True
+#   outdir: coxpressdb
+#   nodes: False
+#   edges: True
 
-tflink:
-  adapter:
-    module: biocypher_metta.adapters.tflink_adapter
-    cls: TFLinkAdapter
-    args:
-      filepath: ./samples/tflink_homo_sapiens_interactions.tsv.gz
-      entrez_to_ensemble_map: ./aux_files/entrez_to_ensembl.pkl
+# tflink:
+#   adapter:
+#     module: biocypher_metta.adapters.tflink_adapter
+#     cls: TFLinkAdapter
+#     args:
+#       filepath: ./samples/tflink_homo_sapiens_interactions.tsv.gz
+#       entrez_to_ensemble_map: ./aux_files/entrez_to_ensembl.pkl
 
-  outdir: tflink
-  nodes: False
-  edges: True
+#   outdir: tflink
+#   nodes: False
+#   edges: True
 
-string:
-  adapter:
-    module: biocypher_metta.adapters.string_ppi_adapter
-    cls: StringPPIAdapter
-    args:
-      filepath: ./samples/string_human_ppi_v12.0.txt.gz
-      ensembl_to_uniprot_map: ./aux_files/string_ensembl_uniprot_map.pkl
+# string:
+#   adapter:
+#     module: biocypher_metta.adapters.string_ppi_adapter
+#     cls: StringPPIAdapter
+#     args:
+#       filepath: ./samples/string_human_ppi_v12.0.txt.gz
+#       ensembl_to_uniprot_map: ./aux_files/string_ensembl_uniprot_map.pkl
 
-  outdir: string
-  nodes: False
-  edges: True
+#   outdir: string
+#   nodes: False
+#   edges: True
 
-tadmap:
-  adapter:
-    module: biocypher_metta.adapters.tadmap_adapter
-    cls: TADMapAdapter
-    args:
-      filepath: ./samples/tad_sample.csv
+# tadmap:
+#   adapter:
+#     module: biocypher_metta.adapters.tadmap_adapter
+#     cls: TADMapAdapter
+#     args:
+#       filepath: ./samples/tad_sample.csv
 
-  outdir: tadmap
-  nodes: True
-  edges: False
+#   outdir: tadmap
+#   nodes: True
+#   edges: False
 
-gtex_eqtl:
-  adapter:
-    module: biocypher_metta.adapters.gtex_eqtl_adapter
-    cls: GTExEQTLAdapter
-    args:
-      filepath: ./samples/gtex
+# gtex_eqtl:
+#   adapter:
+#     module: biocypher_metta.adapters.gtex_eqtl_adapter
+#     cls: GTExEQTLAdapter
+#     args:
+#       filepath: ./samples/gtex
 
-  outdir: gtex/eqtl
-  nodes: False
-  edges: True
+#   outdir: gtex/eqtl
+#   nodes: False
+#   edges: True
 
-hocomoco:
-  adapter:
-    module: biocypher_metta.adapters.hocomoco_motif_adapter
-    cls: HoCoMoCoMotifAdapter
-    args:
-      filepath: ./samples/motifs
-      annotation_file: ./samples/motifs/HOCOMOCOv11_core_annotation_HUMAN_mono.tsv
-      hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+# hocomoco:
+#   adapter:
+#     module: biocypher_metta.adapters.hocomoco_motif_adapter
+#     cls: HoCoMoCoMotifAdapter
+#     args:
+#       filepath: ./samples/motifs
+#       annotation_file: ./samples/motifs/HOCOMOCOv11_core_annotation_HUMAN_mono.tsv
+#       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
 
-  outdir: hocomoco
-  nodes: True
-  edges: False
+#   outdir: hocomoco
+#   nodes: True
+#   edges: False
 
-roadmap_chromatin_state:
-  adapter:
-    module: biocypher_metta.adapters.roadmap_adapter
-    cls: RoadMapAdapter
-    args:
-      filepath: ./samples/roadmap/chromatin_state
-  outdir: roadmap
-  nodes: True
-  edges: False
+# roadmap_chromatin_state:
+#   adapter:
+#     module: biocypher_metta.adapters.roadmap_adapter
+#     cls: RoadMapAdapter
+#     args:
+#       filepath: ./samples/roadmap/chromatin_state
+#   outdir: roadmap
+#   nodes: True
+#   edges: False
 
-roadmap_h3_mark:
-  adapter:
-    module: biocypher_metta.adapters.roadmap_adapter
-    cls: RoadMapAdapter
-    args:
-      filepath: ./samples/roadmap/h3_marks
-  outdir: roadmap
-  nodes: True
-  edges: False
+# roadmap_h3_mark:
+#   adapter:
+#     module: biocypher_metta.adapters.roadmap_adapter
+#     cls: RoadMapAdapter
+#     args:
+#       filepath: ./samples/roadmap/h3_marks
+#   outdir: roadmap
+#   nodes: True
+#   edges: False
 
-roadmap_dhs:
-  adapter:
-    module: biocypher_metta.adapters.roadmap_adapter
-    cls: RoadMapAdapter
-    args:
-      filepath: ./samples/roadmap/dhs
-  outdir: roadmap
-  nodes: True
-  edges: False
+# roadmap_dhs:
+#   adapter:
+#     module: biocypher_metta.adapters.roadmap_adapter
+#     cls: RoadMapAdapter
+#     args:
+#       filepath: ./samples/roadmap/dhs
+#   outdir: roadmap
+#   nodes: True
+#   edges: False
 
-abc_regulatory_region:
-  adapter:
-    module: biocypher_metta.adapters.abc_adapter
-    cls: ABCAdapter
-    args:
-      filepath: ./samples/abc.forgedb_sample.csv.gz
-      type: "node"
-      hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
-      dbsnp_rsid_map: None # will be provided by import script
+# abc_regulatory_region:
+#   adapter:
+#     module: biocypher_metta.adapters.abc_adapter
+#     cls: ABCAdapter
+#     args:
+#       filepath: ./samples/abc.forgedb_sample.csv.gz
+#       type: "node"
+#       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+#       dbsnp_rsid_map: None # will be provided by import script
 
-  outdir: abc
-  nodes: True
-  edges: False
+#   outdir: abc
+#   nodes: True
+#   edges: False
 
-abc_enhancer_gene_pair:
-  adapter:
-    module: biocypher_metta.adapters.abc_adapter
-    cls: ABCAdapter
-    args:
-      filepath: ./samples/abc.forgedb_sample.csv.gz
-      type: "edge"
-      hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
-      dbsnp_rsid_map: None # will be provided by import script
+# abc_enhancer_gene_pair:
+#   adapter:
+#     module: biocypher_metta.adapters.abc_adapter
+#     cls: ABCAdapter
+#     args:
+#       filepath: ./samples/abc.forgedb_sample.csv.gz
+#       type: "edge"
+#       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+#       dbsnp_rsid_map: None # will be provided by import script
 
-  outdir: abc
-  nodes: False
-  edges: True
+#   outdir: abc
+#   nodes: False
+#   edges: True
 
-cadd:
-  adapter:
-    module: biocypher_metta.adapters.cadd_adapter
-    cls: CADDAdapter
-    args:
-      filepath: ./samples/cadd.forgedb_sample.csv.gz
-      dbsnp_rsid_map: None # will be provided by import script
+# cadd:
+#   adapter:
+#     module: biocypher_metta.adapters.cadd_adapter
+#     cls: CADDAdapter
+#     args:
+#       filepath: ./samples/cadd.forgedb_sample.csv.gz
+#       dbsnp_rsid_map: None # will be provided by import script
 
-  outdir: cadd
-  nodes: True
-  edges: False
+#   outdir: cadd
+#   nodes: True
+#   edges: False
 
-refseq_closest_gene:
-  adapter:
-    module: biocypher_metta.adapters.refseq_closest_gene_adapter
-    cls: RefSeqClosestGeneAdapter
-    args:
-      filepath: ./samples/closest_gene.forgedb_sample.csv.gz
-      hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
-      dbsnp_rsid_map: None # will be provided by import script
+# refseq_closest_gene:
+#   adapter:
+#     module: biocypher_metta.adapters.refseq_closest_gene_adapter
+#     cls: RefSeqClosestGeneAdapter
+#     args:
+#       filepath: ./samples/closest_gene.forgedb_sample.csv.gz
+#       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+#       dbsnp_rsid_map: None # will be provided by import script
 
-  outdir: refseq
-  nodes: False
-  edges: edge
+#   outdir: refseq
+#   nodes: False
+#   edges: edge
 
-topld_eur:
-  adapter:
-    module: biocypher_metta.adapters.topld_adapter
-    cls: TopLDAdapter
-    args:
-      filepath: ./samples/topld_eur_chr16_sample.csv.gz
-      chr: chr16
-      ancestry: EUR
-      dbsnp_pos_map: None # will be provided by import script
+# topld_eur:
+#   adapter:
+#     module: biocypher_metta.adapters.topld_adapter
+#     cls: TopLDAdapter
+#     args:
+#       filepath: ./samples/topld_eur_chr16_sample.csv.gz
+#       chr: chr16
+#       ancestry: EUR
+#       dbsnp_pos_map: None # will be provided by import script
 
-  outdir: top_ld
-  nodes: False
-  edges: True
+#   outdir: top_ld
+#   nodes: False
+#   edges: True
 
-gencode_exon:
-  adapter:
-    module: biocypher_metta.adapters.gencode_exon_adapter
-    cls: GencodeExonAdapter
-    args:
-      filepath: ./samples/gencode_sample.gtf.gz
+# gencode_exon:
+#   adapter:
+#     module: biocypher_metta.adapters.gencode_exon_adapter
+#     cls: GencodeExonAdapter
+#     args:
+#       filepath: ./samples/gencode_sample.gtf.gz
 
-  outdir: gencode
-  nodes: True
-  edges: False
+#   outdir: gencode
+#   nodes: True
+#   edges: False
 
 enhancer_ccre:
   adapter:
@@ -354,7 +354,6 @@ enhancer_ccre:
     cls: EnhancerCCREAdapter
     args:
       filepath: ./samples/encodeCcreCombined.bed
-      label: enhancer
   outdir: enhancer_ccre
   nodes: True
   edges: True

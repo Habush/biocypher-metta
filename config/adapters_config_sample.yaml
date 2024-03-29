@@ -357,3 +357,13 @@ enhancer_ccre:
   outdir: enhancer_ccre
   nodes: True
   edges: True
+
+promoter_ccre:
+  adapter:
+    module: biocypher_metta.adapters.promoter_ccre_adapter
+    cls: PromoterCCREAdapter
+    args:
+      filepath: ./samples/encodeCcreCombined.bed
+  outdir: promoter_ccre
+  nodes: True
+  edges: True

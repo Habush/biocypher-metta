@@ -3,40 +3,128 @@ Title: BioCypher graph schema configuration file
 # "Named Things"
 # ---
 
-gene:
+#parent types
+position entity:
   represented_as: node
-  preferred_id: ensemble
-  input_label: gene
+  is_a: biological entity
+  input_label: position_entity
+  description: >-
+      A biological entity that is defined by its position in the genome
   properties:
     chr: str
     start: int
     end: int
+
+coding element:
+  represented_as: node
+  is_a: position entity
+  inherit_properties: true
+  input_label: coding_element
+  description: >-
+      A region of a gene that codes for a protein or peptide
+  properties:
+    source: str
+    source_url: str
+
+non coding element:
+  represented_as: node
+  is_a: position entity
+  inherit_properties: true
+  input_label: non_coding_element
+  description: >-
+      A region of a gene that does not code for a protein or peptide
+  properties:
+    tissue: str
+    source: str
+    source_url: str
+
+genomic variant:
+  represented_as: node
+  is_a: position entity
+  inherit_properties: true
+  input_label: genomic_variant
+  description: >-
+      A genomic variant is a change in one or more sequence of a genome
+  properties:
+    source: str
+    source_url: str
+
+epigenomic feature:
+  represented_as: node
+  is_a: position entity
+  inherit_properties: true
+  input_label: epigenomic_feature
+  description: >-
+      A region of the genome that is associated with epigenetic modifications
+
+  properties:
+    tissue: str
+    source: str
+    source_url: str
+
+3D genome structure:
+  represented_as: node
+  is_a: position entity
+  input_label: 3d_genome_structure
+  description: >-
+      A region of the genome that is associated with 3D genome structure
+  properties:
+    source: str
+    source_url: str
+
+ontology term:
+  is_a: ontology class
+  represented_as: node
+  input_label: ontology term
+  properties:
+    source: str
+    source_url: str
+
+#child types
+
+chromosome chain:
+  represented_as: node
+  is_a: position entity
+  inherit_properties: true
+  input_label: chromosome_chain
+  properties:
+    chain_id: str
+    next_start: int
+    resolution: int
+
+# coding elements
+gene:
+  represented_as: node
+  preferred_id: ensemble
+  input_label: gene
+  is_a: coding element
+  inherit_properties: true
+  properties:
     name: str
     gene_type: str
-    synonyms: str[]
 
 protein:
   represented_as: node
   preferred_id: uniprot
   input_label: protein
+  is_a: coding element
   properties:
     accessions: int
     organism_id: int
     name: str
-    synonyms: str[]
+    source: str
+    source_url: str
 
 transcript:
   represented_as: node
   input_label: transcript
+  is_a: coding element
+  inherit_properties: true
   properties:
-    chr: str
-    start: int
-    end: int
     gene_name: str
     transcript_name: str
     transcript_id: str
     transcript_type: str
-  is_a: nucleic acid entity
   description: >-
     An RNA synthesized on a DNA or RNA template by an RNA polymerase.
   exact_mappings:
@@ -51,129 +139,57 @@ exon:
   represented_as: node
   preferred_id: ensemble
   input_label: exon
+  is_a: coding element
+  inherit_properties: true
   properties:
     gene_id: str
     transcript_id: str
-    chr: str
-    start: int
-    end: int
     exon_number: int
     exon_id: str
 
-sequence variant:
+# ---
+# genomic variants
+snp:
   represented_as: node
-  input_label: sequence_variant
-  accessible_via:
-    name: variants
-    description: 'Retrieve variant data. For example: region = chr1:1157520-1158189 or funseq_description = noncoding or rsid = rs2045642915'
-    filter_by: _id
-    filter_by_range: pos
-    return: _id, chr, pos, rsid, ref, alt, qual, filter, format, source, source_url, annotations
+  input_label: snp
+  is_a: genomic variant
+  inherit_properties: true
   properties:
-    chr: str
-    pos: int
     ref: str
     alt: str
     annotation: obj
-  aliases: [ 'allele' ]
-  local_names:
-    agr: allele
-  is_a: biological entity
-  mixins:
-    - genomic entity
-    - physical essence
-    - ontology class
   description: >-
-    A sequence_variant is a non exact copy of a sequence_feature or genome exhibiting one or more sequence_alteration.
-  comments:
-    - This class is for modeling the specific state at a locus.
-      A single DBSNP rs ID could correspond to more than one sequence variants
-      (e.g CIViC:1252 and CIViC:1253, two distinct BRCA2 alleles for rs28897743)
-  exact_mappings:
-    # slightly broader semantics than SO:0001059 - 'sequence alteration'
-    # describes a sequence feature that may have 1..* sequence alterations
-    - WIKIDATA:Q15304597
-  close_mappings:
-    - dcid:Allele
-    - SO:0001060
-    - VMC:Allele
-    - GENO:0000002
-    - SIO:010277
-    - SO:0001060
-  id_prefixes:
-    - CAID # ClinGen Allele Registry
-    - CLINVAR
-    - WIKIDATA
-    # - CIViC needs IRI mapping
-    - DBSNP
-    - MGI
-    - ZFIN
-    - FB
-    - RGD
-    - AGRKB
-    - SPDI
-    - WB
-    - WormBase
-    - PHARMGKB.VARIANT
-  alt_descriptions:
-    AGR: >-
-      An entity that describes a single affected, endogenous allele.
-      These can be of any type that matches that definition
-    VMC: >-
-      A contiguous change at a Location
-  slots:
-    - has gene
-  slot_usage:
-    has gene:
-      multivalued: true
-      description: Each allele can be associated with any number of genes
-    has biological sequence:
-      description: >-
-        The state of the sequence w.r.t a reference sequence
-    id:
-      examples:
-        - value: ZFIN:ZDB-ALT-980203-1091
-          description: ti282a allele from ZFIN
-        - value: CLINVAR:17681
-          description: NM_007294.3(BRCA1):c.2521C>T (p.Arg841Trp)
-  in_subset:
-    - model_organism_database
-  
-regulatory region:
-  represented_as: node
-  input_label: regulatory_region
-  properties:
-    biological_context: str
-    biochemical_activity: str
-#    biochemical_activity_description: str
-    source: str
-    source_url: str
-  aliases: ['regulatory element', 'accessible dna element']
-  description: >-
-    A region (or regions) of the genome that contains known or putative regulatory elements
-    that act in cis- or trans- to affect the transcription of gene
-  is_a: biological entity
-  mixins:
-    - genomic entity
-    - chemical entity or gene or gene product
-    - physical essence
-    - ontology class
-  exact_mappings:
-    - SO:0005836
-    - SIO:001225
-    - WIKIDATA:Q3238407
+    A single nucleotide polymorphism (SNP) is a variation in a single nucleotide that occurs at a specific position in the genome
 
-ontology term:
-  is_a: ontology class
+
+structural variant:
   represented_as: node
-  input_label: ontology term
+  input_label: structural variant
+  is_a: genomic variant
+  inherit_properties: true
   properties:
-#    uri: str
-    term_name: str
-    description: str
-    synonyms: obj
-    subontology: str
-    subset: str
+      variant_type: str
+      variant_subtype: str
+
+# ---
+# non-coding elements
+enhancer:
+  represented_as: node
+  input_label: enhancer
+  is_a: non coding element
+  inherit_properties: true
+
+promoter:
+  represented_as: node
+  input_label: promoter
+  is_a: non coding element
+  inherit_properties: true
+
+super enhancer:
+  represented_as: node
+  input_label: super_enhancer
+  is_a: non coding element
+  inherit_properties: true
 
 pathway:
   is_a: biological process
@@ -189,26 +205,23 @@ pathway:
     name: str
     evidence: str
 
-tad:
-  is_a: entity
+# ---
+# ontologies
+go:
+  is_a: ontology term
   represented_as: node
-  input_label: tad
+  input_label: go
   properties:
-    chr: str
-    start: int
-    end: int
-    genes: str[]
+    go_id: str
+    go_name: str
+    go_namespace: str
+    go_definition: str
+    go_synonyms: str[]
 
 motif:
   represented_as: node
-  is_a: ontology class
+  is_a: epigenomic feature
   input_label: motif
-  db_collection_name: motifs
-  db_collection_per_chromosome: false
-  db_indexes:
-    text:
-      type: inverted
-      fields: tf_name
   accessible_via:
     name: motifs
     description: 'TF binding motifs.'
@@ -225,14 +238,79 @@ motif:
     length: str
 
 # ---
+# 3D genome structures
+tad:
+  represented_as: node
+  input_label: tad
+  is_a: 3d genome structure
+  inherit_properties: true
+  properties:
+        tissue: str
+
+chromatin state:
+  represented_as: node
+  is_a: epigenomic feature
+  inherit_properties: true
+  input_label: chromatin_state
+  properties:
+    state: str
+
+dnase hypersensitivity site:
+  represented_as: node
+  is_a: epigenomic feature
+  inherit_properties: true
+  input_label: dnase_hypersensitivity_site
+  description: >-
+    A region of chromatin that is sensitive to cleavage by the enzyme DNase I
+
+histone modification:
+  represented_as: node
+  is_a: epigenomic feature
+  inherit_properties: true
+  input_label: histone_modification
+  description: >
+    A post-translational modification of histone proteins e.g methylation, acetylation, phosphorylation
+  properties:
+    modification: str
+    modification_type: str
+
+# ---
 # Associations
 # ---
 
+#parent types
+expression:
+  is_a: related to at instance level
+  represented_as: edge
+  input_label: expression
+  description: >-
+    An association between a gene and its expression
+  properties:
+    source: str
+    source_url: str
+
+annotation:
+  is_a: related to at concept level
+  represented_as: edge
+  input_label: annotation
+  description: >-
+    An association between a gene/ontology term and another entity
+  properties:
+    source: str
+    source_url: str
+
+regulatory association:
+  is_a: related to at instance level
+  represented_as: edge
+  input_label: regulatory_association
+  properties:
+    source: str
+    source_url: str
+
 transcribed to:
   represented_as: edge
-  is_a: related to at instance level
-  domain: gene
-  range: transcript
+  is_a: expression
+  inherit_properties: true
   input_label: transcribed_to
   source: gene
   target: transcript
@@ -243,17 +321,12 @@ transcribed to:
     - SIO:010080
 
 transcribed from:
-  is_a: related to at instance level
+  is_a: expression
+  inherit_properties: true
   represented_as: edge
-  domain: transcript
-  range: gene
   input_label: transcribed_from
   source: transcript
   target: gene
-  properties:
-    source: str
-    version: str
-    source_url: str
   description: >-
     x is transcribed from y if and only if x is synthesized from template y
   exact_mappings:
@@ -261,7 +334,8 @@ transcribed from:
     - SIO:010081
 
 translates to:
-  is_a: related to at instance level
+  is_a: expression
+  inherit_properties: true
   represented_as: edge
   input_label: translates_to
   source: transcript
@@ -276,7 +350,8 @@ translates to:
     - SIO:010082
 
 translation of:
-  is_a: related to at instance level
+  is_a: expression
+  inherit_properties: true
   represented_as: edge
   input_label: translation_of
   source: protein
@@ -291,16 +366,16 @@ translation of:
 gene to pathway association:
   description: >-
     An interaction between a gene or gene product and a biological process or pathway.
-  is_a: association
-  mixins:
-    - gene to entity association mixin
+  is_a: annotation
+  inherit_properties: true
   represented_as: edge
   input_label: genes_pathways
   source: gene
   target: pathway
 
 parent pathway of:
-    is_a: related to at concept level
+    is_a: annotation
+    inherit_properties: true
     description: >-
       holds between two pathways where the domain class is a parent pathway of the range class
     represented_as: edge
@@ -309,7 +384,8 @@ parent pathway of:
     target: pathway
 
 child pathway of:
-    is_a: related to at concept level
+    is_a: annotation
+    inherit_properties: true
     description: >-
       holds between two pathways where the domain class is a child pathway of the range class
     represented_as: edge
@@ -317,76 +393,97 @@ child pathway of:
     source: pathway
     target: pathway
 
-ontology relationship:
-  is_a: related to at instance level
+go subtype of:
+  is_a: annotation
+  inherit_properties: true
   represented_as: edge
-  input_label: ontology_relationship
-  source: ontology term
-  target: ontology term
-  properties:
-    rel_type: str
+  input_label: subtype_of
+  source: go
+  target: go
 
 go gene product:
-  is_a: related to at instance level
+  is_a: annotation
+  inherit_properties: true
   represented_as: edge
   input_label: go_gene_product
-  source: ontology term
+  source: gene ontology
   target: protein
   properties:
     qualifier: obj
     db_reference: obj
     evidence: str
 
+go gene:
+  is_a: annotation
+  inherit_properties: true
+  represented_as: edge
+  input_label: belongs_to
+  source: gene
+  target: go
+  properties:
+    qualifier: obj
+    db_reference: obj
+    evidence: str
+
+
 gene to gene coexpression association:
   description: >-
     Indicates that two genes are co-expressed,
     generally under the same conditions.
-  is_a: gene to gene association
-  defining_slots:
-    - subject
-    - predicate
-    - object
-  mixins:
-    - gene expression mixin
-  slot_usage:
-    predicate:
-      subproperty_of: coexpressed with
-      symmetric: true
+  is_a: expression
+  inherit_properties: true
   represented_as: edge
   input_label: coexpressed_with
   source: gene
   target: gene
   properties:
     score: float
+    tissue: str
 
-regulatory element to gene expression association:
+enhancer to gene association:
   description: >-
-    An association between a regulatory element and the expression of a gene
-  is_a: association
-  defining_slots:
-    - subject
-    - predicate
-    - object
-  slot_usage:
-    object:
-      range: gene
-    predicate:
-      subproperty_of: genetic association
+    An association between an enhancer and a gene
+  is_a: regulatory association
+  inherit_properties: true
   represented_as: edge
-  input_label: regulates_gene
-  source: regulatory region
+  input_label: regulates
+  source: enhancer
   target: gene
   properties:
     score: float
-    biological_context: str
-    biochemical_activity: str
     tissue: str
 
+promoter to gene association:
+  description: >-
+      An association between a promoter and a gene
+  is_a: regulatory association
+  inherit_properties: true
+  represented_as: edge
+  input_label: regulates
+  source: promoter
+  target: gene
+  properties:
+      score: float
+      tissue: str
+
+super enhancer to gene association:
+  description: >-
+    An association between a super enhancer and a gene
+  is_a: regulatory association
+  inherit_properties: true
+  represented_as: edge
+  input_label: regulates
+  source: super enhancer
+  target: gene
+  properties:
+    score: float
+    tissue: str
 
 transcription factor to gene association:
   description: >-
     An regulatory association between a transcription factor and its target gene
-  is_a: gene to gene association
+  is_a: regulatory association
+  inherit_properties: true
   represented_as: edge
   input_label: regulates
   source: gene
@@ -398,70 +495,32 @@ transcription factor to gene association:
     evidence_type: str
 
 post translational interaction:
-  is_a: pairwise molecular interaction
+  is_a: expression
+  inherit_properties: true
   represented_as: edge
   input_label: interacts_with
   source: protein
   target: protein
   properties:
-    score: float,
+    score: float
 
 gtex variant to gene expression association:
   aliases: [ 'eQTL', 'e-QTL']
   description: >-
     An association between a variant and expression of a gene (i.e. e-QTL)
-  is_a: variant to gene association
-  defining_slots:
-    - subject
-    - predicate
-    - object
-  mixins:
-    - gene expression mixin
-  slot_usage:
-    predicate:
-      subproperty_of: affects
+  is_a: related to at instance level
   represented_as: edge
-  input_label: eqtl
-  source: sequence variant
+  input_label: correlates_with
+  source: snp
   target: gene
-  accessible_via:
-    name: e-qtls
-    description: 'Retrieve e-qtls data along with correspondent variants and genes'
-    filter_by: beta, slope, source, label, p_value
-    filter_by_range: beta, p_value, slope
-    return: p_value, slope, beta, label, chr, source, source_url, biological_context
   properties:
     slope: float
     maf: float
     p_value: float
     q_value: float
-    biological_context: str
-
-topld in linkage disequilibrium with:
-  is_a: related to at instance level
-  description: holds between two sequence variants, the presence of which are correlated
-    in a population
-  symmetric: true
-  annotations:
-    canonical_predicate: true
-  exact_mappings:
-    - NCIT:C16798
-  represented_as: edge
-  input_label: in_ld_with
-  db_collection_per_chromosome: false
-  source: sequence variant
-  target: sequence variant
-  accessible_via:
-    name: variants_variants
-    description: 'Retrieve variant correlation data. Example: r2 = gt:0.8, d_prime = lte:0.5, ancestry = SAS'
-    filter_by: r2, d_prime, ancestry, label
-    filter_by_range: r2, d_prime
-    return: chr, ancestry, d_prime, label, r2, variant_1_base_pair, variant_1_rsid, variant_2_base_pair, variant_2_rsid, source, source_url
-  properties:
-    chr: str
-    ancestry: str
-    r2: float
-    d_prime: float
+    tissue: str
+    source: str
+    source_url: str
 
 closest gene to variant association:
   is_a: related to at instance level
@@ -469,9 +528,76 @@ closest gene to variant association:
     holds between a sequence variant and a gene that is closest to the variant
   represented_as: edge
   input_label: closest_gene
-  source: sequence variant
+  source: snp
   target: gene
   properties:
     chr: str
     pos: int
     distance: int
+    source: str
+    source_url: str
+
+upstream gene to variant association:
+  is_a: closest gene to variant association
+  inherit_properties: true
+  description: >-
+    holds between a sequence variant and a gene that is upstream to the variant
+  represented_as: edge
+  input_label: upstream_gene
+  source: snp
+  target: gene
+
+
+downstream gene to variant association:
+  is_a: closest gene to variant association
+  inherit_properties: true
+  description: >-
+      holds between a sequence variant and a gene that is downstream to the variant
+  represented_as: edge
+  input_label: downstream_gene
+  source: snp
+  target: gene
+
+in gene to variant association:
+  is_a: closest gene to variant association
+  description: >-
+    holds between a sequence variant and a gene that is within the gene body
+  represented_as: edge
+  input_label: in_gene
+  source: snp
+  target: gene
+
+topld in linkage disequilibrium with:
+  is_a: related to at instance level
+  description: holds between two sequence variants, the presence of which are correlated
+    in a population
+  represented_as: edge
+  input_label: in_ld_with
+  source: snp
+  target: snp
+  properties:
+    chr: str
+    ancestry: str
+    r2: float
+    d_prime: float
+    source: str
+    source_url: str
+
+
+lower resolution structure:
+  is_a: related to at instance level
+  description: >-
+    holds between two chromosome chains where one is a lower resolution version of the other
+  represented_as: edge
+  input_label: lower_resolution
+  source: chromosome_chain
+  target: chromosome_chain
+
+located on chain:
+  is_a: related to at instance level
+  description: >-
+    holds between a position entity and a chromosome chain
+  represented_as: edge
+  input_label: located_on_chain
+  source: position_entity
+  target: chromosome_chain

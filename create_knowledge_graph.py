@@ -16,7 +16,9 @@ app = typer.Typer()
 def main(output_dir: Annotated[pathlib.Path, typer.Option(exists=True, file_okay=False, dir_okay=True)],
          adapters_config: Annotated[pathlib.Path, typer.Option(exists=True, file_okay=True, dir_okay=False)],
          dbsnp_rsids: Annotated[pathlib.Path, typer.Option(exists=True, file_okay=True, dir_okay=False)],
-         dbsnp_pos: Annotated[pathlib.Path, typer.Option(exists=True, file_okay=True, dir_okay=False)]):
+         dbsnp_pos: Annotated[pathlib.Path, typer.Option(exists=True, file_okay=True, dir_okay=False)],
+         write_properties: bool = typer.Option(True, help="Write properties to nodes and edges"),
+         add_provenance: bool = typer.Option(True, help="Add provenance to nodes and edges")):
     """
     Main function. Call individual adapters to download and process data. Build
     via BioCypher from node and edge data.
@@ -54,6 +56,8 @@ def main(output_dir: Annotated[pathlib.Path, typer.Option(exists=True, file_okay
             ctr_args["dbsnp_rsid_map"] = dbsnp_rsids_dict
         if "dbsnp_pos_map" in ctr_args:
             ctr_args["dbsnp_pos_map"] = dbsnp_pos_dict
+        ctr_args["write_properties"] = write_properties
+        ctr_args["add_provenance"] = add_provenance
         adapter = adapter_cls(**ctr_args)
         write_nodes = adapters_dict[c]["nodes"]
         write_edges = adapters_dict[c]["edges"]

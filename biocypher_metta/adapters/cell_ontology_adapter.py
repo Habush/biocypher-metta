@@ -14,7 +14,7 @@ import urllib.parse
 
 class CellOntologyAdapter(Adapter):
     """
-    Adapter for Biomedical Ontology dataset
+    Adapter for Cell Ontology dataset
     """
 
     def __init__(self, filepath, write_properties, add_provenance, label="cell", type="cell"):

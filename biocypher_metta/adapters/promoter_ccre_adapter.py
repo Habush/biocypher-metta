@@ -2,6 +2,7 @@ from biocypher_metta.adapters import Adapter
 import gzip
 
 # Example data from the dataset encodeCcreCombined.bed:
+# chrom start end gene score strand chromStart chromEnd itemRgb signatures category signalValue type accessionId description
 # chr1	3120346	3120662	EM10E0431205	263	.	3120346	3120662	255,205,0	dELS	dELS	2.63858128228	enhD	E0431205	EM10E0431205 distal enhancer-like signature
 # chr1	3772420	3772769	EH38E1313009	595	.	3772420	3772769	255,0,0	PLS	PLS	5.957252591	prom	E1313009	EH38E1313009 promoter-like signature
 # chr1	3772821	3773112	EH38E1313010	368	.	3772821	3773112	255,0,0	PLS,CTCF-bound	PLS	3.681354874	prom	E1313010	EH38E1313010 promoter-like signature

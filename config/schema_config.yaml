@@ -245,14 +245,14 @@ motif:
     length: str
 
 # ---
-# 3D genome structures
-# tad:
-#   represented_as: node
-#   input_label: tad
-#   is_a: 3d genome structure
-#   inherit_properties: true
-#   properties:
-#         tissue: str
+3D genome structures
+tad:
+  represented_as: node
+  input_label: tad
+  is_a: 3d genome structure
+  inherit_properties: true
+  properties:
+        tissue: str
 
 chromatin state:
   represented_as: node

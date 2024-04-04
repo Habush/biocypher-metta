@@ -493,7 +493,7 @@ promoter_ccre:
     module: biocypher_metta.adapters.promoter_ccre_adapter
     cls: PromoterCCREAdapter
     args:
-      filepath: /mnt/hdd_2/abdu/biocypher_data/encodeCcreCombined.bed.gz
+      filepath: /mnt/hdd_2/abdu/biocypher_data/encodeCcreCombinedHuman.bed.gz
       write_properties: True
       add_provenance: True
   outdir: promoter_ccre
@@ -505,7 +505,7 @@ promoter_ccre_regulates:
     module: biocypher_metta.adapters.promoter_ccre_adapter
     cls: PromoterCCREAdapter
     args:
-      filepath: /mnt/hdd_2/abdu/biocypher_data/encodeCcreCombined.bed.gz
+      filepath: /mnt/hdd_2/abdu/biocypher_data/encodeCcreCombinedHuman.bed.gz
       write_properties: True
       add_provenance: True
       label: promoter_regulates

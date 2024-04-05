@@ -184,6 +184,8 @@ promoter:
   input_label: promoter
   is_a: non coding element
   inherit_properties: true
+  properties:
+    gene: str
 
 super enhancer:
   represented_as: node

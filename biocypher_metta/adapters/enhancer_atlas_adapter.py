@@ -26,7 +26,7 @@ from biocypher_metta.adapters import Adapter
 class EnhancerAtlasAdapter(Adapter):
     INDEX = {'chr': 0, 'coord_start': 1, 'coord_end': 2, 'snp': 7}
 
-    def __init__(self, filepath, enhancer_gene_filepath, enhancer_snps_filepath, type='enhancer', label='enhancer'):
+    def __init__(self, filepath, enhancer_gene_filepath, enhancer_snps_filepath, write_properties, add_provenance, type='enhancer', label='enhancer'):
         self.filepath = filepath
         self.enhancer_gene_filepath = enhancer_gene_filepath
         self.enhancer_snps_filepath = enhancer_snps_filepath
@@ -36,6 +36,8 @@ class EnhancerAtlasAdapter(Adapter):
         self.source = 'Enancer Atlas'
         self.version = '2.0'
         self.source_url = 'http://enhanceratlas.org/downloadv2.php'
+
+        super(EnhancerAtlasAdapter, self).__init__(write_properties, add_provenance)
     
     def get_enhancer_id(self, chr, start, end):
         return chr+':'+start+'-'+end
@@ -69,16 +71,21 @@ class EnhancerAtlasAdapter(Adapter):
                 enhancer = self.get_enhancer_id(chr, start, end)
                 genes = enhancer_gene.get(enhancer, [])
                 snps = enhancer_snps.get(enhancer, [])
-                props = {
-                    'chr': chr,
-                    'start': start,
-                    'end': end
-                }
-                if genes:
-                    props['genes'] = genes
-                if snps:
-                    props['snps'] = snps
                 
+                props = {}
+                if self.write_properties:
+                    props['chr'] = chr
+                    props['start'] = start
+                    props['end'] = end
+                    if genes:
+                        props['genes'] = genes
+                    if snps:
+                        props['snps'] = snps
+                
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
+
                 yield enhancer, self.label, props 
 
     def get_edges(self):
@@ -88,6 +95,11 @@ class EnhancerAtlasAdapter(Adapter):
                 enhancer = info[0].split('_')[0]
                 gene = info[0].split('_')[1].split('$')[0]
                 score = info[1]
-                props = {'score': score}
+                props = {}
+                if self.write_properties:
+                    props['score'] = score
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
 
                 yield enhancer, gene, self.label, props

@@ -589,7 +589,7 @@ enhancer_atlas_enhancer_regulates:
       enhancer_gene_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_gene.txt.gz
       enhancer_snps_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_snp.bed.gz
       type: enhancer to gene association
-      label: regulates
+      label: enhancer_gene
 
   outdir: enhancer_atlas
   nodes: False

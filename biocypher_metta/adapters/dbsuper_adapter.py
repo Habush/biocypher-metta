@@ -13,7 +13,7 @@ from liftover import get_lifter
 class DBSuperAdapter(Adapter):
     INDEX = {'chr' : 0, 'coord_start' : 1, 'coord_end' : 2, 'se_id' : 3, 'gene_id' : 4}
 
-    def __init__(self, filepath, hgnc_to_ensembl_map, label='super_enhancer', delimiter='\t'):
+    def __init__(self, filepath, hgnc_to_ensembl_map, write_properties, add_provenance, label='super_enhancer', delimiter='\t'):
         self.filePath = filepath
         self.hgnc_to_ensembl_map = pickle.load(open(hgnc_to_ensembl_map, 'rb'))
         self.label = label
@@ -23,6 +23,8 @@ class DBSuperAdapter(Adapter):
         self.source = 'dbSuper'
         self.version = ''
         self.source_url = 'https://asntech.org/dbsuper/download.php'
+
+        super(DBSuperAdapter, self).__init__(write_properties, add_provenance)
 
     def convert_to_hg38(self, chr,  pos):
         try:
@@ -45,7 +47,15 @@ class DBSuperAdapter(Adapter):
                 se_id = line[DBSuperAdapter.INDEX['se_id']]
                 gene_id = line[DBSuperAdapter.INDEX['gene_id']]
                 gene_id = self.hgnc_to_ensembl_map.get(gene_id, gene_id)
-
-                props = {'chr' : chr, 'start' : start_position, 'end' : end_position, 'gene' : gene_id}
+                
+                props = {}
+                if self.write_properties:
+                    props['chr'] = chr
+                    props['start'] = start_position
+                    props['end'] = end_position
+                    props['gene'] = gene_id
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
 
                 yield se_id, self.label, props

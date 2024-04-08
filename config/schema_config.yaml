@@ -446,7 +446,8 @@ enhancer to gene association:
   is_a: regulatory association
   inherit_properties: true
   represented_as: edge
-  input_label: regulates
+  input_label: enhancer_gene
+  output_label: regulates
   source: enhancer
   target: gene
   properties:
@@ -459,7 +460,8 @@ promoter to gene association:
   is_a: regulatory association
   inherit_properties: true
   represented_as: edge
-  input_label: regulates
+  input_label: promoter_gene
+  output_label: regulates
   source: promoter
   target: gene
   properties:
@@ -472,7 +474,8 @@ super enhancer to gene association:
   is_a: regulatory association
   inherit_properties: true
   represented_as: edge
-  input_label: regulates
+  input_label: super_enhancer_gene
+  output_label: regulates
   source: super enhancer
   target: gene
   properties:
@@ -485,7 +488,8 @@ transcription factor to gene association:
   is_a: regulatory association
   inherit_properties: true
   represented_as: edge
-  input_label: regulates
+  input_label: tf_gene
+  output_label: regulates
   source: gene
   target: gene
   properties:

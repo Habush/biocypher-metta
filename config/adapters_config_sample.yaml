@@ -450,9 +450,7 @@ enhancer_ccre:
     module: biocypher_metta.adapters.enhancer_ccre_adapter
     cls: EnhancerCCREAdapter
     args:
-      filepath: ./samples/encodeCcreCombined.bed.gz
-      write_properties: True
-      add_provenance: True
+      filepath: ./samples/encodeCcreCombinedHuman.bed.gz
   outdir: enhancer_ccre
   nodes: True
   edges: False
@@ -462,10 +460,8 @@ enhancer_ccre_regulates:
     module: biocypher_metta.adapters.enhancer_ccre_adapter
     cls: EnhancerCCREAdapter
     args:
-      filepath: ./samples/encodeCcreCombined.bed.gz
-      write_properties: True
-      add_provenance: True
-      label: enhancer_regulates
+      filepath: ./samples/encodeCcreCombinedHuman.bed.gz
+      label: regulates
       type: enhancer to gene association
   outdir: enhancer_ccre
   nodes: False

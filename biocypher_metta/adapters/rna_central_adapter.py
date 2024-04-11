@@ -16,10 +16,13 @@ from biocypher_metta.adapters import Adapter
 class RNACentralAdapter(Adapter):
     INDEX = {'chr': 0, 'coord_start': 1, 'coord_end': 2, 'id': 3, 'rna_type': 13}
 
-    def __init__(self, filepath, rfam_filepath, write_properties, add_provenance):
+    def __init__(self, filepath, rfam_filepath, write_properties, add_provenance, type = 'non coding rna', label = 'non_coding_rna'):
         self.filepath = filepath
         self.rfam_filepath = rfam_filepath
-        self.label = 'non_coding_rna'
+        self.type = type
+        self.label = label
+        self.write_properties = write_properties
+        self.add_provenance = add_provenance
 
         self.source = 'RNAcentral'
         self.version = '24'
@@ -27,8 +30,24 @@ class RNACentralAdapter(Adapter):
         super(RNACentralAdapter, self).__init__(write_properties, add_provenance)
 
     def get_nodes(self):
-        rfam_dictionary = defaultdict(lambda: defaultdict(set))
+        with gzip.open(self.filepath, 'rt') as input:
+            for line in input:
+                infos = line.split('\t')
+                rna_id = infos[RNACentralAdapter.INDEX['id']].split('_')[0]
+                props = {}
+                if self.write_properties:
+                    props['chr'] = infos[RNACentralAdapter.INDEX['chr']]
+                    props['start'] = int(infos[RNACentralAdapter.INDEX['coord_start']].strip())+1 # +1 since it is 0 indexed coordinate
+                    props['end'] = int(infos[RNACentralAdapter.INDEX['coord_end']].strip())+1
+                    props['rna_type'] = infos[RNACentralAdapter.INDEX['rna_type']].strip()
+                
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
 
+                yield rna_id, self.label, props
+
+    def get_edges(self):
         with gzip.open(self.rfam_filepath, 'rt') as input:
             reader = csv.reader(input, delimiter='\t')
             for line in reader:
@@ -36,23 +55,11 @@ class RNACentralAdapter(Adapter):
                 if not rna_id.endswith('_9606'):
                     continue
                 rna_id = rna_id.split('_')[0]
-                rfam_list = [item.split(":")[1] for item in rfam.split("|")]
-                rfam_dictionary[rna_id]['rfam'].update(rfam_list)
-                rfam_dictionary[rna_id]['go'].add(go_term)
-        
-        with gzip.open(self.filepath, 'rt') as input:
-            reader = csv.reader(input, delimiter='\t')
-            for line in reader:
-                rna_id = line[RNACentralAdapter.INDEX['id']].split('_')[0]
-                props = {
-                    'chr': line[RNACentralAdapter.INDEX['chr']],
-                    'start': int(line[RNACentralAdapter.INDEX['coord_start']])+1, # +1 since it is 0 indexed coordinate
-                    'end': int(line[RNACentralAdapter.INDEX['coord_end']])+1,
-                    'rna_type': line[RNACentralAdapter.INDEX['rna_type']], 
-                }
-                if rna_id in rfam_dictionary:
-                    props['rfam'] = list(rfam_dictionary[rna_id]['rfam'])
-                    props['go_term'] = list(rfam_dictionary[rna_id]['go'])
-
-                yield rna_id, self.label, props
-
+                props = {}
+                
+                if self.write_properties:
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
+                
+                yield rna_id, go_term, self.label, props

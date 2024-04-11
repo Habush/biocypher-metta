@@ -75,10 +75,13 @@ class ENdbAdapter(Adapter):
                     self.temp = self.temp + cur_data
                     continue
 
-                species = data[ENdbAdapter.INDEX['species']]
                 self.temp = cur_data
+                species = data[ENdbAdapter.INDEX['species']]
+                enhancer_type = data[ENdbAdapter.INDEX['enhancer_type']]
                 
                 if species != 'Human':
+                    continue
+                if enhancer_type.lower().replace('-',' ') != self.type:
                     continue
                 enhancer_id = data[ENdbAdapter.INDEX['enhancer_id']]
                 chr = data[ENdbAdapter.INDEX['chr']]
@@ -86,7 +89,6 @@ class ENdbAdapter(Adapter):
                 end_position = self.convert_to_hg38(chr, int(data[ENdbAdapter.INDEX['coord_end']]))
                 if not start_position or not end_position:
                     continue
-                enhancer_type = data[ENdbAdapter.INDEX['enhancer_type']]
                 tf_name = data[ENdbAdapter.INDEX['tf_name']]
                 snp_id = data[ENdbAdapter.INDEX['snp_id']]
                 # disease = data[ENdbAdapter.INDEX['disease']]
@@ -96,7 +98,6 @@ class ENdbAdapter(Adapter):
                     props['chr'] = chr
                     props['start'] = start_position
                     props['end'] = end_position
-                    props['enhancer_type'] = enhancer_type
                     if tf_name != '--':
                         props['tf_name'] = self.parse_info_metadata(tf_name)
                     if snp_id != '--':
@@ -128,10 +129,15 @@ class ENdbAdapter(Adapter):
                     self.temp = self.temp + cur_data
                     continue
 
-                species = data[ENdbAdapter.INDEX['species']]
                 self.temp = cur_data
+                species = data[ENdbAdapter.INDEX['species']]
+                enhancer_type = data[ENdbAdapter.INDEX['enhancer_type']]
 
                 if species != 'Human':
+                    continue
+                if self.label == 'super_enhancer_gene' and enhancer_type == 'Super-Enhancer':
+                    continue
+                if self.label == 'enhancer_gene' and enhancer_type == 'Enhancer':
                     continue
                 chr = data[ENdbAdapter.INDEX['chr']]
                 start_position = self.convert_to_hg38(chr, int(data[ENdbAdapter.INDEX['coord_start']]))
@@ -156,5 +162,5 @@ class ENdbAdapter(Adapter):
                         props['source_url'] = self.source_url
 
                 for gene in target_genes_list:
-                    yield enhancer_id, gene, self.label, props
+                    yield enhancer_id, gene.strip(), self.label, props
 

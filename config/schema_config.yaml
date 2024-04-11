@@ -179,7 +179,6 @@ enhancer:
   is_a: non coding element
   inherit_properties: true
   properties:
-    enhancer_type: str
     tf_name: str[]
     snp_id: str[]
 
@@ -194,6 +193,9 @@ super enhancer:
   input_label: super_enhancer
   is_a: non coding element
   inherit_properties: true
+  properties:
+    tf_name: str[]
+    snp_id: str[]
 
 non coding rna:
   represented_as: node

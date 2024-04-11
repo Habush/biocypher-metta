@@ -465,7 +465,7 @@ endb_enhancer_regulates:
       filepath: /mnt/hdd_2/abdu/biocypher_data/ENdb_enhancer.csv.gz
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
       type: enhancer to gene association
-      label: enhancer_regulates
+      label: enhancer_gene
 
   outdir: endb
   nodes: False

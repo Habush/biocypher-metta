@@ -178,6 +178,10 @@ enhancer:
   input_label: enhancer
   is_a: non coding element
   inherit_properties: true
+  properties:
+    enhancer_type: str
+    tf_name: str[]
+    snp_id: str[]
 
 promoter:
   represented_as: node

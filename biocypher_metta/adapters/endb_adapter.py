@@ -14,7 +14,7 @@ class ENdbAdapter(Adapter):
     ALLOWED_LABELS = ['enhancer_regulates']
     INDEX = {'enhancer_id': 0, 'pubmed': 1,  'chr': 4, 'coord_start': 5, 'coord_end': 6, 'species' : 7, 'enhancer_type': 12, 'gene_id': 13, 'strong_experiment': 14, 'disease': 18, 'tf_name': 24, 'snp_id': 28}
     
-    def __init__(self, filepath, hgnc_to_ensembl_map, type='enhancer', label='enhancer', delimiter='\t'):
+    def __init__(self, filepath, hgnc_to_ensembl_map, write_properties, add_provenance, type='enhancer', label='enhancer', delimiter='\t'):
         self.filepath = filepath
         self.hgnc_to_ensembl_map = pickle.load(open(hgnc_to_ensembl_map, 'rb'))
         self.type = type
@@ -25,6 +25,8 @@ class ENdbAdapter(Adapter):
         self.source = 'ENdb'
         self.version = ''
         self.source_url = 'https://bio.liclab.net/ENdb/Download.php'
+
+        super(ENdbAdapter, self).__init__(write_properties, add_provenance)
 
     def parse_info_metadata(self, info):
         parsed_info = info.replace('"', '').split(',')
@@ -78,33 +80,31 @@ class ENdbAdapter(Adapter):
                 
                 if species != 'Human':
                     continue
-
                 enhancer_id = data[ENdbAdapter.INDEX['enhancer_id']]
                 chr = data[ENdbAdapter.INDEX['chr']]
                 start_position = self.convert_to_hg38(chr, int(data[ENdbAdapter.INDEX['coord_start']]))
                 end_position = self.convert_to_hg38(chr, int(data[ENdbAdapter.INDEX['coord_end']]))
                 if not start_position or not end_position:
                     continue
-                target_genes = data[ENdbAdapter.INDEX['gene_id']]
                 enhancer_type = data[ENdbAdapter.INDEX['enhancer_type']]
                 tf_name = data[ENdbAdapter.INDEX['tf_name']]
                 snp_id = data[ENdbAdapter.INDEX['snp_id']]
                 # disease = data[ENdbAdapter.INDEX['disease']]
                 
+                props = {}
+                if self.write_properties:
+                    props['chr'] = chr
+                    props['start'] = start_position
+                    props['end'] = end_position
+                    props['enhancer_type'] = enhancer_type
+                    if tf_name != '--':
+                        props['tf_name'] = self.parse_info_metadata(tf_name)
+                    if snp_id != '--':
+                        props['snp_id'] = self.parse_info_metadata(snp_id)
 
-                props = {
-                    'chr': chr,
-                    'start': start_position,
-                    'end': end_position,
-                    'enhancer_type': enhancer_type,
-                    'genes': self.handle_target_genes(target_genes.upper()),
-                    # Add other properties as needed based on your specific data interests
-                }
-
-                if tf_name != '--':
-                    props['tf_name'] = self.parse_info_metadata(tf_name)
-                if snp_id != '--':
-                    props['snp_id'] = self.parse_info_metadata(snp_id)
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
 
                 yield enhancer_id, self.label, props
 
@@ -145,10 +145,15 @@ class ENdbAdapter(Adapter):
                 target_genes_list = self.handle_target_genes(target_genes.upper())
                 experiment = data[ENdbAdapter.INDEX['strong_experiment']]
                 
+                props = {}
+                if self.write_properties:
+                    props['evidence'] = pubmed
+                    if experiment != '--':
+                        props['experiment'] = self.parse_info_metadata(experiment)
 
-                props = {'evidence': pubmed}
-                if experiment != '--':
-                    props['experiment'] = self.parse_info_metadata(experiment)
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
 
                 for gene in target_genes_list:
                     yield enhancer_id, gene, self.label, props

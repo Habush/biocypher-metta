@@ -13,9 +13,10 @@ from liftover import get_lifter
 class DBSuperAdapter(Adapter):
     INDEX = {'chr' : 0, 'coord_start' : 1, 'coord_end' : 2, 'se_id' : 3, 'gene_id' : 4}
 
-    def __init__(self, filepath, hgnc_to_ensembl_map, write_properties, add_provenance, label='super_enhancer', delimiter='\t'):
+    def __init__(self, filepath, hgnc_to_ensembl_map, write_properties, add_provenance, type='super enhancer', label='super_enhancer', delimiter='\t'):
         self.filePath = filepath
         self.hgnc_to_ensembl_map = pickle.load(open(hgnc_to_ensembl_map, 'rb'))
+        self.type = type
         self.label = label
         self.delimiter = delimiter
         self.genome_reference_converter = get_lifter('hg19', 'hg38')
@@ -45,17 +46,31 @@ class DBSuperAdapter(Adapter):
                 if not start_position or not end_position:
                     continue
                 se_id = line[DBSuperAdapter.INDEX['se_id']]
-                gene_id = line[DBSuperAdapter.INDEX['gene_id']]
-                gene_id = self.hgnc_to_ensembl_map.get(gene_id, gene_id)
                 
                 props = {}
                 if self.write_properties:
                     props['chr'] = chr
                     props['start'] = start_position
                     props['end'] = end_position
-                    props['gene'] = gene_id
                     if self.add_provenance:
                         props['source'] = self.source
                         props['source_url'] = self.source_url
 
                 yield se_id, self.label, props
+
+    def get_edges(self):
+        with gzip.open(self.filePath, 'rt') as f:
+            reader = csv.reader(f, delimiter=self.delimiter)
+            next(reader)
+            for line in reader:
+                se_id = line[DBSuperAdapter.INDEX['se_id']]
+                gene_id = line[DBSuperAdapter.INDEX['gene_id']]
+                ensembl_gene_id = self.hgnc_to_ensembl_map.get(gene_id, gene_id)
+                
+                props = {}
+                if self.write_properties:
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
+
+                yield se_id, ensembl_gene_id, self.label, props

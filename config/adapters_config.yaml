@@ -418,3 +418,29 @@ gencode_exon:
   outdir: gencode
   nodes: True
   edges: False
+
+rna_central_non_coding_rna:
+  adapter:
+    module: biocypher_metta.adapters.rna_central_adapter
+    cls: RNACentralAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/rna_central/homo_sapiens.GRCh38.bed.gz
+      rfam_filepath: /mnt/hdd_2/abdu/biocypher_data/rna_central/rnacentral_rfam_annotations.tsv.gz
+      
+  outdir: rna_central
+  nodes: True
+  edges: False
+
+rna_central_non_coding_rna_belongs_to_go:
+  adapter:
+    module: biocypher_metta.adapters.rna_central_adapter
+    cls: RNACentralAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/rna_central/homo_sapiens.GRCh38.bed.gz
+      rfam_filepath: /mnt/hdd_2/abdu/biocypher_data/rna_central/rnacentral_rfam_annotations.tsv.gz
+      type: go rna
+      label: go_rna
+
+  outdir: rna_central
+  nodes: False
+  edges: True

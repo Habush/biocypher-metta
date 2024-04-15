@@ -62,7 +62,7 @@ epigenomic feature:
     source: str
     source_url: str
 
-3D genome structure:
+3d genome structure:
   represented_as: node
   is_a: position entity
   input_label: 3d_genome_structure
@@ -190,6 +190,14 @@ super enhancer:
   input_label: super_enhancer
   is_a: non coding element
   inherit_properties: true
+
+non coding rna:
+  represented_as: node
+  input_label: non_coding_rna
+  is_a: non coding element
+  inherit_properties: true
+  properties:
+    rna_type: str
 
 pathway:
   is_a: biological process
@@ -417,7 +425,8 @@ go gene:
   is_a: annotation
   inherit_properties: true
   represented_as: edge
-  input_label: belongs_to
+  input_label: go_gene
+  output_label: belongs_to
   source: gene
   target: go
   properties:
@@ -425,6 +434,14 @@ go gene:
     db_reference: obj
     evidence: str
 
+go rna:
+  is_a: annotation
+  inherit_properties: true
+  represented_as: edge
+  input_label: go_rna
+  output_label: belongs_to
+  source: non coding rna
+  target: go
 
 gene to gene coexpression association:
   description: >-

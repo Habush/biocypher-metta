@@ -379,3 +379,16 @@ rna_central_non_coding_rna_belongs_to_go:
   outdir: rna_central
   nodes: False
   edges: True
+
+
+gwas_snp:
+  adapter:
+    module: biocypher_metta.adapters.gwas_adapter
+    cls: GWASAdapter
+    args:
+     filepath: ./samples/gwas_catalog_v1.0-associations.tsv.gz
+
+  outdir: gwas
+  nodes: True
+  edges: False
+    

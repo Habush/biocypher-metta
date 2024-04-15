@@ -179,8 +179,7 @@ enhancer:
   is_a: non coding element
   inherit_properties: true
   properties:
-    enhancer_type: str
-    gene: str[]
+    data_source: str
 
 promoter:
   represented_as: node

@@ -24,12 +24,12 @@ from biocypher_metta.adapters import Adapter
 # EH37E0436910	ENCODE
 
 class PEREGRINEAdapter(Adapter):
-    ALLOWED_TYPES = ['enhancer', 'peregrine enhancer to gene association']
-    ALLOWED_LABELS = ['enhancer', 'enhancer_regulates']
+    ALLOWED_TYPES = ['enhancer', 'enhancer to gene association']
+    ALLOWED_LABELS = ['enhancer', 'enhancer_gene']
     ALLOWED_KEYS = []
-    INDEX = {'enhancer': 0,	'gene': 1,	'HepG2score': 2,	'HepG2Zscore': 3,	'CDF_HepG2': 4,	'HCT116score': 5,	'HCT116Zscore': 6,	'CDF_HCT116': 7,	'K562score': 8,	'K562Zscore': 9,	'CDF_K562': 10,	'MCF7score': 11,	'MCF7Zscore': 12,	'CDF_MCF7': 13}
+    INDEX = {'enhancer': 0,	'gene': 1}
 
-    def __init__(self, enhancers_file, enhancer_gene_link_scores, source_file, hgnc_ensembl_map, hgnc_symbol_map, type='enhancer', label='enhancer', delimiter='\t'):
+    def __init__(self, enhancers_file, enhancer_gene_link_scores, source_file, hgnc_ensembl_map, hgnc_symbol_map, write_properties, add_provenance, type='enhancer', label='enhancer', delimiter='\t'):
         self.enhancers_file = enhancers_file
         self.enhancer_gene_link_scores = enhancer_gene_link_scores
         self.source_file = source_file
@@ -42,6 +42,8 @@ class PEREGRINEAdapter(Adapter):
         self.source = 'PEREGRINE'
         self.version = ''
         self.source_url = 'https://www.peregrineproj.org/'
+
+        super(PEREGRINEAdapter, self).__init__(write_properties, add_provenance)
 
     def handel_gene(self, gene):
         gene = gene.split('|')[1]
@@ -65,17 +67,6 @@ class PEREGRINEAdapter(Adapter):
                     'end': end
                 }
 
-        target_genes = {}
-        with gzip.open(self.enhancer_gene_link_scores, 'rt') as f:
-            reader = csv.reader(f, delimiter=self.delimiter)
-            next(reader)    # Skip header
-            for line in reader:
-                enhancer_id = line[self.INDEX['enhancer']]
-                gene = line[self.INDEX['gene']]
-                if enhancer_id not in target_genes:
-                    target_genes[enhancer_id] = set()
-                target_genes[enhancer_id].add(self.handel_gene(gene))
-
         source_map = {}
         with gzip.open(self.source_file, 'rt') as f:
             for line in f:
@@ -83,16 +74,19 @@ class PEREGRINEAdapter(Adapter):
                 source_map[enhancer_id] = source
 
         for enhancer_id, info in enhancer_info.items():
-            gene_list = target_genes.get(enhancer_id, [])
             data_source = source_map.get(enhancer_id, 'NA')
-            props = {
-                    'chr': info['chr'],
-                    'start': info['start'],
-                    'end': info['end'],
-            }
-            if gene_list:
-                props['genes'] = list(gene_list)
-            props['data_source'] = data_source
+
+            props = {}
+
+            if self.write_properties:
+                props['chr'] = info['chr']
+                props['start'] = info['start']
+                props['end'] = info['end']
+                props['data_source'] = data_source
+
+                if self.add_provenance:
+                    props['source'] = self.source
+                    props['source_url'] = self.source_url
             
             yield enhancer_id, self.label, props
 
@@ -104,27 +98,14 @@ class PEREGRINEAdapter(Adapter):
                 enhancer_id = line[self.INDEX['enhancer']]
                 gene = self.handel_gene(line[self.INDEX['gene']])
                 uniprotkb = line[self.INDEX['gene']].split('|')[2].split('=')[1]
-                HepG2score	= line[self.INDEX['HepG2score']]
-                HepG2Zscore	= line[self.INDEX['HepG2Zscore']]
-                CDF_HepG2	= line[self.INDEX['CDF_HepG2']]
-                HCT116score	= line[self.INDEX['HCT116score']]
-                HCT116Zscore= line[self.INDEX['HCT116Zscore']]	
-                CDF_HCT116	= line[self.INDEX['CDF_HCT116']]
-                K562score	= line[self.INDEX['K562score']]
-                K562Zscore	= line[self.INDEX['K562Zscore']]
-                CDF_K562	= line[self.INDEX['CDF_K562']]
-                MCF7score	= line[self.INDEX['MCF7score']]
-                MCF7Zscore	= line[self.INDEX['MCF7Zscore']]
-                CDF_MCF7= line[self.INDEX['CDF_MCF7']]
 
-                props = {
-                    'uniprotkb': uniprotkb,
-                    'HepG2': ['HepG2score:'+HepG2score, 'HepG2Zscore:'+HepG2Zscore, 'CDF_HepG2:'+CDF_HepG2],
-                    'HCT116': ['HCT116score:'+HCT116score, 'HCT116Zscore:'+HCT116Zscore, 'CDF_HCT116:'+CDF_HCT116],
-                    'K562': ['K562score:'+K562score, 'K562Zscore:'+K562Zscore, 'CDF_K562:'+CDF_K562],
-                    'MCF7': ['MCF7score:'+MCF7score, 'MCF7Zscore:'+MCF7Zscore, 'CDF_MCF7:'+CDF_MCF7]
-                }
+                props = {}
+                if self.write_properties:
+                    props['uniprotkb'] = uniprotkb
+
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
                 
-            
                 yield enhancer_id, gene, self.label, props
             

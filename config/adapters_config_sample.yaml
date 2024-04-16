@@ -391,6 +391,7 @@ dgv_variant:
   outdir: dgv
   nodes: True
   edges: False
+  
 epd_promoter:
   adapter:
     module: biocypher_metta.adapters.epd_adapter
@@ -416,3 +417,16 @@ epd_promoter_regulates_gene:
   outdir: epd
   nodes: False
   edges: True
+
+
+  
+dbvar_variant:
+  adapter:
+    module: biocypher_metta.adapters.dbvar_adapter
+    cls: DBVarVariantAdapter
+    args:
+      filepath: ./samples/dbvar_sample.vcf.gz
+
+  outdir: dbvar
+  nodes: True
+  edges: False

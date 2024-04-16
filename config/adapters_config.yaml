@@ -467,3 +467,17 @@ epd_promoter:
   outdir: epd
   nodes: True
   edges: False
+
+epd_promoter_regulates_gene:
+  adapter:
+    module: biocypher_metta.adapters.epd_adapter
+    cls: EPDAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/Hs_EPDnew.bed.gz
+      hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      type: promoter to gene association
+      label: promoter_gene
+
+  outdir: epd
+  nodes: False
+  edges: True

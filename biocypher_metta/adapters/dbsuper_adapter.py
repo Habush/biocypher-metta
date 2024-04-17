@@ -3,6 +3,8 @@ import gzip
 import pickle
 from biocypher_metta.adapters import Adapter
 from liftover import get_lifter
+
+from biocypher_metta.adapters.helpers import check_genomic_location
 # Example dbSuper tsv input files:
 # chrom	 start	 stop	 se_id	 gene_symbol	 cell_name	 rank
 # chr1	120485363	120615071	SE_00001	NOTCH2	Adipose Nuclei	1
@@ -13,12 +15,17 @@ from liftover import get_lifter
 class DBSuperAdapter(Adapter):
     INDEX = {'chr' : 0, 'coord_start' : 1, 'coord_end' : 2, 'se_id' : 3, 'gene_id' : 4}
 
-    def __init__(self, filepath, hgnc_to_ensembl_map, write_properties, add_provenance, type='super enhancer', label='super_enhancer', delimiter='\t'):
+    def __init__(self, filepath, hgnc_to_ensembl_map, write_properties, add_provenance, 
+                 type='super enhancer', label='super_enhancer', delimiter='\t',
+                 chr=None, start=None, end=None):
         self.filePath = filepath
         self.hgnc_to_ensembl_map = pickle.load(open(hgnc_to_ensembl_map, 'rb'))
         self.type = type
         self.label = label
         self.delimiter = delimiter
+        self.chr = chr
+        self.start = start
+        self.end = end
         self.genome_reference_converter = get_lifter('hg19', 'hg38')
 
         self.source = 'dbSuper'
@@ -40,23 +47,24 @@ class DBSuperAdapter(Adapter):
             reader = csv.reader(f, delimiter=self.delimiter)
             next(reader)
             for line in reader:
-                chr = line[DBSuperAdapter.INDEX['chr']]
-                start_position = self.convert_to_hg38(chr, int(line[DBSuperAdapter.INDEX['coord_start']]))
-                end_position = self.convert_to_hg38(chr, int(line[DBSuperAdapter.INDEX['coord_end']]))
-                if not start_position or not end_position:
-                    continue
                 se_id = line[DBSuperAdapter.INDEX['se_id']]
+                chr = line[DBSuperAdapter.INDEX['chr']]
+                start = self.convert_to_hg38(chr, int(line[DBSuperAdapter.INDEX['coord_start']]))
+                end = self.convert_to_hg38(chr, int(line[DBSuperAdapter.INDEX['coord_end']]))
+                if not start or not end:
+                    continue
                 
-                props = {}
-                if self.write_properties:
-                    props['chr'] = chr
-                    props['start'] = start_position
-                    props['end'] = end_position
-                    if self.add_provenance:
-                        props['source'] = self.source
-                        props['source_url'] = self.source_url
+                if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
+                    props = {}
+                    if self.write_properties:
+                        props['chr'] = chr
+                        props['start'] = start
+                        props['end'] = end
+                        if self.add_provenance:
+                            props['source'] = self.source
+                            props['source_url'] = self.source_url
 
-                yield se_id, self.label, props
+                    yield se_id, self.label, props
 
     def get_edges(self):
         with gzip.open(self.filePath, 'rt') as f:
@@ -66,11 +74,17 @@ class DBSuperAdapter(Adapter):
                 se_id = line[DBSuperAdapter.INDEX['se_id']]
                 gene_id = line[DBSuperAdapter.INDEX['gene_id']]
                 ensembl_gene_id = self.hgnc_to_ensembl_map.get(gene_id, gene_id)
+                chr = line[DBSuperAdapter.INDEX['chr']]
+                start = self.convert_to_hg38(chr, int(line[DBSuperAdapter.INDEX['coord_start']]))
+                end = self.convert_to_hg38(chr, int(line[DBSuperAdapter.INDEX['coord_end']]))
+                if not start or not end:
+                    continue
                 
-                props = {}
-                if self.write_properties:
-                    if self.add_provenance:
-                        props['source'] = self.source
-                        props['source_url'] = self.source_url
+                if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
+                    props = {}
+                    if self.write_properties:
+                        if self.add_provenance:
+                            props['source'] = self.source
+                            props['source_url'] = self.source_url
 
-                yield se_id, ensembl_gene_id, self.label, props
+                    yield se_id, ensembl_gene_id, self.label, props

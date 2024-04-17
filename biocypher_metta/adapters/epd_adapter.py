@@ -2,7 +2,7 @@ import csv
 import gzip
 import pickle
 from biocypher_metta.adapters import Adapter
-from biocypher_metta.adapters.helpers import build_regulatory_region_id
+from biocypher_metta.adapters.helpers import build_regulatory_region_id, check_genomic_location
 # Example EPD bed input file:
 ##CHRM Start  End   Id  Score Strand -  -
 # chr1 959245 959305 NOC2L_1 900 - 959245 959256
@@ -13,12 +13,17 @@ from biocypher_metta.adapters.helpers import build_regulatory_region_id
 class EPDAdapter(Adapter):
     INDEX = {'chr' : 0, 'coord_start' : 1, 'coord_end' : 2, 'gene_id' : 3}
 
-    def __init__(self, filepath, hgnc_to_ensembl_map, write_properties, add_provenance, type='promoter', label='promoter', delimiter=' '):
+    def __init__(self, filepath, hgnc_to_ensembl_map, write_properties, add_provenance, 
+                 type='promoter', label='promoter', delimiter=' ',
+                 chr=None, start=None, end=None):
         self.filepath = filepath
         self.hgnc_to_ensembl_map = pickle.load(open(hgnc_to_ensembl_map, 'rb'))
         self.type = type
         self.label = label
         self.delimiter = delimiter
+        self.chr = chr
+        self.start = start
+        self.end = end
 
         self.source = 'EPD'
         self.version = '006'
@@ -35,17 +40,18 @@ class EPDAdapter(Adapter):
                 coord_end = int(line[EPDAdapter.INDEX['coord_end']]) + 1
                 promoter_id = build_regulatory_region_id(chr, coord_start, coord_end)
 
-                props = {}
-                if self.write_properties:
-                    props['chr'] = chr
-                    props['start'] = coord_start
-                    props['end'] = coord_end
+                if check_genomic_location(self.chr, self.start, self.end, chr, coord_start, coord_end):
+                    props = {}
+                    if self.write_properties:
+                        props['chr'] = chr
+                        props['start'] = coord_start
+                        props['end'] = coord_end
 
-                    if self.add_provenance:
-                        props['source'] = self.source
-                        props['source_url'] = self.source_url
+                        if self.add_provenance:
+                            props['source'] = self.source
+                            props['source_url'] = self.source_url
 
-                yield promoter_id, self.label, props
+                    yield promoter_id, self.label, props
 
     def get_edges(self):
         with gzip.open(self.filepath, 'rt') as f:
@@ -58,12 +64,13 @@ class EPDAdapter(Adapter):
                 ensembl_gene_id = self.hgnc_to_ensembl_map.get(gene_id, None)
                 if ensembl_gene_id is None:
                     continue
-                promoter_id = build_regulatory_region_id(chr, coord_start, coord_end)
+                
+                if check_genomic_location(self.chr, self.start, self.end, chr, coord_start, coord_end):
+                    promoter_id = build_regulatory_region_id(chr, coord_start, coord_end)
+                    props = {}
+                    if self.write_properties:
+                        if self.add_provenance:
+                            props['source'] = self.source
+                            props['source_url'] = self.source_url
 
-                props = {}
-                if self.write_properties:
-                    if self.add_provenance:
-                        props['source'] = self.source
-                        props['source_url'] = self.source_url
-
-                yield promoter_id, ensembl_gene_id, self.label, props
+                    yield promoter_id, ensembl_gene_id, self.label, props

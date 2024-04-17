@@ -1,5 +1,6 @@
 import gzip
 from biocypher_metta.adapters import Adapter
+from biocypher_metta.adapters.helpers import check_genomic_location
 # Example dgv input file:
 # variantaccession	chr	start	end	varianttype	variantsubtype	reference	pubmedid	method	platform	mergedvariants	supportingvariants	mergedorsample	frequency	samplesize	observedgains	observedlosses	cohortdescription	genes	samples
 # dgv1n82	1	10001	22118	CNV	duplication	Sudmant_et_al_2013	23825009	Oligo aCGH,Sequencing			nsv945697,nsv945698	M		97	10	0		""	HGDP00456,HGDP00521,HGDP00542,HGDP00665,HGDP00778,HGDP00927,HGDP00998,HGDP01029,HGDP01284,HGDP01307
@@ -7,16 +8,23 @@ from biocypher_metta.adapters import Adapter
 # nsv482937	1	10001	2368561	CNV	loss	Iafrate_et_al_2004	15286789	BAC aCGH,FISH			nssv2995976	M		39	0	1		""	
 
 class DGVVariantAdapter(Adapter):
-    INDEX = {'variant_accession': 0, 'chr': 1, 'coord_start': 2, 'coord_end': 3, 'variant_type': 4, 'variant_subtype': 5, 'pubmedid': 7, 'genes': 17}
+    INDEX = {'variant_accession': 0, 'chr': 1, 'coord_start': 2, 'coord_end': 3, 'type': 5, 'pubmedid': 7, 'genes': 17}
 
-    def __init__(self, filepath, label='variant', delimiter='\t'):
+    def __init__(self, filepath, write_properties, add_provenance, 
+                 label='structural_variant', delimiter='\t',
+                 chr=None, start=None, end=None):
         self.filepath = filepath
         self.delimiter = delimiter
         self.label = label
+        self.chr = chr
+        self.start = start
+        self.end = end
 
         self.source = 'dgv'
         self.version = ''
-        self.source_url = 'http://dgv.tcag.ca/dgv/app/downloads?ref='
+        self.source_url = 'http://dgv.tcag.ca/dgv/app/downloads'
+
+        super(DGVVariantAdapter, self).__init__(write_properties, add_provenance)
 
     def get_nodes(self):
         with gzip.open(self.filepath, 'rt') as f:
@@ -25,24 +33,24 @@ class DGVVariantAdapter(Adapter):
                 data = line.strip().split(self.delimiter)
                 variant_accession = data[DGVVariantAdapter.INDEX['variant_accession']]
                 chr = data[DGVVariantAdapter.INDEX['chr']]
-                start = int(data[DGVVariantAdapter.INDEX['coord_start']])
-                end = int(data[DGVVariantAdapter.INDEX['coord_end']])
-                variant_type = data[DGVVariantAdapter.INDEX['variant_type']]
-                variant_subtype = data[DGVVariantAdapter.INDEX['variant_subtype']]
+                start = int(data[DGVVariantAdapter.INDEX['coord_start']]) + 1
+                end = int(data[DGVVariantAdapter.INDEX['coord_end']]) + 1
+                variant_type = data[DGVVariantAdapter.INDEX['type']]
                 pubmedid = data[DGVVariantAdapter.INDEX['pubmedid']]
-                genes = data[DGVVariantAdapter.INDEX['genes']]
-                if not chr:
+                if not check_genomic_location(self.chr, self.start, self.end, chr, start, end):
                     continue
-                props = {
-                    'chr': 'chr'+chr,
-                    'start': start,
-                    'end': end,
-                    'variant_type': variant_type,
-                    'variant_subtype': variant_subtype,
-                    'evidence': 'pubmed:'+pubmedid
-                }
+                props = {}
 
-                if genes:
-                    props['genes'] = genes.split(',')
+                if self.write_properties:
+                    props['chr'] = 'chr' + chr
+                    props['start'] = start
+                    props['end'] = end
+                    props['variant_type'] = variant_type
+                    props['evidence'] = 'pubmed:'+pubmedid
+
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
+
 
                 yield variant_accession, self.label, props

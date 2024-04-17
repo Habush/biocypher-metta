@@ -164,12 +164,12 @@ snp:
 
 structural variant:
   represented_as: node
-  input_label: structural variant
+  input_label: structural_variant
   is_a: genomic variant
   inherit_properties: true
   properties:
       variant_type: str
-      variant_subtype: str
+      evidence: str
 
 # ---
 # non-coding elements

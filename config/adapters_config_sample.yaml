@@ -461,8 +461,7 @@ enhancer_ccre_regulates:
     cls: EnhancerCCREAdapter
     args:
       filepath: ./samples/encodeCcreCombinedHuman.bed.gz
-      label: regulates
-      type: enhancer to gene association
+      label: enhancer_gene
   outdir: enhancer_ccre
   nodes: False
   edges: True

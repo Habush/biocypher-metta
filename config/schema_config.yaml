@@ -245,14 +245,14 @@ motif:
     length: str
 
 # ---
-# 3D genome structures
-# tad:
-#   represented_as: node
-#   input_label: tad
-#   is_a: 3d genome structure
-#   inherit_properties: true
-#   properties:
-#         tissue: str
+3D genome structures
+tad:
+  represented_as: node
+  input_label: tad
+  is_a: 3d genome structure
+  inherit_properties: true
+  properties:
+        tissue: str
 
 chromatin state:
   represented_as: node
@@ -289,7 +289,7 @@ histone modification:
 
 expression:
   is_a: related to at instance level
-  represented_as: edges
+  represented_as: edge
   input_label: expression
   description: >-
     An association between a gene and its expression
@@ -299,7 +299,7 @@ expression:
 
 annotation:
   is_a: related to at concept level
-  represented_as: edges
+  represented_as: edge
   input_label: annotation
   description: >-
     An association between a gene/ontology term and another entity
@@ -309,7 +309,7 @@ annotation:
 
 regulatory association:
   is_a: related to at instance level
-  represented_as: edges
+  represented_as: edge
   input_label: regulatory_association
   properties:
     source: str

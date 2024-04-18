@@ -10,10 +10,9 @@ from biocypher_metta.adapters import Adapter
 # chr1	779727	780060	EH38E1310160	281	.	779727	780060	255,167,0	pELS,CTCF-bound	pELS	2.81743397307	enhP	E1310160	EH38E1310160 proximal enhancer-like signature
 
 class EnhancerCCREAdapter(Adapter):
-    def __init__(self, filepath,write_properties, add_provenance, label='enhancer', type='enhancer'):
+    def __init__(self, filepath,write_properties, add_provenance, label='enhancer'):
         self.filepath = filepath
         self.label = label
-        self.type = type
         self.source = "EnhancerCCRE"
         self.source_url = "https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=mm10&g=encodeCcreCombined"
 
@@ -29,23 +28,28 @@ class EnhancerCCREAdapter(Adapter):
 
                     try:
                         score = float(fields[4])
-                        gene_data = fields[3]
                     except (IndexError, ValueError):
                         continue
 
                     region_type = fields[10]  
 
                     if region_type in ["dELS", "pELS"]:
-                        properties = {
-                            'chrom': chrom,
-                            'start': start,
-                            'end': end,
-                            'score': score,
-                            'gene_data': gene_data
-                        }
+                        # This block of code is executed if the region_type is either "dELS" (distal Enhancer-Like Signature) or "pELS" (proximal Enhancer-Like Signature)
+                        props = {}
+
+                        if self.write_properties:
+                            props['chr'] = chrom
+                            props['start'] = start
+                            props['end'] = end
+                            props['score'] = score
+
+                            if self.add_provenance:
+                                props['source'] = self.source
+                                props['source_url'] = self.source_url
+                        
 
                         node_id = f"{chrom}_{start}_{end}"
-                        yield node_id, self.label, properties
+                        yield node_id, self.label, props
     
     def get_edges(self):
         with gzip.open(self.filepath, 'rt') as file:
@@ -61,7 +65,18 @@ class EnhancerCCREAdapter(Adapter):
                     if gene_data == ".":
                         continue
 
+                    props = {}
                     if region_type in ["dELS", "pELS"]:
+                        if self.write_properties:
+                            props['chr'] = chrom
+                            props['start'] = start
+                            props['end'] = end
+                            props['gene'] = gene_data
+
+                            if self.add_provenance:
+                                props['source'] = self.source
+                                props['source_url'] = self.source_url
+                        
                         enhancer_id = f"{chrom}_{start}_{end}"
                         gene_id = gene_data.split("_")[0] if "_" in gene_data else gene_data
                         yield enhancer_id, gene_id, self.label, {}

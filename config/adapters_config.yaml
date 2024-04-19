@@ -504,8 +504,7 @@ promoter_ccre_regulates:
     cls: PromoterCCREAdapter
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/encodeCcreCombinedHuman.bed.gz
-      label: promoter_regulates
-      type: enhancer to gene association
+      label: promoter_gene
   outdir: promoter_ccre
   nodes: False
   edges: True

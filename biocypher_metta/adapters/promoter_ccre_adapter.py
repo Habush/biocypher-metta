@@ -10,10 +10,9 @@ import gzip
 
 
 class PromoterCCREAdapter(Adapter):
-    def __init__(self, filepath, write_properties, add_provenance, label="promoter", type="promoter"):
+    def __init__(self, filepath, write_properties, add_provenance, label="promoter"):
         self.filepath = filepath
         self.label = label
-        self.type = type  
         self.source = "PromoterCCRE"
         self.source_url = "https://genome.ucsc.edu/cgi-bin/hgTables?db=hg38&hgta_group=regulation&hgta_track=encodeCcreCombined&hgta_table=encodeCcreCombined&hgta_doSchema=describe+table+schema"
         super(PromoterCCREAdapter, self).__init__(write_properties, add_provenance)
@@ -30,7 +29,6 @@ class PromoterCCREAdapter(Adapter):
                     
                     try:
                         score = float(fields[4])
-                        gene_data = fields[3]
                     except (IndexError, ValueError):
                         continue
 
@@ -38,16 +36,21 @@ class PromoterCCREAdapter(Adapter):
                 
 
                     if region_type == "PLS":
-                        properties = {
-                            'chrom': chrom,
-                            'start': start,
-                            'end': end,
-                            'score': score,
-                            'gene_data': gene_data
-                        }
+                        # This block of code is executed if the region_type is "PLS" (promoter-Like Signature)
+                        props = {}
+
+                        if self.write_properties:
+                            props['chr'] = chrom
+                            props['start'] = start
+                            props['end'] = end
+                            props['score'] = score
+
+                            if self.add_provenance:
+                                props['source'] = self.source
+                                props['source_url'] = self.source_url
 
                         node_id = f"{chrom}_{start}_{end}"
-                        yield node_id, self.label, properties
+                        yield node_id, self.label, props
 
     def get_edges(self):
         with gzip.open(self.filepath, 'rt') as file:
@@ -64,7 +67,18 @@ class PromoterCCREAdapter(Adapter):
                     if gene_data == ".":
                         continue
 
+                    props = {}                                
                     if region_type == "PLS":
+                    # This block of code is executed if the region_type is "PLS" (promoter-Like Signature)
+                        if self.write_properties:
+                            props['chr'] = chrom
+                            props['start'] = start
+                            props['end'] = end
+                            props['gene'] = gene_data
+
+                            if self.add_provenance:
+                                props['source'] = self.source
+                                props['source_url'] = self.source_url
                         promoter_id = f"{chrom}_{start}_{end}"
                         gene_id = gene_data.split("_")[0] if "_" in gene_data else gene_data
                         yield promoter_id, gene_id, self.label, {}

@@ -348,6 +348,7 @@ gencode_exon:
   nodes: True
   edges: False
 
+<<<<<<< HEAD
 rna_central_non_coding_rna:
   adapter:
     module: biocypher_metta.adapters.rna_central_adapter
@@ -441,8 +442,7 @@ promoter_ccre_regulates:
     cls: PromoterCCREAdapter
     args:
       filepath: ./samples/encodeCcreCombinedHuman.bed.gz
-      label: promoter_regulates
-      type: enhancer to gene association
+      label: promoter_gene
   outdir: promoter_ccre
   nodes: False
   edges: True

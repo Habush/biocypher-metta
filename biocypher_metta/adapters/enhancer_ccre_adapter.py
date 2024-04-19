@@ -14,7 +14,7 @@ class EnhancerCCREAdapter(Adapter):
         self.filepath = filepath
         self.label = label
         self.source = "EnhancerCCRE"
-        self.source_url = "https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=mm10&g=encodeCcreCombined"
+        self.source_url = "https://genome.ucsc.edu/cgi-bin/hgTables?db=hg38&hgta_group=regulation&hgta_track=encodeCcreCombined&hgta_table=encodeCcreCombined&hgta_doSchema=describe+table+schema"
 
         super(EnhancerCCREAdapter, self).__init__(write_properties, add_provenance)
     def get_nodes(self):

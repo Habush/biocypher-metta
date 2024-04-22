@@ -2,9 +2,8 @@ import csv
 import gzip
 import pickle
 from biocypher_metta.adapters import Adapter
-from liftover import get_lifter
 
-from biocypher_metta.adapters.helpers import check_genomic_location
+from biocypher_metta.adapters.helpers import build_regulatory_region_id, check_genomic_location, convert_genome_reference
 # Example dbSuper tsv input files:
 # chrom	 start	 stop	 se_id	 gene_symbol	 cell_name	 rank
 # chr1	120485363	120615071	SE_00001	NOTCH2	Adipose Nuclei	1
@@ -26,7 +25,6 @@ class DBSuperAdapter(Adapter):
         self.chr = chr
         self.start = start
         self.end = end
-        self.genome_reference_converter = get_lifter('hg19', 'hg38')
 
         self.source = 'dbSuper'
         self.version = ''
@@ -34,13 +32,6 @@ class DBSuperAdapter(Adapter):
 
         super(DBSuperAdapter, self).__init__(write_properties, add_provenance)
 
-    def convert_to_hg38(self, chr,  pos):
-        try:
-            chr_no = chr.replace('chr', '').replace('ch', '')
-            converted = self.genome_reference_converter.query(chr_no, pos)[0][1]
-            return int(converted)
-        except:
-            return False
 
     def get_nodes(self):
         with gzip.open(self.filePath, 'rt') as f:
@@ -49,14 +40,18 @@ class DBSuperAdapter(Adapter):
             for line in reader:
                 se_id = line[DBSuperAdapter.INDEX['se_id']]
                 chr = line[DBSuperAdapter.INDEX['chr']]
-                start = self.convert_to_hg38(chr, int(line[DBSuperAdapter.INDEX['coord_start']]))
-                end = self.convert_to_hg38(chr, int(line[DBSuperAdapter.INDEX['coord_end']]))
+                start_hg19 = int(line[DBSuperAdapter.INDEX['coord_start']]) + 1 # +1 since it is 0-based genomic coordinate
+                end_hg19 = int(line[DBSuperAdapter.INDEX['coord_end']]) + 1
+                start = convert_genome_reference(chr, start_hg19)
+                end = convert_genome_reference(chr, end_hg19)
+                
                 if not start or not end:
                     continue
-                
+                se_region_id = build_regulatory_region_id(chr, start, end)
                 if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
                     props = {}
                     if self.write_properties:
+                        props['se_id'] = se_id
                         props['chr'] = chr
                         props['start'] = start
                         props['end'] = end
@@ -64,22 +59,24 @@ class DBSuperAdapter(Adapter):
                             props['source'] = self.source
                             props['source_url'] = self.source_url
 
-                    yield se_id, self.label, props
+                    yield se_region_id, self.label, props
 
     def get_edges(self):
         with gzip.open(self.filePath, 'rt') as f:
             reader = csv.reader(f, delimiter=self.delimiter)
             next(reader)
             for line in reader:
-                se_id = line[DBSuperAdapter.INDEX['se_id']]
                 gene_id = line[DBSuperAdapter.INDEX['gene_id']]
-                ensembl_gene_id = self.hgnc_to_ensembl_map.get(gene_id, gene_id)
+                ensembl_gene_id = self.hgnc_to_ensembl_map.get(gene_id, None)
                 chr = line[DBSuperAdapter.INDEX['chr']]
-                start = self.convert_to_hg38(chr, int(line[DBSuperAdapter.INDEX['coord_start']]))
-                end = self.convert_to_hg38(chr, int(line[DBSuperAdapter.INDEX['coord_end']]))
-                if not start or not end:
-                    continue
+                start_hg19 = int(line[DBSuperAdapter.INDEX['coord_start']]) + 1 # +1 since it is 0-based genomic coordinate
+                end_hg19 = int(line[DBSuperAdapter.INDEX['coord_end']]) + 1
+                start = convert_genome_reference(chr, start_hg19)
+                end = convert_genome_reference(chr, end_hg19)
                 
+                if not ensembl_gene_id or not start or not end:
+                    continue
+                se_region_id = build_regulatory_region_id(chr, start, end)
                 if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
                     props = {}
                     if self.write_properties:
@@ -87,4 +84,4 @@ class DBSuperAdapter(Adapter):
                             props['source'] = self.source
                             props['source_url'] = self.source_url
 
-                    yield se_id, ensembl_gene_id, self.label, props
+                    yield se_region_id, ensembl_gene_id, self.label, props

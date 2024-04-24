@@ -595,20 +595,16 @@ cell_ontology:
     cls: CellOntologyAdapter
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/CL.csv.gz
-      write_properties: True
-      add_provenance: True
   outdir: cell_ontology
   nodes: True
   edges: False
 
-cell_ontology_parent_child_relationship:
+cell_ontology_is_child_of:
   adapter:
     module: biocypher_metta.adapters.cell_ontology_adapter
     cls: CellOntologyAdapter
     args:
-      filepath: /mnt/hdd_2/abdu/biocypher_data/CL_parent_child.csv.gz
-      write_properties: True
-      add_provenance: True
+      filepath: /mnt/hdd_2/abdu/biocypher_data/CL.csv.gz
       label: is_child_of
   outdir: cell_ontology
   nodes: False

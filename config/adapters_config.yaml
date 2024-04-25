@@ -594,3 +594,13 @@ enhancer_atlas_enhancer_regulates:
   outdir: enhancer_atlas
   nodes: False
   edges: True
+
+uberon:
+  adapter:
+    module: biocypher_metta.adapters.uberon_adapter
+    cls: UberonAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/UBERON.csv.gz
+  outdir: uberon
+  nodes: True
+  edges: False

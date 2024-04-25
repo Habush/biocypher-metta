@@ -248,7 +248,7 @@ motif:
     length: str
 
 # ---
-#3D genome structures
+# 3D genome structures
 tad:
   represented_as: node
   input_label: tad
@@ -316,20 +316,6 @@ regulatory association:
   properties:
     source: str
     source_url: str
-
-is_child_of:
-  represented_as: edge
-  is_a: related to at instance level
-  domain: cell
-  range: parent_cell
-  input_label: is_child_of
-  source: cell
-  target: parent_cell
-  description: >-
-    A relationship indicating that one cell type is a child of another cell types in the cell ontology.
-  exact_mappings:
-    - RO:0002511
-    - SIO:010080
 
 transcribed to:
   represented_as: edge

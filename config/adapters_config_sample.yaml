@@ -531,42 +531,7 @@ cell_ontology:
     cls: CellOntologyAdapter
     args:
       filepath: ./samples/CL.csv.gz
-      write_properties: True
-      add_provenance: True
   outdir: cell_ontology
   nodes: True
   edges: False
 
-cell_ontology_parent_child_relationship:
-  adapter:
-    module: biocypher_metta.adapters.cell_ontology_adapter
-    cls: CellOntologyAdapter
-    args:
-      filepath: ./samples/CL.csv.gz
-      write_properties: True
-      add_provenance: True
-      label: is_child_of
-  outdir: cell_ontology
-  nodes: False
-  edges: True
-
-cell_ontology:
-  adapter:
-    module: biocypher_metta.adapters.cell_ontology_adapter
-    cls: CellOntologyAdapter
-    args:
-      filepath: ./samples/CL.csv.gz
-  outdir: cell_ontology
-  nodes: True
-  edges: False
-
-cell_ontology_is_child_of:
-  adapter:
-    module: biocypher_metta.adapters.cell_ontology_adapter
-    cls: CellOntologyAdapter
-    args:
-      filepath: ./samples/CL.csv.gz
-      label: is_child_of
-  outdir: cell_ontology
-  nodes: False
-  edges: True

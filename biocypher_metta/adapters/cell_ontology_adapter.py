@@ -46,29 +46,4 @@ class CellOntologyAdapter(Adapter):
                 
                 yield node_id, self.label, props
 
-    def get_edges(self):
-            with gzip.open(self.filepath, "rt") as f:
-                reader = csv.DictReader(f, delimiter=",", quotechar='"')
-
-                for row in reader:
-                    node_id = row['Class ID'].split('/')[-1]
-                    parent_urls = [urllib.parse.unquote(p) for p in row['Parents'].split('|') if p]
-                
-                    props = {}
-                    if self.write_properties:
-                        props['parent_urls'] = parent_urls
-
-                        if self.add_provenance:
-                            props['source'] = self.source
-                            props['source_url'] = self.source_url
-                    
-                    if len(parent_urls) > 1:
-                        parent_ids = [parent_url.split('/')[-1] for parent_url in parent_urls]
-                        if parent_ids:
-                            parent_ids_str = ' '.join(parent_ids)
-
-                        yield node_id, parent_ids_str, self.label, props
-                    elif len(parent_urls) == 1:
-                        parent_id = parent_urls[0].split('/')[-1]
-                        
-                        yield node_id, parent_id, self.label, props
+    

@@ -436,14 +436,15 @@ peregrine_enhancer:
     cls: PEREGRINEAdapter
     args:
       enhancers_file: ./samples/peregrine/PEREGRINEenhancershg38.gz
-      enhancer_gene_link_scores: ./samples/peregrine/PEREGRINEscores.gz
+      enhancer_gene_link: ./samples/peregrine/sample_enhancer_gene_link_18.tsv.gz
       source_file: ./samples/peregrine/PEREGRINEenhancersources.gz
       hgnc_ensembl_map: ./aux_files/hgnc_ensembl_map.pkl
-      hgnc_symbol_map: ./aux_files/hgnc_symbol_map.pkl
+      tissue_ontology_map: ./aux_files/peregrine_tissues_to_ontology_map.pkl
 
   outdir: peregrine
   nodes: True
   edges: False
+
 
 peregrine_enhancer_regulates:
   adapter:
@@ -451,10 +452,10 @@ peregrine_enhancer_regulates:
     cls: PEREGRINEAdapter
     args:
       enhancers_file: ./samples/peregrine/PEREGRINEenhancershg38.gz
-      enhancer_gene_link_scores: ./samples/peregrine/PEREGRINEscores.gz
+      enhancer_gene_link: ./samples/peregrine/sample_enhancer_gene_link_18.tsv.gz
       source_file: ./samples/peregrine/PEREGRINEenhancersources.gz
       hgnc_ensembl_map: ./aux_files/hgnc_ensembl_map.pkl
-      hgnc_symbol_map: ./aux_files/hgnc_symbol_map.pkl
+      tissue_ontology_map: ./aux_files/peregrine_tissues_to_ontology_map.pkl
       type: enhancer to gene association
       label: enhancer_gene
 

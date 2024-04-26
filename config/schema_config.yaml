@@ -34,7 +34,7 @@ non coding element:
   description: >-
       A region of a gene that does not code for a protein or peptide
   properties:
-    tissue: str
+    biological_context: str
     source: str
     source_url: str
 
@@ -58,7 +58,7 @@ epigenomic feature:
       A region of the genome that is associated with epigenetic modifications
 
   properties:
-    tissue: str
+    biological_context: str
     source: str
     source_url: str
 
@@ -255,7 +255,7 @@ tad:
   is_a: 3d genome structure
   inherit_properties: true
   properties:
-        tissue: str
+        biological_context: str
 
 chromatin state:
   represented_as: node
@@ -457,7 +457,7 @@ gene to gene coexpression association:
   target: gene
   properties:
     score: float
-    tissue: str
+    biological_context: str
 
 enhancer to gene association:
   description: >-
@@ -471,7 +471,7 @@ enhancer to gene association:
   target: gene
   properties:
     score: float
-    tissue: str
+    biological_context: str
 
 promoter to gene association:
   description: >-
@@ -485,7 +485,7 @@ promoter to gene association:
   target: gene
   properties:
       score: float
-      tissue: str
+      biological_context: str
 
 super enhancer to gene association:
   description: >-
@@ -499,7 +499,7 @@ super enhancer to gene association:
   target: gene
   properties:
     score: float
-    tissue: str
+    biological_context: str
 
 transcription factor to gene association:
   description: >-
@@ -541,7 +541,7 @@ gtex variant to gene expression association:
     maf: float
     p_value: float
     q_value: float
-    tissue: str
+    biological_context: str
     source: str
     source_url: str
 

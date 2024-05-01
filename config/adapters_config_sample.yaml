@@ -418,7 +418,6 @@ epd_promoter_regulates_gene:
   nodes: False
   edges: True
 
-
   
 dbvar_variant:
   adapter:
@@ -430,3 +429,36 @@ dbvar_variant:
   outdir: dbvar
   nodes: True
   edges: False
+
+peregrine_enhancer:
+  adapter:
+    module: biocypher_metta.adapters.peregrine_adapter
+    cls: PEREGRINEAdapter
+    args:
+      enhancers_file: ./samples/peregrine/PEREGRINEenhancershg38.gz
+      enhancer_gene_link: ./samples/peregrine/sample_enhancer_gene_link_18.tsv.gz
+      source_file: ./samples/peregrine/PEREGRINEenhancersources.gz
+      hgnc_ensembl_map: ./aux_files/hgnc_ensembl_map.pkl
+      tissue_ontology_map: ./aux_files/peregrine_tissues_to_ontology_map.pkl
+
+  outdir: peregrine
+  nodes: True
+  edges: False
+
+
+peregrine_enhancer_regulates:
+  adapter:
+    module: biocypher_metta.adapters.peregrine_adapter
+    cls: PEREGRINEAdapter
+    args:
+      enhancers_file: ./samples/peregrine/PEREGRINEenhancershg38.gz
+      enhancer_gene_link: ./samples/peregrine/sample_enhancer_gene_link_18.tsv.gz
+      source_file: ./samples/peregrine/PEREGRINEenhancersources.gz
+      hgnc_ensembl_map: ./aux_files/hgnc_ensembl_map.pkl
+      tissue_ontology_map: ./aux_files/peregrine_tissues_to_ontology_map.pkl
+      type: enhancer to gene association
+      label: enhancer_gene
+
+  outdir: peregrine
+  nodes: False
+  edges: True

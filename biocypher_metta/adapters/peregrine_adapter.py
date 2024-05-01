@@ -56,7 +56,7 @@ class PEREGRINEAdapter(Adapter):
 
         super(PEREGRINEAdapter, self).__init__(write_properties, add_provenance)
 
-    def handel_gene(self, gene):
+    def handle_gene(self, gene):
         gene = gene.split('|')[1]
         gene = ':'.join(gene.split('='))
         return gene
@@ -121,7 +121,7 @@ class PEREGRINEAdapter(Adapter):
                 if id not in enhancer_id_map:
                     continue
                 enhancer_region_id = enhancer_id_map[id]
-                gene_hgnc_id = self.handel_gene(line[self.INDEX['gene']])
+                gene_hgnc_id = self.handle_gene(line[self.INDEX['gene']])
                 if gene_hgnc_id not in self.hgnc_ensembl_map:
                     continue
                 gene = self.hgnc_ensembl_map[gene_hgnc_id]

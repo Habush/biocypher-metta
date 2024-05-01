@@ -536,6 +536,20 @@ uberon:
     cls: UberonAdapter
     args:
       filepath: ./samples/UBERON.csv.gz
+      label: ontology_term
+      type: node
   outdir: uberon
   nodes: True
   edges: False
+
+uberon_subclass_of:
+  adapter:
+    module: biocypher_metta.adapters.uberon_adapter
+    cls: UberonAdapter
+    args:
+      filepath: ./samples/UBERON.csv.gz
+      label: ontology_relationship
+      type: edge
+  outdir: uberon
+  nodes: False
+  edges: True

@@ -537,7 +537,6 @@ uberon:
     args:
       filepath: ./samples/UBERON.csv.gz
       label: ontology_term
-      type: node
   outdir: uberon
   nodes: True
   edges: False
@@ -548,8 +547,7 @@ uberon_subclass_of:
     cls: UberonAdapter
     args:
       filepath: ./samples/UBERON.csv.gz
-      label: ontology_relationship
-      type: edge
+      label: uberon_subclass_of
   outdir: uberon
   nodes: False
   edges: True

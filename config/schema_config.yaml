@@ -471,7 +471,8 @@ subclass of:
 uberon subclass of:
   is_a: subclass_of  
   represented_as: edge
-  input_label: ontology_relationship
+  input_label: uberon_subclass_of
+  output_label: subclass_of
   source: uberon
   target: uberon
   properties:

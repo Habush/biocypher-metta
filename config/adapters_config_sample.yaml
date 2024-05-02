@@ -530,8 +530,18 @@ cell_ontology:
     module: biocypher_metta.adapters.cell_ontology_adapter
     cls: CellOntologyAdapter
     args:
-      filepath: ./samples/CL.csv.gz
+      filepath: ./samples/cell_ontology.csv.gz
   outdir: cell_ontology
   nodes: True
   edges: False
 
+clo_subclass_of:
+  adapter:
+    module: biocypher_metta.adapters.cell_ontology_adapter
+    cls: CellOntologyAdapter
+    args:
+      filepath: ./samples/cell_ontology.csv.gz
+      label: clo_subclass_of
+  outdir: cell_ontology
+  nodes: False
+  edges: True

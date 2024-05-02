@@ -594,7 +594,18 @@ cell_ontology:
     module: biocypher_metta.adapters.cell_ontology_adapter
     cls: CellOntologyAdapter
     args:
-      filepath: /mnt/hdd_2/abdu/biocypher_data/CL.csv.gz
+      filepath: /mnt/hdd_2/abdu/biocypher_data/cell_ontology.csv.gz
   outdir: cell_ontology
   nodes: True
   edges: False
+
+clo_subclass_of:
+  adapter:
+    module: biocypher_metta.adapters.cell_ontology_adapter
+    cls: CellOntologyAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/cell_ontology.csv.gz
+      label: clo_subclass_of
+  outdir: cell_ontology
+  nodes: False
+  edges: True

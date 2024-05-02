@@ -1,7 +1,7 @@
 import gzip
 import csv
 import urllib.parse
-from biocypher_metta.adapters.ontologies_adapter import OntologyAdapter
+from biocypher_metta.adapters import Adapter
 
 # Example UBERON Data from the dataset
 # Class ID,Preferred Label,Synonyms,Definitions,Obsolete,CUI,Semantic Types,Parents
@@ -10,17 +10,17 @@ from biocypher_metta.adapters.ontologies_adapter import OntologyAdapter
 # http://purl.obolibrary.org/obo/UBERON_0009621,tail somite,,A somite that is part of a tail.,false,,,http://purl.obolibrary.org/obo/UBERON_0002329,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,XAO:0003143|EMAPA:16860|AAO:0010383,,,A somite that is part of a tail.,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,uberon,,,,,,,,,,,,http://purl.obolibrary.org/obo/UBERON_0002415,,http://purl.obolibrary.org/obo/UBERON_0002415,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,tail somite,,,UBERON:0009621,,,,,UBERON:0009621,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 # http://purl.obolibrary.org/obo/UBERON_0009624,lumbar nerve,nervi lumbales|nervus lumbalis|lumbar spinal nerve,The lumbar nerves are the five spinal nerves emerging from the lumbar vertebrae. They are divided into posterior and anterior divisions.,false,,,http://purl.obolibrary.org/obo/UBERON_0001780,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,neuronames:1730|Wikipedia:Lumbar_nerves|UMLS:C0228897|SCTID:361600002|NCIT:C33015|FMA:5861,,,The lumbar nerves are the five spinal nerves emerging from the lumbar vertebrae. They are divided into posterior and anterior divisions.,,,http://upload.wikimedia.org/wikipedia/commons/d/d1/Gray802.png,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,http://purl.obolibrary.org/obo/UBERON_0002792,,,,,,,,,,,,,,,,,,,,,,,,,,,nervus lumbalis|lumbar spinal nerve,,,,,,,,,,,,,,,,,,,,,,,,,,,nervi lumbales,,,,,,,,,,,,,,uberon,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,lumbar nerve,,,UBERON:0009624,,,,,UBERON:0009624,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-class UberonAdapter(OntologyAdapter):
+class UberonAdapter(Adapter):
     """
     Adapter for UBERON dataset
     """
 
-    def __init__(self, filepath, write_properties, add_provenance, label, type='node'):
+    def __init__(self, filepath, write_properties, add_provenance, label="uberon"):
         self.filepath = filepath
         self.label = label
         self.source = "Uberon"
         self.source_url = "https://bioportal.bioontology.org/ontologies/UBERON"
-        super(UberonAdapter, self).__init__(write_properties, add_provenance, type, dry_run=False)
+        super(UberonAdapter, self).__init__(write_properties, add_provenance)
 
     def get_nodes(self):
         with gzip.open(self.filepath, "rt") as f:

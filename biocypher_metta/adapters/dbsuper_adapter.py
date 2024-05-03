@@ -1,3 +1,4 @@
+from collections import defaultdict
 import csv
 import gzip
 import pickle
@@ -12,13 +13,15 @@ from biocypher_metta.adapters.helpers import build_regulatory_region_id, check_g
 # chr5	158117077	158371526	SE_00004	EBF1	Adipose Nuclei	4
 
 class DBSuperAdapter(Adapter):
-    INDEX = {'chr' : 0, 'coord_start' : 1, 'coord_end' : 2, 'se_id' : 3, 'gene_id' : 4}
+    INDEX = {'chr': 0, 'coord_start': 1, 'coord_end': 2, 'se_id': 3, 'gene_id': 4, 'cell_name': 5}
 
-    def __init__(self, filepath, hgnc_to_ensembl_map, write_properties, add_provenance, 
+    def __init__(self, filepath, hgnc_to_ensembl_map, dbsuper_tissues_map,
+                 write_properties, add_provenance, 
                  type='super enhancer', label='super_enhancer', delimiter='\t',
                  chr=None, start=None, end=None):
         self.filePath = filepath
         self.hgnc_to_ensembl_map = pickle.load(open(hgnc_to_ensembl_map, 'rb'))
+        self.dbsuper_tissues_map = pickle.load(open(dbsuper_tissues_map, 'rb'))
         self.type = type
         self.label = label
         self.delimiter = delimiter
@@ -51,7 +54,7 @@ class DBSuperAdapter(Adapter):
                 if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
                     props = {}
                     if self.write_properties:
-                        props['se_id'] = se_id
+                        props['id'] = se_id
                         props['chr'] = chr
                         props['start'] = start
                         props['end'] = end
@@ -61,6 +64,7 @@ class DBSuperAdapter(Adapter):
 
                     yield se_region_id, self.label, props
 
+    
     def get_edges(self):
         with gzip.open(self.filePath, 'rt') as f:
             reader = csv.reader(f, delimiter=self.delimiter)
@@ -73,6 +77,8 @@ class DBSuperAdapter(Adapter):
                 end_hg19 = int(line[DBSuperAdapter.INDEX['coord_end']]) + 1
                 start = convert_genome_reference(chr, start_hg19)
                 end = convert_genome_reference(chr, end_hg19)
+                cell_name = line[DBSuperAdapter.INDEX['cell_name']]
+                biological_id = self.dbsuper_tissues_map[cell_name]
                 
                 if not ensembl_gene_id or not start or not end:
                     continue
@@ -80,6 +86,7 @@ class DBSuperAdapter(Adapter):
                 if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
                     props = {}
                     if self.write_properties:
+                        props['biological_context'] = biological_id
                         if self.add_provenance:
                             props['source'] = self.source
                             props['source_url'] = self.source_url

@@ -535,6 +535,7 @@ dbsuper_super_enhancer:
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/dbSUPER_SuperEnhancers_hg19.tsv.gz
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      dbsuper_tissue_ontology_map: ./aux_files/dbsuper_tissues_map.pkl
 
   outdir: dbsuper
   nodes: True
@@ -547,6 +548,7 @@ dbsuper_super_enhancer_regulates_gene:
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/dbSUPER_SuperEnhancers_hg19.tsv.gz
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      dbsuper_tissue_ontology_map: ./aux_files/dbsuper_tissues_map.pkl
       type: super enhancer to gene association
       label: super_enhancer_gene
 

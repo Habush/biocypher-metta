@@ -297,6 +297,7 @@ abc_regulatory_region:
       filepath: /mnt/hdd_2/abdu/biocypher_data/forgedb/abc.forgedb.csv.gz
       type: "node"
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      tissue_to_ontology_id_map: ./aux_files/abc_tissues_to_ontology_map.pkl
       dbsnp_rsid_map: None # will be provided by import script
 
   outdir: abc
@@ -311,6 +312,7 @@ abc_enhancer_gene_pair:
       filepath: /mnt/hdd_2/abdu/biocypher_data/forgedb/abc.forgedb.csv.gz
       type: "edge"
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      tissue_to_ontology_id_map: ./aux_files/abc_tissues_to_ontology_map.pkl
       dbsnp_rsid_map: None # will be provided by import script
       chr: chr16
 

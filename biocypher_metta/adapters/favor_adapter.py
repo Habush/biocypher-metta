@@ -59,7 +59,8 @@ class FavorAdapter(Adapter):
 
     WRITE_THRESHOLD = 1000000
 
-    def __init__(self, filepath=None, chr=None, start=None, end=None):
+    def __init__(self, write_properties, add_provenance, 
+                 filepath=None, chr=None, start=None, end=None):
         self.filepath = filepath
         self.chr = chr
         self.start = start
@@ -68,7 +69,7 @@ class FavorAdapter(Adapter):
         self.source = "FAVOR"
         self.source_url = "http://favor.genohub.org/"
 
-        super(FavorAdapter, self).__init__()
+        super(FavorAdapter, self).__init__(write_properties, add_provenance)
 
     def convert_freq_value(self, value):
         if value == '.':
@@ -108,16 +109,20 @@ class FavorAdapter(Adapter):
                         chr, pos,
                         row[FIELDS["ref_vcf"]],
                         row[FIELDS["alt_vcf"]])
-
-                    props = {
-                        # '_key': id,
-                        'chr': chr,
-                        'position': pos,
-                        # 'rsid': [row[FIELDS["rsid"], #TODO uncomment when rsid is available
-                        'ref': row[FIELDS["ref_vcf"]],
-                        'alt': row[FIELDS["alt_vcf"]],
-                        'annotation': self.parse_annotation(row),
-                    }
+                    props = {}
+                    if self.write_properties:
+                        props = {
+                            # '_key': id,
+                            'chr': chr,
+                            'position': pos,
+                            # 'rsid': [row[FIELDS["rsid"], #TODO uncomment when rsid is available
+                            'ref': row[FIELDS["ref_vcf"]],
+                            'alt': row[FIELDS["alt_vcf"]],
+                            'annotation': self.parse_annotation(row),
+                        }
+                        if self.add_provenance:
+                            props['source'] = self.source
+                            props['source_url'] = self.source_url
 
                     # TODO add a simple heuristics to resolve conflicting rsids appear close to each other in data
                     #  files when the data becomes available

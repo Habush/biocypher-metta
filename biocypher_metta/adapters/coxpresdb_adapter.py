@@ -10,7 +10,8 @@ import os
 
 class CoxpresdbAdapter(Adapter):
 
-    def __init__(self, filepath, ensemble_to_entrez_path):
+    def __init__(self, filepath, ensemble_to_entrez_path,
+                 write_properties, add_provenance):  
 
         self.file_path = filepath
         self.ensemble_to_entrez_path = ensemble_to_entrez_path
@@ -21,7 +22,7 @@ class CoxpresdbAdapter(Adapter):
         self.version = 'v8'
 
         assert os.path.isdir(self.file_path), "coxpresdb file path is not a directory"
-        super(CoxpresdbAdapter, self).__init__()
+        super(CoxpresdbAdapter, self).__init__(write_properties, add_provenance)
 
     def get_edges(self):
         # entrez_to_ensembl.pkl is generated using those two files:
@@ -47,7 +48,10 @@ class CoxpresdbAdapter(Adapter):
                             _id = entrez_id + '_' + co_entrez_id + '_' + self.label
                             source = ensembl_id
                             target = co_ensembl_id
-                            _props = {
-                                'score': float(score)
-                            }
+                            _props = {}
+                            if self.write_properties:
+                                _props['score'] = float(score)
+                                if self.add_provenance:
+                                    _props['source'] = self.source
+                                    _props['source_url'] = self.source_url
                             yield source, target, self.label, _props

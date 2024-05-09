@@ -8,7 +8,7 @@ import biocypher._logger as logger
 
 class Forge2TFAdapter(Adapter):
 
-    def __init__(self, filepath):
+    def __init__(self, filepath, write_properties, add_provenance):
         """
         :type filepath: str
         :param filepath: path to the directory containing epigenomic data
@@ -24,5 +24,5 @@ class Forge2TFAdapter(Adapter):
         # 10 parts
         self.label = "regulatory_region"
 
-        super(Forge2TFAdapter, self).__init__()
+        super(Forge2TFAdapter, self).__init__(write_properties, add_provenance)
 

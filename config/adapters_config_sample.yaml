@@ -228,6 +228,7 @@ gtex_eqtl:
     cls: GTExEQTLAdapter
     args:
       filepath: ./samples/gtex
+      gtex_tissue_ontology_map: ./aux_files/gtex_tissues_to_ontology_map.pkl
 
   outdir: gtex/eqtl
   nodes: False

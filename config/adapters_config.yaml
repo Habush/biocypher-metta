@@ -228,7 +228,7 @@ gtex_eqtl:
     cls: GTExEQTLAdapter
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/gtex/eqtl/GTEx_Analysis_v8_eQTL
-      chr: chr16
+      gtex_tissue_ontology_map: ./aux_files/gtex_tissues_to_ontology_map.pkl
 
   outdir: gtex/eqtl
   nodes: False

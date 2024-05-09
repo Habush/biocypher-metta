@@ -533,7 +533,8 @@ gtex variant to gene expression association:
     An association between a variant and expression of a gene (i.e. e-QTL)
   is_a: related to at instance level
   represented_as: edge
-  input_label: correlates_with
+  input_label: gtex_variant_gene
+  output_label: correlates_with
   source: snp
   target: gene
   properties:

@@ -54,7 +54,9 @@ class OntologyAdapter(Adapter):
     PREDICATES = [SUBCLASS, DB_XREF]
     RESTRICTION_PREDICATES = [HAS_PART, PART_OF]
 
-    def __init__(self, type='node', dry_run=False):
+    LABELS = {'has_part': 'ontology_has_part', 'part_of': 'ontology_part_of', 'subclass': 'ontology_subclass_of'}
+
+    def __init__(self, write_properties, add_provenance, type='node', dry_run=False):
         self.type = type
         self.dry_run = dry_run
         if type == 'node':
@@ -63,6 +65,8 @@ class OntologyAdapter(Adapter):
             self.label = 'ontology_relationship'
         else:
             raise ValueError('Invalid type. Allowed values: node, edge')
+        
+        super(OntologyAdapter, self).__init__(write_properties, add_provenance)
 
     def get_graph(self, ontology):
 
@@ -91,14 +95,19 @@ class OntologyAdapter(Adapter):
 
                 # term_id = str(node).split('/')[-1]
                 term_id = OntologyAdapter.to_key(node)
-                props = {
-                    # 'uri': str(node),
-                    'term_name': ', '.join(self.get_all_property_values_from_node(node, 'term_names')),
-                    'description': ' '.join(self.get_all_property_values_from_node(node, 'descriptions')),
-                    'synonyms': self.get_all_property_values_from_node(node, 'related_synonyms') +
-                    self.get_all_property_values_from_node(node, 'exact_synonyms'),
-                    'subontology': nodes_in_go_namespaces.get(node, None)
-                }
+                props = {}
+                if self.write_properties:
+                    props = {
+                        # 'uri': str(node),
+                        'term_name': ', '.join(self.get_all_property_values_from_node(node, 'term_names')),
+                        'description': ' '.join(self.get_all_property_values_from_node(node, 'descriptions')),
+                        'synonyms': self.get_all_property_values_from_node(node, 'related_synonyms') +
+                        self.get_all_property_values_from_node(node, 'exact_synonyms'),
+                        'subontology': nodes_in_go_namespaces.get(node, None)
+                    }
+                    if self.add_provenance:
+                        props['source'] = ontology
+                        props['source_url'] = OntologyAdapter.ONTOLOGIES[ontology]
                 i += 1
                 yield term_id, self.label, props
 
@@ -155,10 +164,15 @@ class OntologyAdapter(Adapter):
 
                         predicate_name = self.predicate_name(predicate)
                         if predicate_name == 'dbxref': continue #TODO should we skip dbxref edges?
-                        props = {
-                            'rel_type': self.predicate_name(predicate)
-                        }
-
+                        props = {}
+                        if self.write_properties:
+                            props = {
+                                'rel_type': self.predicate_name(predicate)
+                            }
+                            if self.add_provenance:
+                                props['source'] = ontology
+                                props['source_url'] = OntologyAdapter.ONTOLOGIES[ontology]
+                        self.label = OntologyAdapter.LABELS[predicate_name]
                         yield from_node_key, to_node_key, self.label, props
                         i += 1
 

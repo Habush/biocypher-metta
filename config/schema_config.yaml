@@ -445,6 +445,33 @@ go rna:
   source: non coding rna
   target: go
 
+ontology has part:
+  is_a: annotation
+  inherit_properties: true
+  represented_as: edge
+  input_label: ontology_has_part
+  output_label: has_part
+  source: ontology term
+  target: ontology term
+
+ontology part of:
+  is_a: annotation
+  inherit_properties: true
+  represented_as: edge
+  input_label: ontology_part_of
+  output_label: part_of
+  source: ontology term
+  target: ontology term
+
+ontology subclass of:
+  is_a: annotation
+  inherit_properties: true
+  represented_as: edge
+  input_label: ontology_subclass_of
+  output_label: subclass_of
+  source: ontology term
+  target: ontology term
+
 gene to gene coexpression association:
   description: >-
     Indicates that two genes are co-expressed,

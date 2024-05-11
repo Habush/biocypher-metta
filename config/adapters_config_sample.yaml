@@ -362,8 +362,8 @@ rna_central_non_coding_rna:
     module: biocypher_metta.adapters.rna_central_adapter
     cls: RNACentralAdapter
     args:
-      filepath: ./samples/rna_central/homo_sapiens.GRCh38.bed.gz
-      rfam_filepath: ./samples/rna_central/rnacentral_rfam_annotations.tsv.gz
+      filepath: ./samples/rna_central/sample_homo_sapiens.GRCh38.bed.gz
+      rfam_filepath: ./samples/rna_central/sample_rnacentral_rfam_annotations.tsv.gz
 
   outdir: rna_central
   nodes: True
@@ -374,8 +374,8 @@ rna_central_non_coding_rna_belongs_to_go:
     module: biocypher_metta.adapters.rna_central_adapter
     cls: RNACentralAdapter
     args:
-      filepath: ./samples/rna_central/homo_sapiens.GRCh38.bed.gz
-      rfam_filepath: ./samples/rna_central/rnacentral_rfam_annotations.tsv.gz
+      filepath: ./samples/rna_central/sample_homo_sapiens.GRCh38.bed.gz
+      rfam_filepath: ./samples/rna_central/sample_rnacentral_rfam_annotations.tsv.gz
       type: go rna
       label: go_rna
 

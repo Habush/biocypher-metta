@@ -2,6 +2,7 @@ from collections import defaultdict
 import csv
 import gzip
 from biocypher_metta.adapters import Adapter
+from biocypher_metta.adapters.helpers import check_genomic_location
 
 # Example RNAcentral bed input file:
 # chr1	10244	10273	URS000035F234_9606	0	-	10244	10273	63,125,151	2	19,5	0,24	.	piRNA	PirBase
@@ -16,9 +17,14 @@ from biocypher_metta.adapters import Adapter
 class RNACentralAdapter(Adapter):
     INDEX = {'chr': 0, 'coord_start': 1, 'coord_end': 2, 'id': 3, 'rna_type': 13}
 
-    def __init__(self, filepath, rfam_filepath, write_properties, add_provenance, type = 'non coding rna', label = 'non_coding_rna'):
+    def __init__(self, filepath, rfam_filepath, write_properties, add_provenance, 
+                 type = 'non coding rna', label = 'non_coding_rna',
+                 chr=None, start=None, end=None):
         self.filepath = filepath
         self.rfam_filepath = rfam_filepath
+        self.chr = chr
+        self.start = start
+        self.end = end
         self.type = type
         self.label = label
         self.write_properties = write_properties
@@ -34,18 +40,22 @@ class RNACentralAdapter(Adapter):
             for line in input:
                 infos = line.split('\t')
                 rna_id = infos[RNACentralAdapter.INDEX['id']].split('_')[0]
+                chr = infos[RNACentralAdapter.INDEX['chr']]
+                start = int(infos[RNACentralAdapter.INDEX['coord_start']].strip())+1 # +1 since it is 0 indexed coordinate
+                end = int(infos[RNACentralAdapter.INDEX['coord_end']].strip())+1
                 props = {}
-                if self.write_properties:
-                    props['chr'] = infos[RNACentralAdapter.INDEX['chr']]
-                    props['start'] = int(infos[RNACentralAdapter.INDEX['coord_start']].strip())+1 # +1 since it is 0 indexed coordinate
-                    props['end'] = int(infos[RNACentralAdapter.INDEX['coord_end']].strip())+1
-                    props['rna_type'] = infos[RNACentralAdapter.INDEX['rna_type']].strip()
-                
-                    if self.add_provenance:
-                        props['source'] = self.source
-                        props['source_url'] = self.source_url
+                if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
+                    if self.write_properties:
+                        props['chr'] = chr
+                        props['start'] = start
+                        props['end'] = end
+                        props['rna_type'] = infos[RNACentralAdapter.INDEX['rna_type']].strip()
+                    
+                        if self.add_provenance:
+                            props['source'] = self.source
+                            props['source_url'] = self.source_url
 
-                yield rna_id, self.label, props
+                    yield rna_id, self.label, props
 
     def get_edges(self):
         with gzip.open(self.rfam_filepath, 'rt') as input:
@@ -61,5 +71,4 @@ class RNACentralAdapter(Adapter):
                     if self.add_provenance:
                         props['source'] = self.source
                         props['source_url'] = self.source_url
-                
                 yield rna_id, go_term, self.label, props

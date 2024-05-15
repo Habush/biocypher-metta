@@ -490,3 +490,14 @@ dbsuper_super_enhancer_regulates_gene:
   outdir: dbsuper
   nodes: False
   edges: True
+
+dpsnp_snps:
+  adapter:
+    module: biocypher_metta.adapters.dbsnp_adapter
+    cls: DBSNPAdapter
+    args:
+      filepath: ./samples/dbsnp-sample-00-common_all.vcf.gz
+    
+  outdir: dbsnp
+  nodes: True
+  edges: False

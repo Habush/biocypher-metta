@@ -1,74 +1,119 @@
-from biocypher_metta.adapters import Adapter
-import gzip
-import csv
-import urllib.parse
+import rdflib
+from owlready2 import *
+from biocypher_metta.adapters.ontologies_adapter import OntologyAdapter
 
-# Example Cell Ontology Data from the dataset
-# Class ID,Preferred Label,Synonyms,Definitions,Obsolete,CUI,Semantic Types,Parents
-# http://purl.obolibrary.org/obo/UBERON_0009623,spinal nerve root,spinal root|spinal neural root|root of spinal nerve,"The paired bundles of nerve fibers entering and leaving the spinal cord at each segment. The dorsal and ventral nerve roots join to form the mixed segmental spinal nerves. The dorsal roots are generally afferent, formed by the central projections of the spinal (dorsal root) ganglia sensory cells, and the ventral roots efferent, comprising the axons of spinal motor and autonomic preganglionic neurons. There are, however, some exceptions to this afferent/efferent rule.",false,,,http://purl.obolibrary.org/obo/UBERON_0002211
-# http://purl.obolibrary.org/obo/UBERON_0009621,tail somite,,A somite that is part of a tail.,false,,,http://purl.obolibrary.org/obo/UBERON_0002329
-# http://purl.obolibrary.org/obo/UBERON_0009622,pronephric proximal straight tubule,proximal straight tubules,A proximal straight tubule that is part of a pronephros.,false,,,http://purl.obolibrary.org/obo/UBERON_0005310|http://purl.obolibrary.org/obo/UBERON_0001290
-# http://purl.obolibrary.org/obo/PR_000001244,long-wave-sensitive opsin 1,RCP|red-sensitive opsin|red cone photoreceptor pigment|ROP|OPN1LW,An animal opsin that is a translation product of the human OPN1LW gene or a 1:1 ortholog thereof.|Category=gene.,false,,,http://purl.obolibrary.org/obo/PR_000001119
-# http://purl.obolibrary.org/obo/PR_000001243,melanopsin,Mopn|MOP|opsin-4|OPN4,An animal opsin that is a translation product of the human OPN4 gene or a 1:1 ortholog thereof.|Category=gene.,false,,,http://purl.obolibrary.org/obo/PR_000001119
-# http://purl.obolibrary.org/obo/GO_0045970,negative regulation of juvenile hormone catabolic process,inhibition of juvenile hormone catabolic process|negative regulation of juvenile hormone degradation|negative regulation of juvenile hormone catabolism|negative regulation of juvenile hormone breakdown|downregulation of juvenile hormone catabolic process|down-regulation of juvenile hormone catabolic process|down regulation of juvenile hormone catabolic process,"Any process that stops, prevents, or reduces the frequency, rate or extent of the chemical reactions and pathways resulting in the breakdown of juvenile hormone.",false,,,http://purl.obolibrary.org/obo/GO_0065007|http://purl.obolibrary.org/obo/GO_0045952|http://purl.obolibrary.org/obo/GO_0045928|http://purl.obolibrary.org/obo/GO_0009895
-
-
-class CellOntologyAdapter(Adapter):
-    """
-    Adapter for Cell Ontology dataset
-    """
-
-    def __init__(self, filepath, write_properties, add_provenance, label='cell'):
-        self.filepath = filepath
+class CellOntologyAdapter(OntologyAdapter):
+    def __init__(self, write_properties, add_provenance, type, label='cell', dry_run=False):
         self.label = label
         self.source = "Cell Ontology"
         self.source_url = "https://bioportal.bioontology.org/ontologies/CL"
-        super(CellOntologyAdapter, self).__init__(write_properties, add_provenance)
+        super(CellOntologyAdapter, self).__init__(write_properties, add_provenance, label, type, dry_run)
+
+
+        self.ONTOLOGIES = {
+            'cl': 'https://data.bioontology.org/ontologies/CL/submissions/114/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb'
+        }
+
+
+    def get_graph(self, ontology='cl'):
+        if ontology not in self.ONTOLOGIES:
+            raise ValueError(f"Ontology '{ontology}' is not defined in this adapter.")
+        
+        onto = get_ontology(self.ONTOLOGIES[ontology]).load()
+        self.graph = default_world.as_rdflib_graph()
+        self.clear_cache()
+        return self.graph
+
 
     def get_nodes(self):
-        with gzip.open(self.filepath, "rt") as f:
-            reader = csv.DictReader(f, delimiter=",", quotechar='"')
+        self.graph = self.get_graph()
+        self.cache_node_properties()
 
-            for row in reader:
-                try:
-                    node_id = row['Class ID'].split('/')[-1]
-                    node_url = urllib.parse.unquote(row['Class ID'])
-                    node_label = row['Preferred Label']
-                    is_obsolete = row['Obsolete'].lower() == "true"
-                
-                    props = {}
-                    if self.write_properties:
-                        props['preferred_label'] = node_label
-                        props['is_obsolate'] = is_obsolete
-                        props['url'] = node_url
+        nodes = self.graph.all_nodes()
 
-                        if self.add_provenance:
-                            props['source'] = self.source
-                            props['source_url'] = self.source_url
-                
-                    yield node_id, self.label, props
-                except Exception as e:
-                    print(f"Error processing row: {row}. Error: {e}")
+        i = 0  # dry run is set to true just output the first 1000 nodes
+        for node in nodes:
+            if i > 100 and self.dry_run:
+                break
+            if not isinstance(node, rdflib.term.URIRef):
+                continue
 
+            term_id = OntologyAdapter.to_key(node)
+            term_name = ', '.join(self.get_all_property_values_from_node(node, 'term_names'))
+            description = ' '.join(self.get_all_property_values_from_node(node, 'descriptions'))
+            synonyms = self.get_all_property_values_from_node(node, 'related_synonyms') + self.get_all_property_values_from_node(node, 'exact_synonyms')
+
+            # Check for problematic characters or formatting
+            if '"' in description:
+                print(f"Skipping node {term_id} due to problematic characters or formatting.")
+                continue
+
+            props = {}
+            if self.write_properties:
+                props['term_name'] = term_name
+                props['description'] = description
+                props['synonyms'] = synonyms
+
+                if self.add_provenance:
+                    props['source'] = self.source
+                    props['source_url'] = self.source_url
+            i += 1
+            yield term_id, self.label, props
     def get_edges(self):
-        with gzip.open(self.filepath, "rt") as f:
-            reader = csv.DictReader(f, delimiter=",", quotechar='"')
+        self.graph = self.get_graph()
+        self.cache_edge_properties()
+        for predicate in OntologyAdapter.PREDICATES:
+            edges = list(self.graph.subject_objects(predicate=predicate, unique=True))
+            i = 0  # dry run is set to true just output the first 100 relationships
+            for edge in edges:
+                if i > 100 and self.dry_run:
+                    break
+                from_node, to_node = edge
 
-            for row in reader:
-                try:
-                    node_id = row['Class ID'].split('/')[-1]
-                    parent_urls = [urllib.parse.unquote(p) for p in row['Parents'].split('|') if p]
+                if self.is_blank(from_node):
+                    continue
 
+                if self.is_blank(to_node) and self.is_a_restriction_block(to_node):
+                    restriction_predicate, restriction_node = self.read_restriction_block(to_node)
+                    if restriction_predicate is None or restriction_node is None:
+                        continue
+
+                    predicate = restriction_predicate
+                    to_node = restriction_node
+
+                if self.type == 'edge':
+                    from_node_key = OntologyAdapter.to_key(from_node)
+                    predicate_key = OntologyAdapter.to_key(predicate)
+                    to_node_key = OntologyAdapter.to_key(to_node)
+
+                    if predicate == OntologyAdapter.DB_XREF:
+                        if to_node.__class__ == rdflib.term.Literal:
+                            if str(to_node) == str(from_node):
+                                print('Skipping self xref for: ' + from_node_key)
+                                continue
+
+                            if len(str(to_node).split(':')) != 2:
+                                print('Unsupported format for xref: ' + str(to_node))
+                                continue
+
+                            to_node_key = str(to_node).replace(':', '_')
+
+                            if from_node_key == to_node_key:
+                                print('Skipping self xref for: ' + from_node_key)
+                                continue
+                        else:
+                            print('Ignoring non literal xref: {}'.format(str(to_node)))
+                            continue
+
+                    predicate_name = self.predicate_name(predicate)
+                    if predicate_name == 'dbxref':
+                        continue  
                     props = {}
                     if self.write_properties:
-                        props['parent_urls'] = parent_urls
-
+                        props['rel_type'] = predicate_name
                         if self.add_provenance:
                             props['source'] = self.source
                             props['source_url'] = self.source_url
 
-                    for parent_url in parent_urls:
-                        parent_id = parent_url.split('/')[-1]
-                        yield parent_id, node_id, self.label, props
-                except Exception as e:
-                    print(f"Error processing row: {row}. Error: {e}")
+                    yield from_node_key, to_node_key, self.label, props
+                    i += 1

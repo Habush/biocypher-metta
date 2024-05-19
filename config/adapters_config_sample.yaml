@@ -137,27 +137,28 @@ child_pathway_of:
   nodes: False
   edges: True
 
-ontology_terms:
+go_ontology_terms:
   adapter:
-    module: biocypher_metta.adapters.ontologies_adapter
-    cls: OntologyAdapter
+    module: biocypher_metta.adapters.gene_ontology_adapter
+    cls: GeneOntologyAdapter
     args:
       type: node
       dry_run: True
 
-  outdir: onotology
+  outdir: gene_onotology
   nodes: True
   edges: False
 
 onotology_relationships:
   adapter:
-    module: biocypher_metta.adapters.ontologies_adapter
-    cls: OntologyAdapter
+    module: biocypher_metta.adapters.gene_ontology_adapter
+    cls: GeneOntologyAdapter
     args:
+      label: subtype_of
       type: edge
       dry_run: True
 
-  outdir: onotology
+  outdir: gene_onotology
   nodes: False
   edges: True
 

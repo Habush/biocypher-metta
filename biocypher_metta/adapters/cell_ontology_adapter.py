@@ -6,16 +6,16 @@ class CellOntologyAdapter(OntologyAdapter):
     def __init__(self, write_properties, add_provenance, type, label='cell', dry_run=False):
         self.label = label
         self.source = "Cell Ontology"
-        self.source_url = "https://bioportal.bioontology.org/ontologies/CL"
+        self.source_url = "http://purl.obolibrary.org/obo/clo.owl"
         super(CellOntologyAdapter, self).__init__(write_properties, add_provenance, label, type, dry_run)
 
 
         self.ONTOLOGIES = {
-            'cl': 'https://data.bioontology.org/ontologies/CL/submissions/114/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb'
+            'clo': 'http://purl.obolibrary.org/obo/clo.owl'
         }
 
 
-    def get_graph(self, ontology='cl'):
+    def get_graph(self, ontology='clo'):
         if ontology not in self.ONTOLOGIES:
             raise ValueError(f"Ontology '{ontology}' is not defined in this adapter.")
         

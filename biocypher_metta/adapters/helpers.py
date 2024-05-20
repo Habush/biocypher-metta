@@ -153,7 +153,7 @@ def convert_genome_reference(chr, pos, from_build='hg19', to_build='hg38'):
         pos (int): The genomic position on the chromosome.
 
     Returns:
-        int: The converted genomic position in the target reference build, or False if the conversion fails.
+        int: The converted genomic position in the target reference build, or None if the conversion fails.
     """
     if from_build not in ['hg19', 'hg38'] or to_build not in ['hg19', 'hg38'] or from_build == to_build:
         raise ValueError("Invalid reference build versions. 'from_build' and 'to_build' must be different and one of 'hg19' or 'hg38'.")
@@ -172,4 +172,4 @@ def convert_genome_reference(chr, pos, from_build='hg19', to_build='hg38'):
         converted = _lifters[lifter_key].query(chr_no, pos)[0][1]
         return int(converted)
     except:
-        return False
+        return None

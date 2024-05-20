@@ -253,6 +253,9 @@ roadmap_chromatin_state:
     cls: RoadMapAdapter
     args:
       filepath: ./samples/roadmap/chromatin_state
+      tissue_to_ontology_id_map: ./aux_files/roadmap_tissues_to_ontology_map.pkl
+      dbsnp_rsid_map: None
+
   outdir: roadmap
   nodes: True
   edges: False
@@ -263,6 +266,9 @@ roadmap_h3_mark:
     cls: RoadMapAdapter
     args:
       filepath: ./samples/roadmap/h3_marks
+      tissue_to_ontology_id_map: ./aux_files/roadmap_tissues_to_ontology_map.pkl
+      dbsnp_rsid_map: None
+
   outdir: roadmap
   nodes: True
   edges: False
@@ -273,6 +279,9 @@ roadmap_dhs:
     cls: RoadMapAdapter
     args:
       filepath: ./samples/roadmap/dhs
+      tissue_to_ontology_id_map: ./aux_files/roadmap_tissues_to_ontology_map.pkl
+      dbsnp_rsid_map: None
+
   outdir: roadmap
   nodes: True
   edges: False

@@ -253,6 +253,7 @@ roadmap_chromatin_state:
     cls: RoadMapAdapter
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/forgedb/roadmap/chromatin_state
+      tissue_to_ontology_id_map: ./aux_files/roadmap_tissues_to_ontology_map.pkl
       dbsnp_rsid_map: None
       chr: chr16
       start: 53000000
@@ -267,6 +268,7 @@ roadmap_h3_mark:
     cls: RoadMapAdapter
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/forgedb/roadmap/h3_marks
+      tissue_to_ontology_id_map: ./aux_files/roadmap_tissues_to_ontology_map.pkl
       dbsnp_rsid_map: None
       chr: chr16
       start: 53000000
@@ -281,6 +283,7 @@ roadmap_dhs:
     cls: RoadMapAdapter
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/forgedb/roadmap/dhs
+      tissue_to_ontology_id_map: ./aux_files/roadmap_tissues_to_ontology_map.pkl
       dbsnp_rsid_map: None
       chr: chr16
       start: 53000000

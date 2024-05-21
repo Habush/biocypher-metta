@@ -14,12 +14,15 @@ from Bio import SwissProt
 class UniprotProteinAdapter(Adapter):
    # ALLOWED_SOURCES = ['UniProtKB/Swiss-Prot', 'UniProtKB/TrEMBL']
 
-    def __init__(self, filepath):
+    def __init__(self, filepath, write_properties, add_provenance):
         self.filepath = filepath
         self.dataset = 'UniProtKB_protein'
         self.label = 'protein'
         self.source = "Uniprot"
         self.source_url = "https://www.uniprot.org/"
+
+        super(UniprotProteinAdapter, self).__init__(write_properties, add_provenance)
+    
     def get_dbxrefs(self, cross_references):
         dbxrefs = []
         for cross_reference in cross_references:
@@ -46,9 +49,14 @@ class UniprotProteinAdapter(Adapter):
             for record in records:
                 dbxrefs = self.get_dbxrefs(record.cross_references)
                 id = record.accessions[0]
-                properties = {
-                    'accessions': record.accessions[1:] if len(record.accessions) > 1 else record.accessions[0],
-                    'name': record.entry_name.split('_')[0],
-                    'synonyms': dbxrefs
-                }
-                yield id, self.label, properties
+                props = {}
+                if self.write_properties:
+                    props = {
+                        'accessions': record.accessions[1:] if len(record.accessions) > 1 else record.accessions[0],
+                        'name': record.entry_name.split('_')[0],
+                        'synonyms': dbxrefs
+                    }
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
+                yield id, self.label, props

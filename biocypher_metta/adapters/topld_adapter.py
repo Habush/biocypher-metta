@@ -16,9 +16,10 @@ from biocypher._logger import logger
 
 
 class TopLDAdapter(Adapter):
-
+    INDEX = {'SNP1': 0, 'SNP2': 1, 'R2': 4, 'Dprime': 5, '+/-corr': 6}
     def __init__(self, filepath, dbsnp_pos_map, chr,
-                 ancestry, start=None, end=None, cutoff=0.5):
+                 ancestry, write_properties, add_provenance,
+                 start=None, end=None, cutoff=0.5):
         self.file_path = filepath
         self.dbsnp_pos_map = dbsnp_pos_map
         self.chr = chr
@@ -29,7 +30,7 @@ class TopLDAdapter(Adapter):
         self.label = "in_ld_with"
         self.source = "TopLD"
         self.source_url = "http://topld.genetics.unc.edu/"
-        super(TopLDAdapter, self).__init__()
+        super(TopLDAdapter, self).__init__(write_properties, add_provenance)
 
     def get_edges(self):
         with gzip.open(self.file_path, 'rt') as f:
@@ -37,8 +38,8 @@ class TopLDAdapter(Adapter):
             next(reader)
             for row in reader:
                 try:
-                    var1_pos = int(row[0])
-                    var2_pos = int(row[1])
+                    var1_pos = int(row[TopLDAdapter.INDEX['SNP1']])
+                    var2_pos = int(row[TopLDAdapter.INDEX['SNP2']])
                     if not check_genomic_location(self.chr, self.start, self.end, self.chr, var1_pos, var1_pos) or \
                             not check_genomic_location(self.chr, self.start, self.end, self.chr, var2_pos, var2_pos):
                         continue
@@ -48,15 +49,19 @@ class TopLDAdapter(Adapter):
                         logger.warning(f"Couldn't find rsid for position {var1_pos} or {var2_pos}")
                         continue
 
-                    r2_score = to_float(f"{row[6]}{row[4]}")
+                    r2_score = to_float(f"{row[TopLDAdapter.INDEX['+/-corr']]}{row[TopLDAdapter.INDEX['R2']]}")
                     if abs(r2_score) < self.cutoff:
                         continue
-
-                    props = {
-                        'r2': r2_score,
-                        'd_prime': float(row[5]),
-                        'ancestry': self.ancestry
-                    }
+                    props = {}
+                    if self.write_properties:
+                        props = {
+                            'r2': r2_score,
+                            'd_prime': float(row[TopLDAdapter.INDEX['Dprime']]),
+                            'ancestry': self.ancestry
+                        }
+                        if self.add_provenance:
+                            props['source'] = self.source
+                            props['source_url'] = self.source_url
 
                     yield rsid_1, rsid_2, self.label, props
 

@@ -143,7 +143,7 @@ go_ontology_terms:
     cls: GeneOntologyAdapter
     args:
       type: node
-      dry_run: True
+      dry_run: False
 
   outdir: gene_onotology
   nodes: True
@@ -156,7 +156,7 @@ onotology_relationships:
     args:
       label: subtype_of
       type: edge
-      dry_run: True
+      dry_run: False
 
   outdir: gene_onotology
   nodes: False

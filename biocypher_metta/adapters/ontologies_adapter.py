@@ -164,6 +164,20 @@ class OntologyAdapter(Adapter):
             key = '{}_{}'.format('number', key)
 
         return key
+    
+    # Example of a restriction block:
+    # <rdfs:subClassOf>
+    #     <owl:Restriction>
+    #         <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/RO_0001000"/>
+    #         <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000056"/>
+    #     </owl:Restriction>
+    # </rdfs:subClassOf>
+    # This block must be interpreted as the triple (s, p, o):
+    # (parent object, http://purl.obolibrary.org/obo/RO_0001000, http://purl.obolibrary.org/obo/CL_0000056)
+
+    def is_a_restriction_block(self, node):
+        node_type = self.get_all_property_values_from_node(node, 'node_types')
+        return node_type and node_type[0] == OntologyAdapter.RESTRICTION
 
     def read_restriction_block(self, node):
         restricted_property = self.get_all_property_values_from_node(node, 'on_property')

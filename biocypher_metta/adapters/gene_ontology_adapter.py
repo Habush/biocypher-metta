@@ -26,10 +26,6 @@ class GeneOntologyAdapter(OntologyAdapter):
             node_namespace_lookup[node_key] = str(namespace)
         return node_namespace_lookup
 
-    def is_a_restriction_block(self, node):
-        node_type = self.get_all_property_values_from_node(node, 'node_types')
-        return node_type and node_type[0] == OntologyAdapter.RESTRICTION
-
     def get_nodes(self):
         nodes = super().get_nodes()
         self.graph = self.get_graph()

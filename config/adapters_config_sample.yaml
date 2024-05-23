@@ -535,8 +535,8 @@ uberon:
     module: biocypher_metta.adapters.uberon_adapter
     cls: UberonAdapter
     args:
-      filepath: ./samples/UBERON.csv.gz
-      label: ontology_term
+      type: node
+      dry_run: True
   outdir: uberon
   nodes: True
   edges: False
@@ -546,7 +546,8 @@ uberon_subclass_of:
     module: biocypher_metta.adapters.uberon_adapter
     cls: UberonAdapter
     args:
-      filepath: ./samples/UBERON.csv.gz
+      type: edge
+      dry_run: True
       label: uberon_subclass_of
   outdir: uberon
   nodes: False

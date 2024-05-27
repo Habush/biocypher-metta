@@ -34,7 +34,7 @@ class ABCAdapter(Adapter):
         if type == "node":
             self.label = "regulatory_region"
         else:
-            self.label = "regulates_gene"
+            self.label = "regulatory_region_gene"
         self.source = "ABC"
         self.source_url = "https://forgedb.cancer.gov/api/abc/v1.0/abc.forgedb.csv.gz"
         super(ABCAdapter, self).__init__(write_properties, add_provenance)
@@ -51,7 +51,8 @@ class ABCAdapter(Adapter):
                     if check_genomic_location(self.chr, self.start, self.end, chr, pos, pos):
                         _props = {
                             'chr': chr,
-                            'pos': pos,
+                            'start': pos,
+                            'end': pos,
                             'biochemical_activity': 'DNase I hypersensitive',
                             'biological_context': self.tissue_to_ontology_id_map[row[COL_DICT['cell_type']]]
                         }

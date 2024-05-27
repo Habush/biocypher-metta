@@ -43,7 +43,7 @@ class ReactomePathwayAdapter(Adapter):
                 if species == 'Homo sapiens':
                     props = {}
                     if self.write_properties:
-                        props['name'] = name
+                        props['pathway_name'] = name
                     
                         pubmed_id = self.pubmed_map.get(id, None)
                         if pubmed_id is not None:

@@ -100,8 +100,9 @@ gene:
   is_a: coding element
   inherit_properties: true
   properties:
-    name: str
+    gene_name: str
     gene_type: str
+    synonyms:  str[]
 
 protein:
   represented_as: node
@@ -109,9 +110,9 @@ protein:
   input_label: protein
   is_a: coding element
   properties:
-    accessions: int
-    organism_id: int
-    name: str
+    accessions: str[]
+    protein_name: str
+    synonyms: str[]
     source: str
     source_url: str
 
@@ -171,6 +172,21 @@ structural variant:
       variant_type: str
       evidence: str
 
+
+sequence variant:
+  represented_as: node
+  input_label: sequence_variant
+  is_a: genomic variant
+  inherit_properties: true
+  description: >-
+    A change in the nucleotide sequence of a genome compared to a reference sequence.
+  properties:
+    rsid: str
+    ref: str
+    alt: str
+    raw_cadd_score: float
+    phred_score: float
+
 # ---
 # non-coding elements
 enhancer:
@@ -212,8 +228,20 @@ pathway:
   represented_as: node
   input_label: pathway
   properties:
-    name: str
+    pathway_name: str
     evidence: str
+
+regulatory region:
+  represented_as: node
+  input_label: regulatory_region
+  is_a: non coding element
+  inherit_properties: true
+  description: >-
+    A region of the genome that is involved in gene regulation.
+  properties:
+    cell: str
+    biochemical_activity: str
+    biological_context: str
 
 # ---
 # ontologies
@@ -222,11 +250,10 @@ go:
   represented_as: node
   input_label: go
   properties:
-    go_id: str
-    go_name: str
-    go_namespace: str
-    go_definition: str
-    go_synonyms: str[]
+    term_name: str
+    description: str
+    synonyms: str[]
+    subontology: str
 
 motif:
   represented_as: node
@@ -239,8 +266,6 @@ motif:
     return: _id, tf_name, source, source_url, pwm, length
   properties:
     tf_name: str
-    source: str
-    source_url: str
     pwm_A: float[]
     pwm_C: float[]
     pwm_G: float[]
@@ -255,7 +280,7 @@ tad:
   is_a: 3d genome structure
   inherit_properties: true
   properties:
-        biological_context: str
+        genes: str[]
 
 chromatin state:
   represented_as: node
@@ -317,6 +342,9 @@ regulatory association:
     source: str
     source_url: str
 
+# ---
+# expression
+
 transcribed to:
   represented_as: edge
   is_a: expression
@@ -372,6 +400,32 @@ translation of:
   close_mappings:
     - RO:0002512
     - SIO:010083
+
+gene to gene coexpression association:
+  description: >-
+    Indicates that two genes are co-expressed,
+    generally under the same conditions.
+  is_a: expression
+  inherit_properties: true
+  represented_as: edge
+  input_label: coexpressed_with
+  source: gene
+  target: gene
+  properties:
+    score: float
+
+post translational interaction:
+  is_a: expression
+  inherit_properties: true
+  represented_as: edge
+  input_label: interacts_with
+  source: protein
+  target: protein
+  properties:
+    score: float
+
+# ---
+# annotation
 
 gene to pathway association:
   description: >-
@@ -471,20 +525,11 @@ ontology subclass of:
   output_label: subclass_of
   source: ontology term
   target: ontology term
-
-gene to gene coexpression association:
-  description: >-
-    Indicates that two genes are co-expressed,
-    generally under the same conditions.
-  is_a: expression
-  inherit_properties: true
-  represented_as: edge
-  input_label: coexpressed_with
-  source: gene
-  target: gene
   properties:
-    score: float
-    biological_context: str
+    rel_type: str
+
+# ---
+# regulatory association
 
 enhancer to gene association:
   description: >-
@@ -544,15 +589,19 @@ transcription factor to gene association:
     databases: str[]
     evidence_type: str
 
-post translational interaction:
-  is_a: expression
+regulatory region to gene association:
+  description: >-
+    An association between a regulatory region and a gene it regulates
+  is_a: regulatory association
   inherit_properties: true
   represented_as: edge
-  input_label: interacts_with
-  source: protein
-  target: protein
+  input_label: regulatory_region_gene
+  output_label: regulates
+  source: regulatory_region
+  target: gene
   properties:
-    score: float
+    abc_score: float
+    biological_context: str
 
 gtex variant to gene expression association:
   aliases: [ 'eQTL', 'e-QTL']
@@ -627,7 +676,6 @@ topld in linkage disequilibrium with:
   source: snp
   target: snp
   properties:
-    chr: str
     ancestry: str
     r2: float
     d_prime: float

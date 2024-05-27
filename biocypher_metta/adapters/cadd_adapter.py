@@ -48,7 +48,8 @@ class CADDAdapter(Adapter):
                         if self.write_properties:
                             _props = {
                                 'chr': chr,
-                                'pos': pos,
+                                'start': pos,
+                                'end': pos,
                                 'rsid': rsid,
                                 'ref': ref,
                                 'alt': alt,

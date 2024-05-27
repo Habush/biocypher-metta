@@ -114,7 +114,8 @@ class FavorAdapter(Adapter):
                         props = {
                             # '_key': id,
                             'chr': chr,
-                            'position': pos,
+                            'start': pos,
+                            'end': pos,
                             # 'rsid': [row[FIELDS["rsid"], #TODO uncomment when rsid is available
                             'ref': row[FIELDS["ref_vcf"]],
                             'alt': row[FIELDS["alt_vcf"]],

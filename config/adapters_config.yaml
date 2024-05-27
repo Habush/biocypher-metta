@@ -6,7 +6,7 @@ gencode_gene:
       filepath: /mnt/hdd_2/abdu/biocypher_data/gencode/gencode.annotation.gtf.gz
       gene_alias_file_path: ./aux_files/Homo_sapiens.gene_info.gz
 
-  outdir: gencode
+  outdir: gencode/gene
   nodes: True
   edges: False
 
@@ -20,7 +20,7 @@ gencode_transcripts:
       type: transcript
       label: transcript
 
-  outdir: gencode
+  outdir: gencode/transcript
   nodes: True
   edges: False
 
@@ -174,17 +174,17 @@ gaf:
   edges: True
 
 
-#coexpression:
-#  adapter:
-#    module: biocypher_metta.adapters.coxpresdb_adapter
-#    cls: CoxpresdbAdapter
-#    args:
-#      filepath: /mnt/hdd_2/abdu/biocypher_data/coxpressdb
-#      ensemble_to_entrez_path: ./aux_files/entrez_to_ensembl.pkl
-#
-#  outdir: coxpressdb
-#  nodes: False
-#  edges: True
+coexpression:
+ adapter:
+   module: biocypher_metta.adapters.coxpresdb_adapter
+   cls: CoxpresdbAdapter
+   args:
+     filepath: /mnt/hdd_2/abdu/biocypher_data/coxpressdb
+     ensemble_to_entrez_path: ./aux_files/entrez_to_ensembl.pkl
+
+ outdir: coxpressdb
+ nodes: False
+ edges: True
 
 tflink:
     adapter:
@@ -420,7 +420,7 @@ gencode_exon:
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/gencode/gencode.annotation.gtf.gz
 
-  outdir: gencode
+  outdir: gencode/exon
   nodes: True
   edges: False
 
@@ -540,7 +540,7 @@ dbsuper_super_enhancer:
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/dbSUPER_SuperEnhancers_hg19.tsv.gz
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
-      dbsuper_tissue_ontology_map: ./aux_files/dbsuper_tissues_map.pkl
+      dbsuper_tissues_map: ./aux_files/dbsuper_tissues_map.pkl
 
   outdir: dbsuper
   nodes: True
@@ -553,7 +553,7 @@ dbsuper_super_enhancer_regulates_gene:
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/dbSUPER_SuperEnhancers_hg19.tsv.gz
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
-      dbsuper_tissue_ontology_map: ./aux_files/dbsuper_tissues_map.pkl
+      dbsuper_tissues_map: ./aux_files/dbsuper_tissues_map.pkl
       type: super enhancer to gene association
       label: super_enhancer_gene
 

@@ -142,6 +142,7 @@ go_ontology_terms:
     module: biocypher_metta.adapters.gene_ontology_adapter
     cls: GeneOntologyAdapter
     args:
+      ontology: 'go'
       type: node
       dry_run: False
 
@@ -154,6 +155,7 @@ onotology_relationships:
     module: biocypher_metta.adapters.gene_ontology_adapter
     cls: GeneOntologyAdapter
     args:
+      ontology: 'go'
       label: subtype_of
       type: edge
       dry_run: False

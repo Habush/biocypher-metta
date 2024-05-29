@@ -600,6 +600,7 @@ uberon:
     module: biocypher_metta.adapters.uberon_adapter
     cls: UberonAdapter
     args:
+      ontology: 'uberon'
       type: node
       dry_run: False
   outdir: uberon
@@ -611,6 +612,7 @@ uberon_subclass_of:
     module: biocypher_metta.adapters.uberon_adapter
     cls: UberonAdapter
     args:
+      ontology: 'uberon'
       type: edge
       dry_run: False
       label: uberon_subclass_of

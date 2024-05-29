@@ -24,7 +24,7 @@ class OntologyAdapter(Adapter):
     PREDICATES = [SUBCLASS, DB_XREF]
     RESTRICTION_PREDICATES = [HAS_PART, PART_OF]
 
-    def __init__(self, write_properties, add_provenance, type, label, dry_run=False):
+    def __init__(self, write_properties, add_provenance, ontology, type, label, dry_run=False):
         super().__init__(write_properties, add_provenance)
         self.type = type
         self.label = label
@@ -33,13 +33,14 @@ class OntologyAdapter(Adapter):
         self.cache = {}
         self.source = None
         self.source_url = None
+        self.ontology = ontology  # Store the ontology value
 
-    def get_graph(self, ontology):
-        if ontology not in self.ONTOLOGIES:
-            raise ValueError(f"Ontology '{ontology}' is not defined in this adapter.")
+    def get_graph(self):
+        if self.ontology not in self.ONTOLOGIES:
+            raise ValueError(f"Ontology '{self.ontology}' is not defined in this adapter.")
     
-        onto = get_ontology(self.ONTOLOGIES[ontology]).load()
-        self.graph = default_world.as_rdflib_graph()  # Assign the graph to self.graph
+        onto = get_ontology(self.ONTOLOGIES[self.ontology]).load()
+        self.graph = default_world.as_rdflib_graph()
         self.clear_cache()
         return self.graph
 

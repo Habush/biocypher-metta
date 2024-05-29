@@ -1,17 +1,14 @@
-import rdflib
 from biocypher_metta.adapters.ontologies_adapter import OntologyAdapter
 
 class GeneOntologyAdapter(OntologyAdapter):
-    def __init__(self, write_properties, add_provenance, type, label="ontology term", dry_run=False):
-        super().__init__(write_properties, add_provenance, type, label, dry_run)
+    def __init__(self, write_properties, add_provenance, ontology, type, label="ontology term", dry_run=False):
+        super().__init__(write_properties, add_provenance, ontology, type, label, dry_run)
         self.source = "Gene Ontology"
         self.source_url = "http://purl.obolibrary.org/obo/go.owl"
+        self.ontology = ontology
         self.ONTOLOGIES = {
             'go': 'http://purl.obolibrary.org/obo/go.owl'
         }
-
-    def get_graph(self, ontology='go'):
-        return super().get_graph(ontology)
 
     def find_go_nodes(self, graph):
         # subontologies are defined as `namespaces
@@ -34,3 +31,4 @@ class GeneOntologyAdapter(OntologyAdapter):
         for node_id, label, props in nodes:
             props['subontology'] = nodes_in_go_namespaces.get(node_id, None)
             yield node_id, label, props
+

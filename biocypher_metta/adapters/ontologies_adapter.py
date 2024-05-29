@@ -24,7 +24,7 @@ class OntologyAdapter(Adapter):
     PREDICATES = [SUBCLASS, DB_XREF]
     RESTRICTION_PREDICATES = [HAS_PART, PART_OF]
 
-    def __init__(self, write_properties, add_provenance, type, label, ontology, dry_run=False):
+    def __init__(self, write_properties, add_provenance, ontology, type, label, dry_run=False):
         super().__init__(write_properties, add_provenance)
         self.type = type
         self.label = label
@@ -249,5 +249,3 @@ class OntologyAdapter(Adapter):
             return self.cache[key][collection]
 
         return []
-
-

@@ -556,12 +556,12 @@ dbsuper_super_enhancer_regulates_gene:
   nodes: False
   edges: True
 
-  dpsnp_snps:
+  dbsnp_snps:
   adapter:
     module: biocypher_metta.adapters.dbsnp_adapter
     cls: DBSNPAdapter
     args:
-      filepath: /mnt/hdd_2/abdu/biocypher_data/00-common_all.vcf.gz
+      filepath: /mnt/hdd_2/abdu/biocypher_data/dbsnp/00-common_all.vcf.gz
     
   outdir: dbsnp
   nodes: True

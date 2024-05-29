@@ -22,6 +22,19 @@ class DBSNPAdapter(Adapter):
         self.source_url = 'https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/'
         super(DBSNPAdapter, self).__init__(write_properties, add_provenance)
 
+    def parse_info(self, info_string):
+        info_dict = {}
+        for entry in info_string.split(';'):
+            if '=' in entry:
+                key, value = entry.split('=')
+                if ',' in value:
+                    info_dict[key] = value.split(',')
+                else:
+                    info_dict[key] = value
+            else:
+                info_dict[key] = True
+        return info_dict
+    
     def get_nodes(self):
         with gzip.open(self.filepath, 'rt') as f:
             for line in f:
@@ -33,15 +46,20 @@ class DBSNPAdapter(Adapter):
                 pos = int(data[DBSNPAdapter.INDEX['pos']])
                 ref = data[DBSNPAdapter.INDEX['ref']]
                 alt = data[DBSNPAdapter.INDEX['alt']]
+                info_dict = self.parse_info(data[DBSNPAdapter.INDEX['info']])
+                caf = info_dict.get('CAF')
 
                 if check_genomic_location(self.chr, self.start, self.end, chr, pos, pos):
                     props = {}
                     if self.write_properties:
                         props['chr'] = 'chr'+chr
-                        props['pos'] = pos
+                        props['start'] = pos
+                        props['end'] = pos
                         props['ref'] = ref
                         props['alt'] = alt
-
+                        if caf != None:
+                            props['caf_ref'] = caf[0]
+                            props['caf_alt'] = caf[1]
                         if self.add_provenance:
                             props['source'] = self.source
                             props['source_url'] = self.source_url

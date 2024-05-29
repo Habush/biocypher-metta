@@ -157,7 +157,8 @@ snp:
   properties:
     ref: str
     alt: str
-    annotation: obj
+    caf_ref: str
+    caf_alt: str
   description: >-
     A single nucleotide polymorphism (SNP) is a variation in a single nucleotide that occurs at a specific position in the genome
 

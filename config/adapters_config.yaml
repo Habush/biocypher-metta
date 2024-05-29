@@ -572,10 +572,10 @@ enhancer_atlas_enhancer:
     module: biocypher_metta.adapters.enhancer_atlas_adapter
     cls: EnhancerAtlasAdapter
     args:
-      filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer.bed.gz
-      enhancer_gene_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_gene.txt.gz
-      enhancer_snps_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_snp.bed.gz
-
+      enhancer_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer.bed.gz
+      enhancer_gene_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_gene
+      tissue_to_ontology_filepath: ./aux_files/enhancer_atlas_tissues_to_ontology.pkl
+  
   outdir: enhancer_atlas
   nodes: True
   edges: False
@@ -585,9 +585,9 @@ enhancer_atlas_enhancer_regulates:
     module: biocypher_metta.adapters.enhancer_atlas_adapter
     cls: EnhancerAtlasAdapter
     args:
-      filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer.bed.gz
-      enhancer_gene_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_gene.txt.gz
-      enhancer_snps_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_snp.bed.gz
+      enhancer_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer.bed.gz
+      enhancer_gene_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_gene
+      tissue_to_ontology_filepath: ./aux_files/enhancer_atlas_tissues_to_ontology.pkl
       type: enhancer to gene association
       label: enhancer_gene
 

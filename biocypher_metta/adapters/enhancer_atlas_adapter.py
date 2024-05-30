@@ -5,14 +5,20 @@ from biocypher_metta.adapters import Adapter
 from biocypher_metta.adapters.helpers import build_regulatory_region_id, check_genomic_location
 
 # Example enhancer atlas input file:
+# enhancer signal - enrichment score calculated as the combination of enrichment scores from individual tracks.
+# a total of eight types of experimental approaches (i.e tracks) to identify enhancer
+# DHS, FAIRE, eRNA, P300 binding sites, POL2 binding sites, histone modifications, TF binding sites and CHIA-PET
 
-# enhancer_file
+# chr   start   end     enhancer signal
 # chr1	875310	876520	11.4349429027718
 # chr1	876690	877510	10.6950350518485
 # chr1	902000	902080	10.429771917918
 # chr1	902180	902820	10.3902750575485
 
 # enhancer_gene_file
+# the score is a predition score of the enhancer-gene interaction.
+# predicted the target genes of enhancers using IM-PET algorithm.
+
 # chr1:874840-876520_ENSG00000225880$LINC00115$chr1$762902$-	1.104330
 # chr1:876690-877510_ENSG00000225880$LINC00115$chr1$762902$-	1.264920
 # chr1:902000-902080_ENSG00000225880$LINC00115$chr1$762902$-	1.663935
@@ -25,7 +31,7 @@ class EnhancerAtlasAdapter(Adapter):
 
     def __init__(self, enhancer_filepath, enhancer_gene_filepath, tissue_to_ontology_filepath, 
                  write_properties, add_provenance, 
-                 type='enhancer', label='enhancer',
+                 type='enhancer', input_label='enhancer',
                  chr=None, start=None, end=None):
         self.enhancer_filepath = enhancer_filepath
         self.enhancer_gene_filepath = enhancer_gene_filepath
@@ -33,7 +39,7 @@ class EnhancerAtlasAdapter(Adapter):
         self.chr = chr
         self.start = start
         self.end = end
-        self.label = label
+        self.label = input_label
         self.type = type
 
         self.source = 'Enancer Atlas'

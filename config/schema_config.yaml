@@ -415,6 +415,33 @@ child pathway of:
     source: pathway
     target: pathway
 
+# Subtype relationships
+subtype_of:
+  is_a: annotation
+  represented_as: edge
+  input_label: subtype_of
+  source: ontology term
+  target: ontology term
+  description: >-
+    Represents the subtype relationship between two ontology terms,
+    where the source term is a subtype of the target term.
+
+go_subtype_of:
+  is_a: subtype_of
+  represented_as: edge
+  input_label: go_subtype_of
+  output_label: subtype_of
+  source: go
+  target: go
+
+uberon_subtype_of:
+  is_a: subtype_of
+  represented_as: edge
+  input_label: uberon_subtype_of
+  output_label: subtype_of
+  source: uberon
+  target: uberon
+
 go subtype of:
   is_a: annotation
   inherit_properties: true
@@ -456,28 +483,6 @@ go rna:
   output_label: belongs_to
   source: non coding rna
   target: go
-
-# Subclass relationships
-subclass of:
-  is_a: annotation
-  represented_as: edge
-  input_label: subclass_of
-  source: ontology term
-  target: ontology term
-  description: >-
-    Represents the subclass relationship between two ontology terms,
-    where the source term is a subclass of the target term.
-
-uberon subclass of:
-  is_a: subclass_of  
-  represented_as: edge
-  input_label: uberon_subclass_of
-  output_label: subclass_of
-  source: uberon
-  target: uberon
-  properties:
-    parent_url: str
-    
 
 gene to gene coexpression association:
   description: >-

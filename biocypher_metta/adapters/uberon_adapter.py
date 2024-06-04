@@ -1,10 +1,22 @@
 from biocypher_metta.adapters.ontologies_adapter import OntologyAdapter
 
 class UberonAdapter(OntologyAdapter):
-    def __init__(self, write_properties, add_provenance, ontology, type, label="ontology term", dry_run=False):
-        super().__init__(write_properties, add_provenance, ontology, type, label, dry_run)
-        self.source = "UBERON"
-        self.source_url = "http://purl.obolibrary.org/obo/uberon.owl"
-        self.ONTOLOGIES = {
+    ONTOLOGIES = {
             'uberon': 'http://purl.obolibrary.org/obo/uberon.owl'
         }
+
+    def __init__(self, write_properties, add_provenance, ontology, type, label='uberon', dry_run=False):
+        self.ontology = ontology
+        
+        super(UberonAdapter, self).__init__(write_properties, add_provenance, ontology, type, label, dry_run)
+
+    
+    def get_ontology_source(self, ontology):
+        """
+        Returns the source and source URL for UBERON ontology.
+        """
+        if ontology == 'uberon':
+            return 'UBERON', 'http://purl.obolibrary.org/obo/uberon.owl'
+        else:
+            return None, None
+        

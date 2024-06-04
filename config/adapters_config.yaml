@@ -615,7 +615,7 @@ uberon_subclass_of:
       ontology: 'uberon'
       type: edge
       dry_run: False
-      label: uberon_subclass_of
+      label: uberon_subtype_of
   outdir: uberon
   nodes: False
   edges: True

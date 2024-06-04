@@ -156,7 +156,7 @@ onotology_relationships:
     cls: GeneOntologyAdapter
     args:
       ontology: 'go'
-      label: subtype_of
+      label: go_subtype_of
       type: edge
       dry_run: False
 

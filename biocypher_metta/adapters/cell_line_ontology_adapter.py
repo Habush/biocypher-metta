@@ -5,8 +5,6 @@ class CellLineOntologyAdapter(OntologyAdapter):
         }
     
     def __init__(self, write_properties, add_provenance, ontology, type, label='clo', dry_run=False):
-        self.ontology = ontology
-        
         super(CellLineOntologyAdapter, self).__init__(write_properties, add_provenance, ontology, type, label, dry_run)
 
     

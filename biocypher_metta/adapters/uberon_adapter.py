@@ -6,8 +6,6 @@ class UberonAdapter(OntologyAdapter):
         }
 
     def __init__(self, write_properties, add_provenance, ontology, type, label='uberon', dry_run=False):
-        self.ontology = ontology
-        
         super(UberonAdapter, self).__init__(write_properties, add_provenance, ontology, type, label, dry_run)
 
     

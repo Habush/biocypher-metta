@@ -3,8 +3,6 @@ from owlready2 import *
 from biocypher_metta.adapters import Adapter
 
 class OntologyAdapter(Adapter):
-    ONTOLOGIES = {}
-
     HAS_PART = rdflib.term.URIRef('http://purl.obolibrary.org/obo/BFO_0000051')
     PART_OF = rdflib.term.URIRef('http://purl.obolibrary.org/obo/BFO_0000050')
     SUBCLASS = rdflib.term.URIRef('http://www.w3.org/2000/01/rdf-schema#subClassOf')
@@ -16,36 +14,41 @@ class OntologyAdapter(Adapter):
     ON_PROPERTY = rdflib.term.URIRef('http://www.w3.org/2002/07/owl#onProperty')
     SOME_VALUES_FROM = rdflib.term.URIRef('http://www.w3.org/2002/07/owl#someValuesFrom')
     ALL_VALUES_FROM = rdflib.term.URIRef('http://www.w3.org/2002/07/owl#allValuesFrom')
-    NAMESPACE = rdflib.term.URIRef('http://www.geneontology.org/formats/oboInOwl#hasOBONamespace')
-    EXACT_SYNONYM = rdflib.term.URIRef('http://www.geneontology.org/formats/oboInOwl#hasExactSynonym')
-    RELATED_SYNONYM = rdflib.term.URIRef('http://www.geneontology.org/formats/oboInOwl#hasRelatedSynonym')
     DESCRIPTION = rdflib.term.URIRef('http://purl.obolibrary.org/obo/IAO_0000115')
 
     PREDICATES = [SUBCLASS, DB_XREF]
     RESTRICTION_PREDICATES = [HAS_PART, PART_OF]
 
     def __init__(self, write_properties, add_provenance, ontology, type, label, dry_run=False):
-        super().__init__(write_properties, add_provenance)
         self.type = type
         self.label = label
         self.dry_run = dry_run
         self.graph = None
         self.cache = {}
-        self.source = None
-        self.source_url = None
-        self.ontology = ontology  # Store the ontology value
+        self.ontology = ontology
 
-    def get_graph(self):
+        # Set source and source_url based on the ontology
+        self.source, self.source_url = self.get_ontology_source(ontology)
+
+        super(OntologyAdapter, self).__init__(write_properties, add_provenance)
+    
+    def get_ontology_source(self, ontology):
+        """
+        Returns the source and source URL for a given ontology.
+        This method should be overridden in child classes for specific ontologies.
+        """
+        return None, None
+
+    def update_graph(self):
         if self.ontology not in self.ONTOLOGIES:
             raise ValueError(f"Ontology '{self.ontology}' is not defined in this adapter.")
-    
+        
         onto = get_ontology(self.ONTOLOGIES[self.ontology]).load()
         self.graph = default_world.as_rdflib_graph()
         self.clear_cache()
-        return self.graph
 
     def get_nodes(self):
-        self.graph = self.get_graph()
+        self.update_graph()
         self.cache_node_properties()
 
         nodes = self.graph.all_nodes()
@@ -57,7 +60,7 @@ class OntologyAdapter(Adapter):
             # avoiding blank nodes and other arbitrary node types
             if not isinstance(node, rdflib.term.URIRef):
                 continue
-
+            
             # term_id = str(node).split('/')[-1]
             term_id = OntologyAdapter.to_key(node)
             # 'uri': str(node),
@@ -65,7 +68,6 @@ class OntologyAdapter(Adapter):
             description = ' '.join(self.get_all_property_values_from_node(node, 'descriptions'))
             synonyms = self.get_all_property_values_from_node(node, 'related_synonyms') + self.get_all_property_values_from_node(node, 'exact_synonyms')
 
-            
             props = {}
             if self.write_properties:
                 props['term_name'] = term_name
@@ -79,10 +81,9 @@ class OntologyAdapter(Adapter):
             yield term_id, self.label, props
 
     def get_edges(self):
-        self.graph = self.get_graph()
+        self.update_graph()
         self.cache_edge_properties()
 
-        self.cache_edge_properties()
         for predicate in OntologyAdapter.PREDICATES:
             edges = list(self.graph.subject_objects(predicate=predicate, unique=True))
             i = 0  # dry run is set to true just output the first 100 relationships
@@ -151,6 +152,9 @@ class OntologyAdapter(Adapter):
         elif predicate == str(OntologyAdapter.DB_XREF):
             return 'dbxref'
         return ''
+    
+    # "http://purl.obolibrary.org/obo/CLO_0027762#subclass?id=123" => "CLO_0027762.subclass_id=123"
+    # "12345" => "number_12345" - there are cases where URIs are just numbers, e.g. HPO
 
     @classmethod
     def to_key(cls, node_uri):
@@ -176,6 +180,7 @@ class OntologyAdapter(Adapter):
     # This block must be interpreted as the triple (s, p, o):
     # (parent object, http://purl.obolibrary.org/obo/RO_0001000, http://purl.obolibrary.org/obo/CL_0000056)
 
+    
     def is_a_restriction_block(self, node):
         node_type = self.get_all_property_values_from_node(node, 'node_types')
         return node_type and node_type[0] == OntologyAdapter.RESTRICTION
@@ -216,13 +221,11 @@ class OntologyAdapter(Adapter):
 
     def cache_node_properties(self):
         self.cache_predicate(predicate=OntologyAdapter.LABEL, collection='term_names')
-        self.cache_predicate(predicate=OntologyAdapter.NAMESPACE, collection='namespaces')
         self.cache_predicate(predicate=OntologyAdapter.DESCRIPTION, collection='descriptions')
-        self.cache_predicate(predicate=OntologyAdapter.RELATED_SYNONYM, collection='related_synonyms')
-        self.cache_predicate(predicate=OntologyAdapter.EXACT_SYNONYM, collection='exact_synonyms')
         self.cache_predicate(predicate=OntologyAdapter.TYPE, collection='node_types')
         self.cache_predicate(predicate=OntologyAdapter.ON_PROPERTY, collection='on_property')
         self.cache_predicate(predicate=OntologyAdapter.SOME_VALUES_FROM, collection='some_values_from')
+        self.cache_predicate(predicate=OntologyAdapter.ALL_VALUES_FROM, collection='all_values_from')
 
     def cache_predicate(self, predicate, collection=None):
         triples = list(self.graph.subject_objects(predicate=predicate, unique=True))
@@ -243,11 +246,7 @@ class OntologyAdapter(Adapter):
             self.cache[s_key][collection].append(o)
 
     def get_all_property_values_from_node(self, node, collection):
-        key = OntologyAdapter.to_key(node)
-
-        if key in self.cache and collection in self.cache[key]:
-            return self.cache[key][collection]
-
-        return []
+        node_key = OntologyAdapter.to_key(node)
+        return self.cache.get(node_key, {}).get(collection, [])
 
 

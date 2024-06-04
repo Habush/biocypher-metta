@@ -527,25 +527,25 @@ enhancer_atlas_enhancer_regulates:
 
 cell_ontology:
   adapter:
-    module: biocypher_metta.adapters.cell_ontology_adapter
-    cls: CellOntologyAdapter
+    module: biocypher_metta.adapters.cell_line_ontology_adapter
+    cls: CellLineOntologyAdapter
     args:
       ontology: 'clo'
       type: node
       dry_run: True
-  outdir: cell_ontology
+  outdir: cell_line_ontology
   nodes: True
   edges: False
 
-clo_subclass_of:
+clo_subtype_of:
   adapter:
-    module: biocypher_metta.adapters.cell_ontology_adapter
-    cls: CellOntologyAdapter
+    module: biocypher_metta.adapters.cell_line_ontology_adapter
+    cls: CellLineOntologyAdapter
     args:
       ontology: 'clo'
-      label: clo_subclass_of
+      label: clo_subtype_of
       type: edge
       dry_run: True
-  outdir: cell_ontology
+  outdir: cell_line_ontology
   nodes: False
   edges: True

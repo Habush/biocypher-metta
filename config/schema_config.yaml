@@ -228,16 +228,16 @@ go:
     go_definition: str
     go_synonyms: str[]
 
-# Cell Ontology 
+# Cell line Ontology
 clo:
   is_a: ontology term
   represented_as: node
-  input_label: cell ontology
+  input_label: clo
   properties:
-    uberon_id: str 
-    uberon_name: str
-    uberon_definition: str
-    uberon_synonyms: str[]
+    clo_id: str
+    clo_name: str
+    clo_definition: str
+    clo_synonyms: str[]
 
 motif:
   represented_as: node
@@ -414,13 +414,32 @@ child pathway of:
   source: pathway
   target: pathway
 
-go subtype of:
+# Subtype relationships
+subtype_of:
   is_a: annotation
-  inherit_properties: true
   represented_as: edge
   input_label: subtype_of
+  source: ontology term
+  target: ontology term
+  description: >-
+    Represents the subtype relationship between two ontology terms,
+    where the source term is a subtype of the target term.
+
+go_subtype_of:
+  is_a: subtype_of
+  represented_as: edge
+  input_label: go_subtype_of
+  output_label: subtype_of
   source: go
   target: go
+
+clo_subtype_of:
+  is_a: subtype_of
+  represented_as: edge
+  input_label: clo_subtype_of
+  output_label: subtype_of
+  source: clo
+  target: clo
 
 go gene product:
   is_a: annotation
@@ -455,27 +474,6 @@ go rna:
   output_label: belongs_to
   source: non coding rna
   target: go
-
-# Subclass relationships
-subclass of:
-  is_a: annotation
-  represented_as: edge
-  input_label: subclass_of
-  source: ontology term
-  target: ontology term
-  description: >-
-    Represents the subclass relationship between two ontology terms,
-    where the source term is a subclass of the target term.
-
-cell ontology subclass of:
-  is_a: subclass_of  
-  represented_as: edge
-  input_label: clo_subclass_of
-  output_label: subclass_of
-  source: cell
-  target: parent cell
-  properties:
-    parent_url: str
 
 gene to gene coexpression association:
   description: >-

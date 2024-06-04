@@ -10,9 +10,7 @@ class GeneOntologyAdapter(OntologyAdapter):
     EXACT_SYNONYM = rdflib.term.URIRef('http://www.geneontology.org/formats/oboInOwl#hasExactSynonym')
     RELATED_SYNONYM = rdflib.term.URIRef('http://www.geneontology.org/formats/oboInOwl#hasRelatedSynonym')
 
-    def __init__(self, write_properties, add_provenance, ontology, type, label='go', dry_run=False):
-        self.ontology = ontology
-        
+    def __init__(self, write_properties, add_provenance, ontology, type, label='go', dry_run=False):        
         super(GeneOntologyAdapter, self).__init__(write_properties, add_provenance, ontology, type, label, dry_run)
 
     def get_ontology_source(self, ontology):

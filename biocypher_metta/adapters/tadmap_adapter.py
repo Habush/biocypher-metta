@@ -12,8 +12,10 @@ class TADMapAdapter(Adapter):
     TAD are contiguous segments of the genome where the genomic elements are in frequent contact with each other.
     Source : TADMap https://cb.csail.mit.edu/cb/tadmap/
     """
+    INDEX = {'loc_info': 0, 'genes': 1, 'chr': 1, 'start': 2, 'end': 3}
 
-    def __init__(self, filepath, chr=None, start=None, end=None):
+    def __init__(self, filepath, write_properties, add_provenance,
+                 chr=None, start=None, end=None):
         """
         :type filepath: str
         :type chr: str
@@ -35,7 +37,7 @@ class TADMapAdapter(Adapter):
 
         self.label = "tad"
 
-        super(TADMapAdapter, self).__init__()
+        super(TADMapAdapter, self).__init__(write_properties, add_provenance)
 
 
     def get_nodes(self):
@@ -46,11 +48,11 @@ class TADMapAdapter(Adapter):
             next(tad_file) # skip header
             for row in tad_file:
                 row = row.strip().split(',')
-                loc_info = row[0].split('|')
-                genes_info = row[1].split(';')
-                chr = loc_info[1]
-                start = loc_info[2]
-                end = loc_info[3]
+                loc_info = row[TADMapAdapter.INDEX['loc_info']].split('|')
+                genes_info = row[TADMapAdapter.INDEX['genes']].split(';')
+                chr = loc_info[TADMapAdapter.INDEX['chr']]
+                start = loc_info[TADMapAdapter.INDEX['start']]
+                end = loc_info[TADMapAdapter.INDEX['end']]
                 genes = []
                 for gene in genes_info:
                     try:
@@ -62,11 +64,16 @@ class TADMapAdapter(Adapter):
 
                 if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
                     _id = build_regulatory_region_id(chr, start, end)
-                    _props = {
-                        'chr': chr,
-                        'start': int(start),
-                        'end': int(end),
-                        'genes': genes
-                    }
+                    _props = {}
+                    if self.write_properties:
+                        _props = {
+                            'chr': chr,
+                            'start': int(start),
+                            'end': int(end),
+                            'genes': genes
+                        }
+                        if self.add_provenance:
+                            _props['source'] = self.source
+                            _props['source_url'] = self.source_url
 
                     yield _id, self.label, _props

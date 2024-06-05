@@ -1,5 +1,6 @@
 import gzip
 from biocypher_metta.adapters import Adapter
+from biocypher_metta.adapters.helpers import check_genomic_location
 # Example genocde vcf input file:
 # ##description: evidence-based annotation of the human genome (GRCh38), version 42 (Ensembl 108)
 # ##provider: GENCODE
@@ -17,16 +18,21 @@ class GencodeGeneAdapter(Adapter):
                     'transcript_id', 'transcript_type', 'transcript_name', 'hgnc_id']
     INDEX = {'chr': 0, 'type': 2, 'coord_start': 3, 'coord_end': 4, 'info': 8}
 
-    def __init__(self, filepath=None, gene_alias_file_path=None, chr='all'):
+    def __init__(self, write_properties, add_provenance, filepath=None, 
+                 gene_alias_file_path=None, chr=None, start=None, end=None):
 
         self.filepath = filepath
         self.chr = chr
+        self.start = start
+        self.end = end
         self.label = 'gene'
         self.dataset = 'gencode_gene'
         self.gene_alias_file_path = gene_alias_file_path
         self.source = 'GENCODE'
         self.version = 'v44'
         self.source_url = 'https://www.gencodegenes.org/human/'
+
+        super(GencodeGeneAdapter, self).__init__(write_properties, add_provenance)
 
     def parse_info_metadata(self, info):
         parsed_info = {}
@@ -95,14 +101,27 @@ class GencodeGeneAdapter(Adapter):
                     if gene_id.endswith('_PAR_Y'):
                         id = id + '_PAR_Y'
 
-                    props = {
-                        # 'gene_id': gene_id, # TODO should this be included?
-                        'gene_type': info['gene_type'],
-                        'chr': split_line[GencodeGeneAdapter.INDEX['chr']],
-                        'start': int(split_line[GencodeGeneAdapter.INDEX['coord_start']]),
-                        'end': int(split_line[GencodeGeneAdapter.INDEX['coord_end']]),
-                        'gene_name': info['gene_name'],
-                        'synonyms': alias
-                    }
+                    chr = split_line[GencodeGeneAdapter.INDEX['chr']]
+                    start = int(split_line[GencodeGeneAdapter.INDEX['coord_start']])
+                    end = int(split_line[GencodeGeneAdapter.INDEX['coord_end']])
+                    props = {}
+                    try:
+                        if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
+                            if self.write_properties:
+                                props = {
+                                    # 'gene_id': gene_id, # TODO should this be included?
+                                    'gene_type': info['gene_type'],
+                                    'chr': chr,
+                                    'start': start,
+                                    'end': end,
+                                    'gene_name': info['gene_name'],
+                                    'synonyms': alias
+                                }
+                                if self.add_provenance:
+                                    props['source'] = self.source
+                                    props['source_url'] = self.source_url
 
-                    yield id, self.label, props
+                            yield id, self.label, props
+                    except:
+                        print(
+                            f'fail to process for label to load: {self.label}, type to load: {self.type}, data: {line}')

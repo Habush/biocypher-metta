@@ -1,5 +1,7 @@
 from biocypher_metta.adapters import Adapter
 import gzip
+
+from biocypher_metta.adapters.helpers import check_genomic_location
 # Example genocde vcf input file:
 # ##description: evidence-based annotation of the human genome (GRCh38), version 42 (Ensembl 108)
 # ##provider: GENCODE
@@ -22,7 +24,9 @@ class GencodeAdapter(Adapter):
 
     INDEX = {'chr': 0, 'type': 2, 'coord_start': 3, 'coord_end': 4, 'info': 8}
 
-    def __init__(self, filepath=None, type='gene', label='gencode_gene', chr='all'):
+    def __init__(self, write_properties, add_provenance, filepath=None, 
+                 type='gene', label='gencode_gene', 
+                 chr=None, start=None, end=None):
         if label not in GencodeAdapter.ALLOWED_LABELS:
             raise ValueError('Invalid labelS. Allowed values: ' +
                              ','.join(GencodeAdapter.ALLOWED_LABELS))
@@ -30,6 +34,8 @@ class GencodeAdapter(Adapter):
         self.filepath = filepath
         self.type = type
         self.chr = chr
+        self.start = start
+        self.end = end
         self.label = label
         self.dataset = label
 
@@ -37,7 +43,7 @@ class GencodeAdapter(Adapter):
         self.version = 'v44'
         self.source_url = 'https://www.gencodegenes.org/human/'
 
-        super(GencodeAdapter, self).__init__()
+        super(GencodeAdapter, self).__init__(write_properties, add_provenance)
 
     def parse_info_metadata(self, info):
         parsed_info = {}
@@ -64,18 +70,27 @@ class GencodeAdapter(Adapter):
                 gene_key = info['gene_id'].split('.')[0]
                 if info['gene_id'].endswith('_PAR_Y'):
                     gene_key = gene_key + '_PAR_Y'
+                chr = data[GencodeAdapter.INDEX['chr']]
+                start = int(data[GencodeAdapter.INDEX['coord_start']])
+                end = int(data[GencodeAdapter.INDEX['coord_end']])
+                props = {}
                 try:
-                    if self.type == 'transcript':
-                        props = {
-                            'transcript_id': info['transcript_id'],
-                            'transcript_name': info['transcript_name'],
-                            'transcript_type': info['transcript_type'],
-                            'chr': data[GencodeAdapter.INDEX['chr']],
-                            'start': int(data[GencodeAdapter.INDEX['coord_start']]),
-                            'end': int(data[GencodeAdapter.INDEX['coord_end']]),
-                            'gene_name': info['gene_name'],
-                        }
-                        yield transcript_key, self.label, props
+                    if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
+                        if self.type == 'transcript':
+                            if self.write_properties:
+                                props = {
+                                    'transcript_id': info['transcript_id'],
+                                    'transcript_name': info['transcript_name'],
+                                    'transcript_type': info['transcript_type'],
+                                    'chr': chr,
+                                    'start': start,
+                                    'end': end,
+                                    'gene_name': info['gene_name'],
+                                }
+                                if self.add_provenance:
+                                    props['source'] = self.source
+                                    props['source_url'] = self.source_url
+                            yield transcript_key, self.label, props
                 except:
                     print(
                         f'fail to process for label to load: {self.label}, type to load: {self.type}, data: {line}')
@@ -97,18 +112,22 @@ class GencodeAdapter(Adapter):
                 gene_key = info['gene_id'].split('.')[0]
                 if info['gene_id'].endswith('_PAR_Y'):
                     gene_key = gene_key + '_PAR_Y'
+               
+                _props = {}
+                if self.write_properties and self.add_provenance:
+                    _props['source'] = self.source
+                    _props['source_url'] = self.source_url
+               
                 try:
                     if self.type == 'transcribed to':
                         _id = gene_key + '_' + transcript_key
                         _source = gene_key
                         _target = transcript_key
-                        _props = {}
                         yield _source, _target, self.label, _props
                     elif self.type == 'transcribed from':
                         _id = transcript_key + '_' + gene_key
                         _source = transcript_key
                         _target = gene_key
-                        _props = {}
                         yield _source, _target, self.label, _props
                 except:
                     print(

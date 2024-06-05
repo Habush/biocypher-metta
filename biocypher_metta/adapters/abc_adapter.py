@@ -3,7 +3,7 @@ from biocypher_metta.adapters import Adapter
 import pickle
 import csv
 import gzip
-from biocypher_metta.adapters.helpers import check_genomic_location, build_regulatory_region_id
+from biocypher_metta.adapters.helpers import check_genomic_location
 from biocypher._logger import logger
 
 #Example ABC Data
@@ -18,11 +18,12 @@ class ABCAdapter(Adapter):
     """
     Adapter for Activity-By-Contact (ABC) data from Fulco CP et.al 2019
     """
-    def __init__(self, filepath, type, hgnc_to_ensembl_map, dbsnp_rsid_map,
-                 write_properties, add_provenance,
+    def __init__(self, filepath, type, hgnc_to_ensembl_map, tissue_to_ontology_id_map,
+                 dbsnp_rsid_map, write_properties, add_provenance,
                  chr=None, start=None, end=None):
         self.file_path = filepath
         self.hgnc_to_ensembl_map = pickle.load(open(hgnc_to_ensembl_map, 'rb'))
+        self.tissue_to_ontology_id_map = pickle.load(open(tissue_to_ontology_id_map, 'rb'))
         self.dbsnp_rsid_map = dbsnp_rsid_map
         self.chr = chr
         self.start = start
@@ -33,7 +34,7 @@ class ABCAdapter(Adapter):
         if type == "node":
             self.label = "regulatory_region"
         else:
-            self.label = "regulates_gene"
+            self.label = "regulatory_region_gene"
         self.source = "ABC"
         self.source_url = "https://forgedb.cancer.gov/api/abc/v1.0/abc.forgedb.csv.gz"
         super(ABCAdapter, self).__init__(write_properties, add_provenance)
@@ -50,9 +51,10 @@ class ABCAdapter(Adapter):
                     if check_genomic_location(self.chr, self.start, self.end, chr, pos, pos):
                         _props = {
                             'chr': chr,
-                            'pos': pos,
+                            'start': pos,
+                            'end': pos,
                             'biochemical_activity': 'DNase I hypersensitive',
-                            'biological_context': row[COL_DICT['cell_type']]
+                            'biological_context': self.tissue_to_ontology_id_map[row[COL_DICT['cell_type']]]
                         }
                         yield rsid, self.label, _props
                 except KeyError as e:
@@ -75,8 +77,8 @@ class ABCAdapter(Adapter):
                             _source = rsid
                             _target = self.hgnc_to_ensembl_map[(row[COL_DICT['target_gene']]).strip()]
                             props = {
-                                "abc_score": row[COL_DICT['abc_score']],
-                                "biological_context": row[COL_DICT['cell_type']]
+                                "score": row[COL_DICT['abc_score']],
+                                "biological_context": self.tissue_to_ontology_id_map[row[COL_DICT['cell_type']]]
                             }
 
                             yield _source, _target, self.label, props

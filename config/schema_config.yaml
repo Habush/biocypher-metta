@@ -34,7 +34,7 @@ non coding element:
   description: >-
       A region of a gene that does not code for a protein or peptide
   properties:
-    tissue: str
+    biological_context: str
     source: str
     source_url: str
 
@@ -58,11 +58,11 @@ epigenomic feature:
       A region of the genome that is associated with epigenetic modifications
 
   properties:
-    tissue: str
+    biological_context: str
     source: str
     source_url: str
 
-3D genome structure:
+3d genome structure:
   represented_as: node
   is_a: position entity
   input_label: 3d_genome_structure
@@ -100,8 +100,9 @@ gene:
   is_a: coding element
   inherit_properties: true
   properties:
-    name: str
+    gene_name: str
     gene_type: str
+    synonyms:  str[]
 
 protein:
   represented_as: node
@@ -109,9 +110,9 @@ protein:
   input_label: protein
   is_a: coding element
   properties:
-    accessions: int
-    organism_id: int
-    name: str
+    accessions: str[]
+    protein_name: str
+    synonyms: str[]
     source: str
     source_url: str
 
@@ -157,19 +158,35 @@ snp:
   properties:
     ref: str
     alt: str
-    annotation: obj
+    caf_ref: str
+    caf_alt: str
   description: >-
     A single nucleotide polymorphism (SNP) is a variation in a single nucleotide that occurs at a specific position in the genome
 
 
 structural variant:
   represented_as: node
-  input_label: structural variant
+  input_label: structural_variant
   is_a: genomic variant
   inherit_properties: true
   properties:
       variant_type: str
-      variant_subtype: str
+      evidence: str
+
+
+sequence variant:
+  represented_as: node
+  input_label: sequence_variant
+  is_a: genomic variant
+  inherit_properties: true
+  description: >-
+    A change in the nucleotide sequence of a genome compared to a reference sequence.
+  properties:
+    rsid: str
+    ref: str
+    alt: str
+    raw_cadd_score: float
+    phred_score: float
 
 # ---
 # non-coding elements
@@ -178,6 +195,8 @@ enhancer:
   input_label: enhancer
   is_a: non coding element
   inherit_properties: true
+  properties:
+    data_source: str
 
 promoter:
   represented_as: node
@@ -191,6 +210,14 @@ super enhancer:
   is_a: non coding element
   inherit_properties: true
 
+non coding rna:
+  represented_as: node
+  input_label: non_coding_rna
+  is_a: non coding element
+  inherit_properties: true
+  properties:
+    rna_type: str
+
 pathway:
   is_a: biological process
   exact_mappings:
@@ -202,8 +229,20 @@ pathway:
   represented_as: node
   input_label: pathway
   properties:
-    name: str
+    pathway_name: str
     evidence: str
+
+regulatory region:
+  represented_as: node
+  input_label: regulatory_region
+  is_a: non coding element
+  inherit_properties: true
+  description: >-
+    A region of the genome that is involved in gene regulation.
+  properties:
+    cell: str
+    biochemical_activity: str
+    biological_context: str
 
 # ---
 # ontologies
@@ -212,11 +251,10 @@ go:
   represented_as: node
   input_label: go
   properties:
-    go_id: str
-    go_name: str
-    go_namespace: str
-    go_definition: str
-    go_synonyms: str[]
+    term_name: str
+    description: str
+    synonyms: str[]
+    subontology: str
 
 motif:
   represented_as: node
@@ -229,8 +267,6 @@ motif:
     return: _id, tf_name, source, source_url, pwm, length
   properties:
     tf_name: str
-    source: str
-    source_url: str
     pwm_A: float[]
     pwm_C: float[]
     pwm_G: float[]
@@ -245,7 +281,7 @@ tad:
   is_a: 3d genome structure
   inherit_properties: true
   properties:
-        tissue: str
+        genes: str[]
 
 chromatin state:
   represented_as: node
@@ -307,6 +343,9 @@ regulatory association:
     source: str
     source_url: str
 
+# ---
+# expression
+
 transcribed to:
   represented_as: edge
   is_a: expression
@@ -363,6 +402,32 @@ translation of:
     - RO:0002512
     - SIO:010083
 
+gene to gene coexpression association:
+  description: >-
+    Indicates that two genes are co-expressed,
+    generally under the same conditions.
+  is_a: expression
+  inherit_properties: true
+  represented_as: edge
+  input_label: coexpressed_with
+  source: gene
+  target: gene
+  properties:
+    score: float
+
+post translational interaction:
+  is_a: expression
+  inherit_properties: true
+  represented_as: edge
+  input_label: interacts_with
+  source: protein
+  target: protein
+  properties:
+    score: float
+
+# ---
+# annotation
+
 gene to pathway association:
   description: >-
     An interaction between a gene or gene product and a biological process or pathway.
@@ -417,7 +482,8 @@ go gene:
   is_a: annotation
   inherit_properties: true
   represented_as: edge
-  input_label: belongs_to
+  input_label: go_gene
+  output_label: belongs_to
   source: gene
   target: go
   properties:
@@ -425,20 +491,46 @@ go gene:
     db_reference: obj
     evidence: str
 
-
-gene to gene coexpression association:
-  description: >-
-    Indicates that two genes are co-expressed,
-    generally under the same conditions.
-  is_a: expression
+go rna:
+  is_a: annotation
   inherit_properties: true
   represented_as: edge
-  input_label: coexpressed_with
-  source: gene
-  target: gene
+  input_label: go_rna
+  output_label: belongs_to
+  source: non coding rna
+  target: go
+
+ontology has part:
+  is_a: annotation
+  inherit_properties: true
+  represented_as: edge
+  input_label: ontology_has_part
+  output_label: has_part
+  source: ontology term
+  target: ontology term
+
+ontology part of:
+  is_a: annotation
+  inherit_properties: true
+  represented_as: edge
+  input_label: ontology_part_of
+  output_label: part_of
+  source: ontology term
+  target: ontology term
+
+ontology subclass of:
+  is_a: annotation
+  inherit_properties: true
+  represented_as: edge
+  input_label: ontology_subclass_of
+  output_label: subclass_of
+  source: ontology term
+  target: ontology term
   properties:
-    score: float
-    tissue: str
+    rel_type: str
+
+# ---
+# regulatory association
 
 enhancer to gene association:
   description: >-
@@ -452,7 +544,7 @@ enhancer to gene association:
   target: gene
   properties:
     score: float
-    tissue: str
+    biological_context: str
 
 promoter to gene association:
   description: >-
@@ -466,7 +558,7 @@ promoter to gene association:
   target: gene
   properties:
       score: float
-      tissue: str
+      biological_context: str
 
 super enhancer to gene association:
   description: >-
@@ -480,7 +572,7 @@ super enhancer to gene association:
   target: gene
   properties:
     score: float
-    tissue: str
+    biological_context: str
 
 transcription factor to gene association:
   description: >-
@@ -498,15 +590,19 @@ transcription factor to gene association:
     databases: str[]
     evidence_type: str
 
-post translational interaction:
-  is_a: expression
+regulatory region to gene association:
+  description: >-
+    An association between a regulatory region and a gene it regulates
+  is_a: regulatory association
   inherit_properties: true
   represented_as: edge
-  input_label: interacts_with
-  source: protein
-  target: protein
+  input_label: regulatory_region_gene
+  output_label: regulates
+  source: regulatory_region
+  target: gene
   properties:
     score: float
+    biological_context: str
 
 gtex variant to gene expression association:
   aliases: [ 'eQTL', 'e-QTL']
@@ -514,7 +610,8 @@ gtex variant to gene expression association:
     An association between a variant and expression of a gene (i.e. e-QTL)
   is_a: related to at instance level
   represented_as: edge
-  input_label: correlates_with
+  input_label: gtex_variant_gene
+  output_label: correlates_with
   source: snp
   target: gene
   properties:
@@ -522,7 +619,7 @@ gtex variant to gene expression association:
     maf: float
     p_value: float
     q_value: float
-    tissue: str
+    biological_context: str
     source: str
     source_url: str
 
@@ -580,7 +677,6 @@ topld in linkage disequilibrium with:
   source: snp
   target: snp
   properties:
-    chr: str
     ancestry: str
     r2: float
     d_prime: float

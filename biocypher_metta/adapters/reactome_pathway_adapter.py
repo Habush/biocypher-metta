@@ -16,7 +16,7 @@ from biocypher_metta.adapters import Adapter
 
 class ReactomePathwayAdapter(Adapter):
 
-    def __init__(self, filepath, pubmed_map_path):
+    def __init__(self, filepath, pubmed_map_path, write_properties, add_provenance):
 
         self.filepath = filepath
         self.pubmed_map_path = pubmed_map_path
@@ -26,6 +26,8 @@ class ReactomePathwayAdapter(Adapter):
         self.source = "REACTOME"
         self.source_url = "https://reactome.org"
 
+        super(ReactomePathwayAdapter, self).__init__(write_properties, add_provenance)
+    
     def load_pubmed_map(self):
         self.pubmed_map = {}
         with open(self.pubmed_map_path, "r") as f:
@@ -39,12 +41,17 @@ class ReactomePathwayAdapter(Adapter):
             for line in input:
                 id, name, species = line.strip().split('\t')
                 if species == 'Homo sapiens':
-                    props = {
-                            'name': name
-                    }
-                    pubmed_id = self.pubmed_map.get(id, None)
-                    if pubmed_id is not None:
-                        pubmed_url = f"https://pubmed.ncbi.nlm.nih.gov/{self.pubmed_map[id]}"
-                        props['evidence'] = pubmed_url,
+                    props = {}
+                    if self.write_properties:
+                        props['pathway_name'] = name
+                    
+                        pubmed_id = self.pubmed_map.get(id, None)
+                        if pubmed_id is not None:
+                            pubmed_url = f"https://pubmed.ncbi.nlm.nih.gov/{self.pubmed_map[id]}"
+                            props['evidence'] = pubmed_url,
+                        
+                        if self.add_provenance:
+                            props['source'] = self.source
+                            props['source_url'] = self.source_url
 
                     yield id, self.label, props

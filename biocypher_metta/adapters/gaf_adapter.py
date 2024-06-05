@@ -51,7 +51,7 @@ class GAFAdapter(Adapter):
         'rnacentral': 'https://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/id_mapping/database_mappings/ensembl_gencode.tsv'
     }
 
-    def __init__(self, filepath, gaf_type='human'):
+    def __init__(self, filepath, write_properties, add_provenance, gaf_type='human'):
         if gaf_type not in GAFAdapter.SOURCES.keys():
             raise ValueError('Invalid type. Allowed values: ' +
                              ', '.join(GAFAdapter.SOURCES.keys()))
@@ -63,7 +63,7 @@ class GAFAdapter(Adapter):
         self.source = "GO"
         self.source_url = GAFAdapter.SOURCES[gaf_type]
 
-        super(GAFAdapter, self).__init__()
+        super(GAFAdapter, self).__init__(write_properties, add_provenance)
 
     def load_rnacentral_mapping(self):
         self.rnacentral_mapping = {}
@@ -89,12 +89,16 @@ class GAFAdapter(Adapter):
                     if transcript_id is None:
                         continue
                     target = transcript_id
-
-                props = {
-                    'qualifier': annotation['Qualifier'],
-                    'db_reference': annotation['DB:Reference'],
-                    'evidence': annotation['Evidence']
-                }
+                props = {}
+                if self.write_properties:
+                    props = {
+                        'qualifier': annotation['Qualifier'],
+                        'db_reference': annotation['DB:Reference'],
+                        'evidence': annotation['Evidence']
+                    }
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
 
                 yield source, target, self.label, props
 

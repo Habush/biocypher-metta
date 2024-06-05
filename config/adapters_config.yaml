@@ -6,7 +6,7 @@ gencode_gene:
       filepath: /mnt/hdd_2/abdu/biocypher_data/gencode/gencode.annotation.gtf.gz
       gene_alias_file_path: ./aux_files/Homo_sapiens.gene_info.gz
 
-  outdir: gencode
+  outdir: gencode/gene
   nodes: True
   edges: False
 
@@ -20,7 +20,7 @@ gencode_transcripts:
       type: transcript
       label: transcript
 
-  outdir: gencode
+  outdir: gencode/transcript
   nodes: True
   edges: False
 
@@ -174,17 +174,17 @@ gaf:
   edges: True
 
 
-#coexpression:
-#  adapter:
-#    module: biocypher_metta.adapters.coxpresdb_adapter
-#    cls: CoxpresdbAdapter
-#    args:
-#      filepath: /mnt/hdd_2/abdu/biocypher_data/coxpressdb
-#      ensemble_to_entrez_path: ./aux_files/entrez_to_ensembl.pkl
-#
-#  outdir: coxpressdb
-#  nodes: False
-#  edges: True
+coexpression:
+ adapter:
+   module: biocypher_metta.adapters.coxpresdb_adapter
+   cls: CoxpresdbAdapter
+   args:
+     filepath: /mnt/hdd_2/abdu/biocypher_data/coxpressdb
+     ensemble_to_entrez_path: ./aux_files/entrez_to_ensembl.pkl
+
+ outdir: coxpressdb
+ nodes: False
+ edges: True
 
 tflink:
     adapter:
@@ -228,7 +228,7 @@ gtex_eqtl:
     cls: GTExEQTLAdapter
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/gtex/eqtl/GTEx_Analysis_v8_eQTL
-      chr: chr16
+      gtex_tissue_ontology_map: ./aux_files/gtex_tissues_to_ontology_map.pkl
 
   outdir: gtex/eqtl
   nodes: False
@@ -253,6 +253,7 @@ roadmap_chromatin_state:
     cls: RoadMapAdapter
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/forgedb/roadmap/chromatin_state
+      tissue_to_ontology_id_map: ./aux_files/roadmap_tissues_to_ontology_map.pkl
       dbsnp_rsid_map: None
       chr: chr16
       start: 53000000
@@ -267,6 +268,7 @@ roadmap_h3_mark:
     cls: RoadMapAdapter
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/forgedb/roadmap/h3_marks
+      tissue_to_ontology_id_map: ./aux_files/roadmap_tissues_to_ontology_map.pkl
       dbsnp_rsid_map: None
       chr: chr16
       start: 53000000
@@ -281,6 +283,7 @@ roadmap_dhs:
     cls: RoadMapAdapter
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/forgedb/roadmap/dhs
+      tissue_to_ontology_id_map: ./aux_files/roadmap_tissues_to_ontology_map.pkl
       dbsnp_rsid_map: None
       chr: chr16
       start: 53000000
@@ -297,6 +300,7 @@ abc_regulatory_region:
       filepath: /mnt/hdd_2/abdu/biocypher_data/forgedb/abc.forgedb.csv.gz
       type: "node"
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      tissue_to_ontology_id_map: ./aux_files/abc_tissues_to_ontology_map.pkl
       dbsnp_rsid_map: None # will be provided by import script
 
   outdir: abc
@@ -311,6 +315,7 @@ abc_enhancer_gene_pair:
       filepath: /mnt/hdd_2/abdu/biocypher_data/forgedb/abc.forgedb.csv.gz
       type: "edge"
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      tissue_to_ontology_id_map: ./aux_files/abc_tissues_to_ontology_map.pkl
       dbsnp_rsid_map: None # will be provided by import script
       chr: chr16
 
@@ -415,6 +420,182 @@ gencode_exon:
     args:
       filepath: /mnt/hdd_2/abdu/biocypher_data/gencode/gencode.annotation.gtf.gz
 
-  outdir: gencode
+  outdir: gencode/exon
   nodes: True
   edges: False
+
+rna_central_non_coding_rna:
+  adapter:
+    module: biocypher_metta.adapters.rna_central_adapter
+    cls: RNACentralAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/rna_central/homo_sapiens.GRCh38.bed.gz
+      rfam_filepath: /mnt/hdd_2/abdu/biocypher_data/rna_central/rnacentral_rfam_annotations.tsv.gz
+      
+  outdir: rna_central
+  nodes: True
+  edges: False
+
+rna_central_non_coding_rna_belongs_to_go:
+  adapter:
+    module: biocypher_metta.adapters.rna_central_adapter
+    cls: RNACentralAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/rna_central/homo_sapiens.GRCh38.bed.gz
+      rfam_filepath: /mnt/hdd_2/abdu/biocypher_data/rna_central/rnacentral_rfam_annotations.tsv.gz
+      type: go rna
+      label: go_rna
+
+  outdir: rna_central
+  nodes: False
+  edges: True
+
+dgv_variant:
+  adapter:
+    module: biocypher_metta.adapters.dgv_variant_adapter
+    cls: DGVVariantAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/dgv_GRCh38_hg38_variants.txt.gz
+
+  outdir: dgv
+  nodes: True
+  edges: False
+
+epd_promoter:
+  adapter:
+    module: biocypher_metta.adapters.epd_adapter
+    cls: EPDAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/Hs_EPDnew.bed.gz
+      hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+
+  outdir: epd
+  nodes: True
+  edges: False
+
+epd_promoter_regulates_gene:
+  adapter:
+    module: biocypher_metta.adapters.epd_adapter
+    cls: EPDAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/Hs_EPDnew.bed.gz
+      hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      type: promoter to gene association
+      label: promoter_gene
+
+  outdir: epd
+  nodes: False
+  edges: True
+
+
+dbvar_variant:
+  adapter:
+    module: biocypher_metta.adapters.dbvar_adapter
+    cls: DBVarVariantAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/GRCh38.variant_call.all.vcf.gz
+
+  outdir: dbvar
+  nodes: True
+  edges: False
+
+
+peregrine_enhancer:
+  adapter:
+    module: biocypher_metta.adapters.peregrine_adapter
+    cls: PEREGRINEAdapter
+    args:
+      enhancers_file: /mnt/hdd_2/abdu/biocypher_data/peregrine/PEREGRINEenhancershg38.gz
+      enhancer_gene_link: /mnt/hdd_2/abdu/biocypher_data/peregrine/enhancer_gene_link_18.tsv.gz
+      source_file: /mnt/hdd_2/abdu/biocypher_data/peregrine/PEREGRINEenhancersources.gz
+      hgnc_ensembl_map: ./aux_files/hgnc_ensembl_map.pkl
+      tissue_ontology_map: ./aux_files/peregrine_tissues_to_ontology_map.pkl
+
+  outdir: peregrine
+  nodes: True
+  edges: False
+
+
+peregrine_enhancer_regulates:
+  adapter:
+    module: biocypher_metta.adapters.peregrine_adapter
+    cls: PEREGRINEAdapter
+    args:
+      enhancers_file: /mnt/hdd_2/abdu/biocypher_data/peregrine/PEREGRINEenhancershg38.gz
+      enhancer_gene_link: /mnt/hdd_2/abdu/biocypher_data/peregrine/enhancer_gene_link_18.tsv.gz
+      source_file: /mnt/hdd_2/abdu/biocypher_data/peregrine/PEREGRINEenhancersources.gz
+      hgnc_ensembl_map: ./aux_files/hgnc_ensembl_map.pkl
+      tissue_ontology_map: ./aux_files/peregrine_tissues_to_ontology_map.pkl
+      type: enhancer to gene association
+      label: enhancer_gene
+
+  outdir: peregrine
+  nodes: False
+  edges: True
+
+dbsuper_super_enhancer:
+  adapter:
+    module: biocypher_metta.adapters.dbsuper_adapter
+    cls: DBSuperAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/dbSUPER_SuperEnhancers_hg19.tsv.gz
+      hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      dbsuper_tissues_map: ./aux_files/dbsuper_tissues_map.pkl
+
+  outdir: dbsuper
+  nodes: True
+  edges: False  
+
+dbsuper_super_enhancer_regulates_gene:
+  adapter:
+    module: biocypher_metta.adapters.dbsuper_adapter
+    cls: DBSuperAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/dbSUPER_SuperEnhancers_hg19.tsv.gz
+      hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      dbsuper_tissues_map: ./aux_files/dbsuper_tissues_map.pkl
+      type: super enhancer to gene association
+      label: super_enhancer_gene
+
+  outdir: dbsuper
+  nodes: False
+  edges: True
+
+  dbsnp_snps:
+  adapter:
+    module: biocypher_metta.adapters.dbsnp_adapter
+    cls: DBSNPAdapter
+    args:
+      filepath: /mnt/hdd_2/abdu/biocypher_data/dbsnp/00-common_all.vcf.gz
+    
+  outdir: dbsnp
+  nodes: True
+  edges: False
+
+enhancer_atlas_enhancer:
+  adapter:
+    module: biocypher_metta.adapters.enhancer_atlas_adapter
+    cls: EnhancerAtlasAdapter
+    args:
+      enhancer_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer.bed.gz
+      enhancer_gene_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_gene
+      tissue_to_ontology_filepath: ./aux_files/enhancer_atlas_tissues_to_ontology.pkl
+  
+  outdir: enhancer_atlas
+  nodes: True
+  edges: False
+
+enhancer_atlas_enhancer_regulates:
+  adapter:
+    module: biocypher_metta.adapters.enhancer_atlas_adapter
+    cls: EnhancerAtlasAdapter
+    args:
+      enhancer_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer.bed.gz
+      enhancer_gene_filepath: /mnt/hdd_2/abdu/biocypher_data/enhancer_atlas/enhancer_gene
+      tissue_to_ontology_filepath: ./aux_files/enhancer_atlas_tissues_to_ontology.pkl
+      type: enhancer to gene association
+      input_label: enhancer_gene
+
+  outdir: enhancer_atlas
+  nodes: False
+  edges: True

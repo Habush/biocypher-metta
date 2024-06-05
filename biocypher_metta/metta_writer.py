@@ -67,6 +67,8 @@ class MeTTaWriter:
                         target_type = self.convert_input_labels(target_type[0])
                     else:
                         label = self.convert_input_labels(v["input_label"])
+                        source_type = self.convert_input_labels(source_type)
+                        target_type = self.convert_input_labels(target_type)
 
                     output_label = v.get("output_label", None)
                     out_str = edge_data_constructor(edge_type, source_type, target_type, label)

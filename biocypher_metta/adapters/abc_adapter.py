@@ -77,7 +77,7 @@ class ABCAdapter(Adapter):
                             _source = rsid
                             _target = self.hgnc_to_ensembl_map[(row[COL_DICT['target_gene']]).strip()]
                             props = {
-                                "abc_score": row[COL_DICT['abc_score']],
+                                "score": row[COL_DICT['abc_score']],
                                 "biological_context": self.tissue_to_ontology_id_map[row[COL_DICT['cell_type']]]
                             }
 

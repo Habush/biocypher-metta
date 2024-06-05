@@ -600,7 +600,7 @@ regulatory region to gene association:
   source: regulatory_region
   target: gene
   properties:
-    abc_score: float
+    score: float
     biological_context: str
 
 gtex variant to gene expression association:

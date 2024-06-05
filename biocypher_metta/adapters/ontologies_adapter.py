@@ -1,5 +1,6 @@
 import rdflib
 from owlready2 import *
+from abc import ABC, abstractmethod
 from biocypher_metta.adapters import Adapter
 
 class OntologyAdapter(Adapter):
@@ -32,12 +33,13 @@ class OntologyAdapter(Adapter):
 
         super(OntologyAdapter, self).__init__(write_properties, add_provenance)
     
+    @abstractmethod
     def get_ontology_source(self, ontology):
         """
         Returns the source and source URL for a given ontology.
         This method should be overridden in child classes for specific ontologies.
         """
-        return None, None
+        pass
 
     def update_graph(self):
         if self.ontology not in self.ONTOLOGIES:

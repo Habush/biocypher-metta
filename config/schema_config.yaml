@@ -426,14 +426,6 @@ subtype_of:
     Represents the subtype relationship between two ontology terms,
     where the source term is a subtype of the target term.
 
-go_subtype_of:
-  is_a: subtype_of
-  represented_as: edge
-  input_label: go_subtype_of
-  output_label: subtype_of
-  source: go
-  target: go
-
 uberon_subtype_of:
   is_a: subtype_of
   represented_as: edge
@@ -442,11 +434,11 @@ uberon_subtype_of:
   source: uberon
   target: uberon
 
-go subtype of:
-  is_a: annotation
-  inherit_properties: true
+go_subtype_of:
+  is_a: subtype_of
   represented_as: edge
-  input_label: subtype_of
+  input_label: go_subtype_of
+  output_label: subtype_of
   source: go
   target: go
 

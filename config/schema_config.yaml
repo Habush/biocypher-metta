@@ -229,17 +229,6 @@ go:
     go_definition: str
     go_synonyms: str[]
 
-# Uberon Ontology 
-uberon:
-  is_a: ontology term
-  represented_as: node
-  input_label: uberon
-  properties:
-    uberon_id: str 
-    uberon_name: str
-    uberon_definition: str
-    uberon_synonyms: str[]
-
 motif:
   represented_as: node
   is_a: epigenomic feature

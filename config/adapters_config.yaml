@@ -150,7 +150,7 @@ go_ontology_terms:
   nodes: True
   edges: False
 
-onotology_relationships:
+go_subtype_of:
   adapter:
     module: biocypher_metta.adapters.gene_ontology_adapter
     cls: GeneOntologyAdapter

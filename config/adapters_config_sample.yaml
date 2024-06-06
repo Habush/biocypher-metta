@@ -557,7 +557,7 @@ uberon:
   nodes: True
   edges: False
 
-uberon_subclass_of:
+uberon_subtype_of:
   adapter:
     module: biocypher_metta.adapters.uberon_adapter
     cls: UberonAdapter

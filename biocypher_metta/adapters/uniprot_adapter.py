@@ -13,7 +13,8 @@ class UniprotAdapter(Adapter):
     ALLOWED_TYPES = ['translates to', 'translation of']
     ALLOWED_LABELS = ['translates_to', 'translation_of']
 
-    def __init__(self, filepath, type, label):
+    def __init__(self, filepath, type, label,
+                 write_properties, add_provenance):
         if type not in UniprotAdapter.ALLOWED_TYPES:
             raise ValueError('Invalid type. Allowed values: ' +
                              ', '.join(UniprotAdapter.ALLOWED_TYPES))
@@ -26,6 +27,8 @@ class UniprotAdapter(Adapter):
         self.label = label
         self.source = "Uniprot"
         self.source_url = "https://www.uniprot.org/"
+
+        super(UniprotAdapter, self).__init__(write_properties, add_provenance)
 
     def get_edges(self):
         with gzip.open(self.filepath, 'rt') as input_file:
@@ -41,6 +44,9 @@ class UniprotAdapter(Adapter):
                                 _source = ensg_id
                                 _target = record.id
                                 _props = {}
+                                if self.write_properties and self.add_provenance:
+                                    _props['source'] = self.source
+                                    _props['source_url'] = self.source_url
                                 yield _source, _target, self.label, _props
 
                             except:
@@ -57,6 +63,9 @@ class UniprotAdapter(Adapter):
                                 _target = ensg_id
                                 _source = record.id
                                 _props = {}
+                                if self.write_properties and self.add_provenance:
+                                    _props['source'] = self.source
+                                    _props['source_url'] = self.source_url
                                 yield  _source, _target, self.label, _props
 
                             except:

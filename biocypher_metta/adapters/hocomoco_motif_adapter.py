@@ -20,7 +20,8 @@ from biocypher_metta.adapters import Adapter
 
 
 class HoCoMoCoMotifAdapter(Adapter):
-    def __init__(self, filepath, annotation_file, hgnc_to_ensembl_map):
+    def __init__(self, filepath, annotation_file, hgnc_to_ensembl_map,
+                 write_properties, add_provenance):
 
         self.filepath = filepath
         assert os.path.isdir(self.filepath), f"{self.filepath} is not a directory"
@@ -33,7 +34,7 @@ class HoCoMoCoMotifAdapter(Adapter):
 
         self.load_model_tf_mapping()
 
-        super(HoCoMoCoMotifAdapter, self).__init__()
+        super(HoCoMoCoMotifAdapter, self).__init__(write_properties, add_provenance)
 
     def load_model_tf_mapping(self):
         self.model_tf_map = {}  # e.g. key: 'ANDR_HUMAN'; value: 'P10275'
@@ -62,14 +63,21 @@ class HoCoMoCoMotifAdapter(Adapter):
 
                 tf_name = self.model_tf_map.get(model_name)
                 _id = self.hgnc_to_ensembl_map.get(tf_name)
+                if _id is None:
+                    continue
 
-                props = {
-                    'tf_name': tf_name,
-                    'pwm_A': pwm["pmw_A"],
-                    'pwm_C': pwm["pmw_C"],
-                    'pwm_G': pwm["pmw_G"],
-                    'pwm_T': pwm["pmw_T"],
-                    'length': length
-                }
+                props = {}
+                if self.write_properties:
+                    props = {
+                        'tf_name': tf_name,
+                        'pwm_A': pwm["pmw_A"],
+                        'pwm_C': pwm["pmw_C"],
+                        'pwm_G': pwm["pmw_G"],
+                        'pwm_T': pwm["pmw_T"],
+                        'length': length
+                    }
+                    if self.add_provenance:
+                        props['source'] = self.source
+                        props['source_url'] = self.source_url
 
                 yield _id, self.label, props

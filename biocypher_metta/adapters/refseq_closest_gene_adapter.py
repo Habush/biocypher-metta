@@ -18,6 +18,7 @@ class RefSeqClosestGeneAdapter(Adapter):
     Adapter for RefSeq Closest Gene data
     """
     def __init__(self, filepath, hgnc_to_ensembl_map, dbsnp_rsid_map,
+                 write_properties, add_provenance,
                  chr=None, start=None, end=None):
         self.file_path = filepath
         self.dbsnp_rsid_map = dbsnp_rsid_map
@@ -30,7 +31,7 @@ class RefSeqClosestGeneAdapter(Adapter):
         self.source = "RefSeq Closest Gene"
         self.source_url = "https://forgedb.cancer.gov/api/closest_gene/v1.0/closest_gene.forgedb.csv.gz"
 
-        super(RefSeqClosestGeneAdapter, self).__init__()
+        super(RefSeqClosestGeneAdapter, self).__init__(write_properties, add_provenance)
 
     def get_edges(self):
         with gzip.open(self.file_path, "rt") as fp:
@@ -46,11 +47,14 @@ class RefSeqClosestGeneAdapter(Adapter):
                             source_id = rsid
                             target_id = self.hgnc_to_ensembl_map[(row[7]).strip()]
                             distance = int(row[5]) + 1 - int(pos)
-                            props = {
-                                'chr': chr,
-                                'pos': pos,
-                                'distance': distance
-                            }
+                            props = {}
+                            if self.write_properties:
+                                props['chr'] = chr
+                                props['pos'] = pos
+                                props['distance'] = distance
+                                if self.add_provenance:
+                                    props['source'] = self.source
+                                    props['source_url'] = self.source_url
 
                             yield source_id, target_id, self.label, props
 

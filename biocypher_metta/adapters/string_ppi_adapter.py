@@ -16,7 +16,8 @@ import gzip
 # 9606.ENSP00000000233 9606.ENSP00000320935 181
 
 class StringPPIAdapter(Adapter):
-    def __init__(self, filepath, ensembl_to_uniprot_map):
+    def __init__(self, filepath, ensembl_to_uniprot_map,
+                 write_properties, add_provenance):
         """
         Constructs StringPPI adapter that returns edges between proteins
         :param filepath: Path to the TSV file downloaded from String
@@ -31,6 +32,7 @@ class StringPPIAdapter(Adapter):
         self.source = "STRING"
         self.source_url = "https://string-db.org/"
         self.version = "v12.0"
+        super(StringPPIAdapter, self).__init__(write_properties, add_provenance)
 
     def get_edges(self):
         with gzip.open(self.filepath, "rt") as fp:
@@ -44,7 +46,13 @@ class StringPPIAdapter(Adapter):
                     protein2_uniprot = self.ensembl2uniprot[protein2]
                     _source = protein1_uniprot
                     _target = protein2_uniprot
-                    _props = {
-                        "score": float(row[2]) / 1000, # divide by 1000 to normalize score
-                    }
+                    _props = {}
+                    if self.write_properties:
+                        _props = {
+                            "score": float(row[2]) / 1000, # divide by 1000 to normalize score
+                        }
+                        if self.add_provenance:
+                            _props["source"] = self.source
+                            _props["source_url"] = self.source_url
+
                     yield _source, _target, self.label, _props

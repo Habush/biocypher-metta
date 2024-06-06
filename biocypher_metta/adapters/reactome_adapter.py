@@ -32,7 +32,7 @@ class ReactomeAdapter(Adapter):
     ALLOWED_LABELS = ['genes_pathways',
                       'parent_pathway_of', 'child_pathway_of']
 
-    def __init__(self, filepath, label):
+    def __init__(self, filepath, label, write_properties, add_provenance):
         if label not in ReactomeAdapter.ALLOWED_LABELS:
             raise ValueError('Invalid label. Allowed values: ' +
                              ', '.join(ReactomeAdapter.ALLOWED_LABELS))
@@ -41,9 +41,15 @@ class ReactomeAdapter(Adapter):
         self.label = label
         self.source = "REACTOME"
         self.source_url = "https://reactome.org"
+
+        super(ReactomeAdapter, self).__init__(write_properties, add_provenance)
+
     def get_edges(self):
         with open(self.filepath) as input:
             _props = {}
+            if self.write_properties and self.add_provenance:
+                _props['source'] = self.source
+                _props['source_url'] = self.source_url
             for line in input:
                 if self.label == 'genes_pathways':
                     data = line.strip().split('\t')

@@ -1,6 +1,6 @@
 import gzip
 from biocypher_metta.adapters import Adapter
-from biocypher_metta.adapters.helpers import check_genomic_location
+from biocypher_metta.adapters.helpers import build_regulatory_region_id, check_genomic_location
 # Example dgv input file:
 # variantaccession	chr	start	end	varianttype	variantsubtype	reference	pubmedid	method	platform	mergedvariants	supportingvariants	mergedorsample	frequency	samplesize	observedgains	observedlosses	cohortdescription	genes	samples
 # dgv1n82	1	10001	22118	CNV	duplication	Sudmant_et_al_2013	23825009	Oligo aCGH,Sequencing			nsv945697,nsv945698	M		97	10	0		""	HGDP00456,HGDP00521,HGDP00542,HGDP00665,HGDP00778,HGDP00927,HGDP00998,HGDP01029,HGDP01284,HGDP01307
@@ -32,17 +32,19 @@ class DGVVariantAdapter(Adapter):
             for line in f:
                 data = line.strip().split(self.delimiter)
                 variant_accession = data[DGVVariantAdapter.INDEX['variant_accession']]
-                chr = data[DGVVariantAdapter.INDEX['chr']]
-                start = int(data[DGVVariantAdapter.INDEX['coord_start']]) + 1
+                chr = 'chr' + data[DGVVariantAdapter.INDEX['chr']]
+                start = int(data[DGVVariantAdapter.INDEX['coord_start']]) + 1 # +1 since it is 0-indexed genomic coordinate
                 end = int(data[DGVVariantAdapter.INDEX['coord_end']]) + 1
                 variant_type = data[DGVVariantAdapter.INDEX['type']]
                 pubmedid = data[DGVVariantAdapter.INDEX['pubmedid']]
+                region_id = build_regulatory_region_id(chr, start, end)
                 if not check_genomic_location(self.chr, self.start, self.end, chr, start, end):
                     continue
                 props = {}
 
                 if self.write_properties:
-                    props['chr'] = 'chr' + chr
+                    props['id'] = variant_accession
+                    props['chr'] = chr
                     props['start'] = start
                     props['end'] = end
                     props['variant_type'] = variant_type
@@ -53,4 +55,4 @@ class DGVVariantAdapter(Adapter):
                         props['source_url'] = self.source_url
 
 
-                yield variant_accession, self.label, props
+                yield region_id, self.label, props

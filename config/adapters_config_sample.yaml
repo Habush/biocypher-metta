@@ -6,7 +6,7 @@ gencode_gene:
       filepath: ./samples/gencode_sample.gtf.gz
       gene_alias_file_path: ./aux_files/Homo_sapiens.gene_info.gz
 
-  outdir: gencode
+  outdir: gencode/gene
   nodes: True
   edges: False
 
@@ -19,7 +19,7 @@ gencode_transcripts:
       type: transcript
       label: transcript
 
-  outdir: gencode
+  outdir: gencode/transcript
   nodes: True
   edges: False
 
@@ -134,27 +134,30 @@ child_pathway_of:
   nodes: False
   edges: True
 
-ontology_terms:
+go_ontology_terms:
   adapter:
-    module: biocypher_metta.adapters.ontologies_adapter
-    cls: OntologyAdapter
+    module: biocypher_metta.adapters.gene_ontology_adapter
+    cls: GeneOntologyAdapter
     args:
+      ontology: 'go'
       type: node
       dry_run: True
 
-  outdir: onotology
+  outdir: gene_onotology
   nodes: True
   edges: False
 
-onotology_relationships:
+go_subtype_of:
   adapter:
-    module: biocypher_metta.adapters.ontologies_adapter
-    cls: OntologyAdapter
+    module: biocypher_metta.adapters.gene_ontology_adapter
+    cls: GeneOntologyAdapter
     args:
+      ontology: 'go'
+      label: go_subtype_of
       type: edge
       dry_run: True
 
-  outdir: onotology
+  outdir: gene_onotology
   nodes: False
   edges: True
 
@@ -222,6 +225,7 @@ gtex_eqtl:
     cls: GTExEQTLAdapter
     args:
       filepath: ./samples/gtex
+      gtex_tissue_ontology_map: ./aux_files/gtex_tissues_to_ontology_map.pkl
 
   outdir: gtex/eqtl
   nodes: False
@@ -246,6 +250,9 @@ roadmap_chromatin_state:
     cls: RoadMapAdapter
     args:
       filepath: ./samples/roadmap/chromatin_state
+      tissue_to_ontology_id_map: ./aux_files/roadmap_tissues_to_ontology_map.pkl
+      dbsnp_rsid_map: None
+
   outdir: roadmap
   nodes: True
   edges: False
@@ -256,6 +263,9 @@ roadmap_h3_mark:
     cls: RoadMapAdapter
     args:
       filepath: ./samples/roadmap/h3_marks
+      tissue_to_ontology_id_map: ./aux_files/roadmap_tissues_to_ontology_map.pkl
+      dbsnp_rsid_map: None
+
   outdir: roadmap
   nodes: True
   edges: False
@@ -266,6 +276,9 @@ roadmap_dhs:
     cls: RoadMapAdapter
     args:
       filepath: ./samples/roadmap/dhs
+      tissue_to_ontology_id_map: ./aux_files/roadmap_tissues_to_ontology_map.pkl
+      dbsnp_rsid_map: None
+
   outdir: roadmap
   nodes: True
   edges: False
@@ -278,6 +291,7 @@ abc_regulatory_region:
       filepath: ./samples/abc.forgedb_sample.csv.gz
       type: "node"
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      tissue_to_ontology_id_map: ./aux_files/abc_tissues_to_ontology_map.pkl
       dbsnp_rsid_map: None # will be provided by import script
 
   outdir: abc
@@ -292,6 +306,7 @@ abc_enhancer_gene_pair:
       filepath: ./samples/abc.forgedb_sample.csv.gz
       type: "edge"
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
+      tissue_to_ontology_id_map: ./aux_files/abc_tissues_to_ontology_map.pkl
       dbsnp_rsid_map: None # will be provided by import script
 
   outdir: abc
@@ -324,18 +339,18 @@ refseq_closest_gene:
   edges: edge
 
 topld_eur:
-  adapter:
-    module: biocypher_metta.adapters.topld_adapter
-    cls: TopLDAdapter
-    args:
-      filepath: ./samples/topld_eur_chr16_sample.csv.gz
-      chr: chr16
-      ancestry: EUR
-      dbsnp_pos_map: None # will be provided by import script
+    adapter:
+        module: biocypher_metta.adapters.topld_adapter
+        cls: TopLDAdapter
+        args:
+            filepath: ./samples/topld/EUR/topld_eur_chr16_sample.csv.gz
+            chr: chr16
+            ancestry: EUR
+            dbsnp_pos_map: None # will be provided by import script
 
-  outdir: top_ld
-  nodes: False
-  edges: True
+    outdir: top_ld/EUR
+    nodes: False
+    edges: True
 
 gencode_exon:
   adapter:
@@ -344,7 +359,7 @@ gencode_exon:
     args:
       filepath: ./samples/gencode_sample.gtf.gz
 
-  outdir: gencode
+  outdir: gencode/exon
   nodes: True
   edges: False
 
@@ -353,8 +368,8 @@ rna_central_non_coding_rna:
     module: biocypher_metta.adapters.rna_central_adapter
     cls: RNACentralAdapter
     args:
-      filepath: ./samples/rna_central/homo_sapiens.GRCh38.bed.gz
-      rfam_filepath: ./samples/rna_central/rnacentral_rfam_annotations.tsv.gz
+      filepath: ./samples/rna_central/sample_homo_sapiens.GRCh38.bed.gz
+      rfam_filepath: ./samples/rna_central/sample_rnacentral_rfam_annotations.tsv.gz
 
   outdir: rna_central
   nodes: True
@@ -365,8 +380,8 @@ rna_central_non_coding_rna_belongs_to_go:
     module: biocypher_metta.adapters.rna_central_adapter
     cls: RNACentralAdapter
     args:
-      filepath: ./samples/rna_central/homo_sapiens.GRCh38.bed.gz
-      rfam_filepath: ./samples/rna_central/rnacentral_rfam_annotations.tsv.gz
+      filepath: ./samples/rna_central/sample_homo_sapiens.GRCh38.bed.gz
+      rfam_filepath: ./samples/rna_central/sample_rnacentral_rfam_annotations.tsv.gz
       type: go rna
       label: go_rna
 
@@ -465,7 +480,7 @@ dbsuper_super_enhancer:
     args:
       filepath: ./samples/dbSUPER_SuperEnhancers_hg19.tsv.gz
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
-      dbsuper_tissue_ontology_map: ./aux_files/dbsuper_tissues_map.pkl
+      dbsuper_tissues_map: ./aux_files/dbsuper_tissues_map.pkl
 
   outdir: dbsuper
   nodes: True
@@ -478,7 +493,7 @@ dbsuper_super_enhancer_regulates_gene:
     args:
       filepath: ./samples/dbSUPER_SuperEnhancers_hg19.tsv.gz
       hgnc_to_ensembl_map: ./aux_files/hgnc_to_ensembl.pkl
-      dbsuper_tissue_ontology_map: ./aux_files/dbsuper_tissues_map.pkl
+      dbsuper_tissues_map: ./aux_files/dbsuper_tissues_map.pkl
       type: super enhancer to gene association
       label: super_enhancer_gene
 

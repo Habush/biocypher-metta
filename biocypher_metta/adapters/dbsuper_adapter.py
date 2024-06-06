@@ -48,7 +48,7 @@ class DBSuperAdapter(Adapter):
                 start = convert_genome_reference(chr, start_hg19)
                 end = convert_genome_reference(chr, end_hg19)
                 
-                if not start or not end:
+                if start == None or end == None:
                     continue
                 se_region_id = build_regulatory_region_id(chr, start, end)
                 if check_genomic_location(self.chr, self.start, self.end, chr, start, end):
@@ -80,7 +80,7 @@ class DBSuperAdapter(Adapter):
                 cell_name = line[DBSuperAdapter.INDEX['cell_name']]
                 biological_id = self.dbsuper_tissues_map[cell_name]
                 
-                if not ensembl_gene_id or not start or not end:
+                if None in [ensembl_gene_id, start, end]:
                     continue
                 se_region_id = build_regulatory_region_id(chr, start, end)
                 if check_genomic_location(self.chr, self.start, self.end, chr, start, end):

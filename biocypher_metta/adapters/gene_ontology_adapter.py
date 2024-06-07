@@ -13,14 +13,11 @@ class GeneOntologyAdapter(OntologyAdapter):
     def __init__(self, write_properties, add_provenance, ontology, type, label='go', dry_run=False):        
         super(GeneOntologyAdapter, self).__init__(write_properties, add_provenance, ontology, type, label, dry_run)
 
-    def get_ontology_source(self, ontology):
+    def get_ontology_source(self):
         """
         Returns the source and source URL for the Gene Ontology.
         """
-        if ontology == 'go':
-            return 'Gene Ontology', 'http://purl.obolibrary.org/obo/go.owl'
-        else:
-            return None, None
+        return 'Gene Ontology', 'http://purl.obolibrary.org/obo/go.owl'
 
     def find_go_nodes(self, graph):
         # subontologies are defined as `namespaces

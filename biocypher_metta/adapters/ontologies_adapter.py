@@ -29,12 +29,12 @@ class OntologyAdapter(Adapter):
         self.ontology = ontology
 
         # Set source and source_url based on the ontology
-        self.source, self.source_url = self.get_ontology_source(ontology)
+        self.source, self.source_url = self.get_ontology_source()
 
         super(OntologyAdapter, self).__init__(write_properties, add_provenance)
     
     @abstractmethod
-    def get_ontology_source(self, ontology):
+    def get_ontology_source(self):
         """
         Returns the source and source URL for a given ontology.
         This method should be overridden in child classes for specific ontologies.

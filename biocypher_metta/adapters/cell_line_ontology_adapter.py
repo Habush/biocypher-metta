@@ -8,12 +8,10 @@ class CellLineOntologyAdapter(OntologyAdapter):
         super(CellLineOntologyAdapter, self).__init__(write_properties, add_provenance, ontology, type, label, dry_run)
 
     
-    def get_ontology_source(self, ontology):
+    def get_ontology_source(self):
         """
         Returns the source and source URL for the Cell Ontology.
         """
-        if ontology == 'clo':
-            return 'Cell Line Ontology', 'http://purl.obolibrary.org/obo/clo.owl'
-        else:
-            return None, None
+        return 'Cell Line Ontology', 'http://purl.obolibrary.org/obo/clo.owl'
+        
         

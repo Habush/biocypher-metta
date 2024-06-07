@@ -540,7 +540,7 @@ enhancer_atlas_enhancer_regulates:
   nodes: False
   edges: True
 
-cell_ontology:
+cell_line_ontology:
   adapter:
     module: biocypher_metta.adapters.cell_line_ontology_adapter
     cls: CellLineOntologyAdapter

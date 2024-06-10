@@ -95,6 +95,9 @@ class PrologWriter:
         target_id = target_id.lower()
         source_type = self.edge_node_types[label]["source"]
         target_type = self.edge_node_types[label]["target"]
+        output_label = self.edge_node_types[label]["output_label"]
+        if output_label is not None:
+            label = output_label.lower()
         def_out = f"{label}({source_type}({source_id}), {target_type}({target_id}))"
         return self.write_property(def_out, properties)
 

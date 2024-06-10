@@ -458,11 +458,22 @@ child pathway of:
     source: pathway
     target: pathway
 
-go subtype of:
+# Subtype relationships
+subtype_of:
   is_a: annotation
-  inherit_properties: true
   represented_as: edge
   input_label: subtype_of
+  source: ontology term
+  target: ontology term
+  description: >-
+    Represents the subtype relationship between two ontology terms,
+    where the source term is a subtype of the target term.
+
+go_subtype_of:
+  is_a: subtype_of
+  represented_as: edge
+  input_label: go_subtype_of
+  output_label: subtype_of
   source: go
   target: go
 

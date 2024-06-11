@@ -603,3 +603,53 @@ enhancer_atlas_enhancer_regulates:
   outdir: enhancer_atlas
   nodes: False
   edges: True
+
+uberon:
+  adapter:
+    module: biocypher_metta.adapters.uberon_adapter
+    cls: UberonAdapter
+    args:
+      ontology: 'uberon'
+      type: node
+      dry_run: False
+  outdir: uberon
+  nodes: True
+  edges: False
+
+uberon_subtype_of:
+  adapter:
+    module: biocypher_metta.adapters.uberon_adapter
+    cls: UberonAdapter
+    args:
+      ontology: 'uberon'
+      type: edge
+      dry_run: False
+      label: uberon_subtype_of
+  outdir: uberon
+  nodes: False
+  edges: True
+
+cell_line_ontology:
+  adapter:
+    module: biocypher_metta.adapters.cell_line_ontology_adapter
+    cls: CellLineOntologyAdapter
+    args:
+      ontology: 'clo'
+      type: node
+      dry_run: False
+  outdir: cell_line_ontology
+  nodes: True
+  edges: False
+
+clo_subtype_of:
+  adapter:
+    module: biocypher_metta.adapters.cell_line_ontology_adapter
+    cls: CellLineOntologyAdapter
+    args:
+      ontology: 'clo'
+      label: clo_subtype_of
+      type: edge
+      dry_run: False
+  outdir: cell_line_ontology
+  nodes: False
+  edges: True

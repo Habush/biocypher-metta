@@ -256,6 +256,28 @@ go:
     synonyms: str[]
     subontology: str
 
+# Uberon Ontology 
+uberon:
+  is_a: ontology term
+  represented_as: node
+  input_label: uberon
+  properties:
+    uberon_id: str 
+    uberon_name: str
+    uberon_definition: str
+    uberon_synonyms: str[]
+
+# Cell line Ontology
+clo:
+  is_a: ontology term
+  represented_as: node
+  input_label: clo
+  properties:
+    clo_id: str
+    clo_name: str
+    clo_definition: str
+    clo_synonyms: str[]
+
 motif:
   represented_as: node
   is_a: epigenomic feature
@@ -468,6 +490,22 @@ subtype_of:
   description: >-
     Represents the subtype relationship between two ontology terms,
     where the source term is a subtype of the target term.
+
+uberon_subtype_of:
+  is_a: subtype_of
+  represented_as: edge
+  input_label: uberon_subtype_of
+  output_label: subtype_of
+  source: uberon
+  target: uberon
+
+clo_subtype_of:
+  is_a: subtype_of
+  represented_as: edge
+  input_label: clo_subtype_of
+  output_label: subtype_of
+  source: clo
+  target: clo
 
 go_subtype_of:
   is_a: subtype_of

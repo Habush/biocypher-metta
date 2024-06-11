@@ -15,6 +15,9 @@ class OntologyAdapter(Adapter):
     ON_PROPERTY = rdflib.term.URIRef('http://www.w3.org/2002/07/owl#onProperty')
     SOME_VALUES_FROM = rdflib.term.URIRef('http://www.w3.org/2002/07/owl#someValuesFrom')
     ALL_VALUES_FROM = rdflib.term.URIRef('http://www.w3.org/2002/07/owl#allValuesFrom')
+    NAMESPACE = rdflib.term.URIRef('http://www.geneontology.org/formats/oboInOwl#hasOBONamespace')
+    EXACT_SYNONYM = rdflib.term.URIRef('http://www.geneontology.org/formats/oboInOwl#hasExactSynonym')
+    RELATED_SYNONYM = rdflib.term.URIRef('http://www.geneontology.org/formats/oboInOwl#hasRelatedSynonym')
     DESCRIPTION = rdflib.term.URIRef('http://purl.obolibrary.org/obo/IAO_0000115')
 
     PREDICATES = [SUBCLASS, DB_XREF]
@@ -29,12 +32,12 @@ class OntologyAdapter(Adapter):
         self.ontology = ontology
 
         # Set source and source_url based on the ontology
-        self.source, self.source_url = self.get_ontology_source(ontology)
+        self.source, self.source_url = self.get_ontology_source()
 
         super(OntologyAdapter, self).__init__(write_properties, add_provenance)
     
     @abstractmethod
-    def get_ontology_source(self, ontology):
+    def get_ontology_source(self):
         """
         Returns the source and source URL for a given ontology.
         This method should be overridden in child classes for specific ontologies.
@@ -223,11 +226,13 @@ class OntologyAdapter(Adapter):
 
     def cache_node_properties(self):
         self.cache_predicate(predicate=OntologyAdapter.LABEL, collection='term_names')
+        self.cache_predicate(predicate=OntologyAdapter.NAMESPACE, collection='namespaces')
         self.cache_predicate(predicate=OntologyAdapter.DESCRIPTION, collection='descriptions')
+        self.cache_predicate(predicate=OntologyAdapter.RELATED_SYNONYM, collection='related_synonyms')
+        self.cache_predicate(predicate=OntologyAdapter.EXACT_SYNONYM, collection='exact_synonyms')
         self.cache_predicate(predicate=OntologyAdapter.TYPE, collection='node_types')
         self.cache_predicate(predicate=OntologyAdapter.ON_PROPERTY, collection='on_property')
         self.cache_predicate(predicate=OntologyAdapter.SOME_VALUES_FROM, collection='some_values_from')
-        self.cache_predicate(predicate=OntologyAdapter.ALL_VALUES_FROM, collection='all_values_from')
 
     def cache_predicate(self, predicate, collection=None):
         triples = list(self.graph.subject_objects(predicate=predicate, unique=True))

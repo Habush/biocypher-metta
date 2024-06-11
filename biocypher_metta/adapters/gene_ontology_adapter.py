@@ -1,14 +1,9 @@
-import rdflib
 from biocypher_metta.adapters.ontologies_adapter import OntologyAdapter
 
 class GeneOntologyAdapter(OntologyAdapter):
     ONTOLOGIES = {
         'go': 'http://purl.obolibrary.org/obo/go.owl'
     }
-
-    NAMESPACE = rdflib.term.URIRef('http://www.geneontology.org/formats/oboInOwl#hasOBONamespace')
-    EXACT_SYNONYM = rdflib.term.URIRef('http://www.geneontology.org/formats/oboInOwl#hasExactSynonym')
-    RELATED_SYNONYM = rdflib.term.URIRef('http://www.geneontology.org/formats/oboInOwl#hasRelatedSynonym')
 
     def __init__(self, write_properties, add_provenance, ontology, type, label='go', dry_run=False):        
         super(GeneOntologyAdapter, self).__init__(write_properties, add_provenance, ontology, type, label, dry_run)
@@ -20,8 +15,8 @@ class GeneOntologyAdapter(OntologyAdapter):
         return 'Gene Ontology', 'http://purl.obolibrary.org/obo/go.owl'
 
     def find_go_nodes(self, graph):
-        # subontologies are defined as `namespaces
-        nodes_in_namespaces = list(graph.subject_objects(predicate=GeneOntologyAdapter.NAMESPACE))
+        # subontologies are defined as `namespaces`
+        nodes_in_namespaces = list(graph.subject_objects(predicate=OntologyAdapter.NAMESPACE))
 
         node_namespace_lookup = {}
         for n in nodes_in_namespaces:
@@ -33,7 +28,8 @@ class GeneOntologyAdapter(OntologyAdapter):
         return node_namespace_lookup
 
     def get_nodes(self):
-        nodes = super().get_nodes()
+        # Convert the generator to a list
+        nodes = list(super().get_nodes())
 
         # Find GO nodes and their namespaces
         if self.graph is not None:

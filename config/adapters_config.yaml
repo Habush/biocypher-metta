@@ -628,3 +628,28 @@ uberon_subtype_of:
   outdir: uberon
   nodes: False
   edges: True
+
+cell_line_ontology:
+  adapter:
+    module: biocypher_metta.adapters.cell_line_ontology_adapter
+    cls: CellLineOntologyAdapter
+    args:
+      ontology: 'clo'
+      type: node
+      dry_run: False
+  outdir: cell_line_ontology
+  nodes: True
+  edges: False
+
+clo_subtype_of:
+  adapter:
+    module: biocypher_metta.adapters.cell_line_ontology_adapter
+    cls: CellLineOntologyAdapter
+    args:
+      ontology: 'clo'
+      label: clo_subtype_of
+      type: edge
+      dry_run: False
+  outdir: cell_line_ontology
+  nodes: False
+  edges: True
